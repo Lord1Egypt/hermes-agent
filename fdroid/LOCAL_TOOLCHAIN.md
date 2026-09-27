@@ -223,6 +223,8 @@ The source-binding verifier and full scanner remain enabled.
 # Resolve/verify these existing identities; never create or auto-replace them.
 $Builder = 'agent-v158-public-repro-cache-21cd3019'
 docker inspect $Builder --format '{{.Id}} {{.Config.Image}} {{json .Mounts}}'
+# After confirming this retained builder is idle and the host has capacity:
+docker update --cpus 12 $Builder
 docker start $Builder
 # Copy reviewed current metadata/helper inputs into the existing /inputs paths,
 # retaining the old gate receipts. Reverify their hashes before this invocation.

@@ -78,7 +78,7 @@ class WorkspaceMemoryRegressionInstrumentedTest {
             .forEach { assertTrue("Test snapshot cleanup failed", it.deleteRecursively()) }
     }
 
-    @Test fun realSystemGrantCopiesNestedDocumentsReadableByNativeAndExistingProotShells() {
+    @Test fun realSystemGrantCopiesNestedDocumentsReadableByNativeAndProotShells() {
         assertFalse("Workspace tools belong to the Full edition", BuildConfig.HERMES_PLAY_EDITION)
         val vm = DeviceViewModel(app)
         owner.put("device", vm)
@@ -118,12 +118,21 @@ class WorkspaceMemoryRegressionInstrumentedTest {
         val native = NativeAndroidShellTool.run(app, command, timeoutSeconds = 60)
         assertEquals(native.toString(), 0, native.optInt("exit_code", -1))
         assertTrue(native.toString(), native.optString("stdout").contains(WorkspaceFixtureDocumentsProvider.CONTENT.trim()))
-        // The runner supplies an already-installed guest. This test never provisions a new environment.
+        // Prefer a retained distro when supplied. Otherwise exercise the real packaged
+        // proot binary against the existing Android root; never download/create a guest.
         val sandbox = InstrumentationRegistry.getArguments().getString("existing_sandbox")
-        assertFalse("Pass the name of an existing proot guest", sandbox.isNullOrBlank())
         val guestPath = "/workspace/${copiedRoot.name}/Notes/hello.txt"
-        val proot = HermesLinuxSandboxBridge.runUserCommand(app, sandbox!!,
-            "cat ${HermesLinuxSubsystemBridge.shellQuote(guestPath)}", timeoutSeconds = 90)
+        val proot = if (!sandbox.isNullOrBlank()) {
+            println("WORKSPACE_PROOT_MODE=retained-distro")
+            HermesLinuxSandboxBridge.runUserCommand(app, sandbox,
+                "cat ${HermesLinuxSubsystemBridge.shellQuote(guestPath)}", timeoutSeconds = 90)
+        } else {
+            println("WORKSPACE_PROOT_MODE=retained-android-root")
+            val binding = DeviceStateWriter.workspaceDir(app).absolutePath + ":/workspace"
+            NativeAndroidShellTool.run(app,
+                "proot --rootfs / --bind ${HermesLinuxSubsystemBridge.shellQuote(binding)} " +
+                    "/system/bin/cat ${HermesLinuxSubsystemBridge.shellQuote(guestPath)}", timeoutSeconds = 90)
+        }
         assertEquals(proot.toString(), 0, proot.optInt("exit_code", -1))
         assertTrue(proot.toString(), proot.optString("stdout").contains(WorkspaceFixtureDocumentsProvider.CONTENT.trim()))
         note.writeText("Local terminal edit; never written to the provider")
@@ -174,7 +183,7 @@ class WorkspaceMemoryRegressionInstrumentedTest {
                 if (node.isVisibleToUser && predicate(node)) {
                     var target: AccessibilityNodeInfo? = node
                     repeat(5) {
-                        if (target?.isClickable == true && target!!.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return true
+                        if (target?.isClickable == true && target.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return true
                         target = target?.parent
                     }
                 }

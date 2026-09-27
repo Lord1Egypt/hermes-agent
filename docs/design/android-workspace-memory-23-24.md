@@ -31,7 +31,7 @@ The exact packaged proot-distro 5.4.0 source in the retained build container was
 
 The original memory regression was red before the estimate fallback and passed afterward. Provider-backed JVM tests exercise real ContentResolver queries and streams, nested copies, preservation of originals/previous edits, null queries, read failures, invalid names, duplicates, byte/entry/depth caps, cycles and cancellation. Diagnostic tests distinguish live memory from a historical attempt and verify that export does not start a backend. Command tests keep legacy calls unchanged and reject content URIs or relative/ambiguous bind paths.
 
-Installed tests use an instrumentation-only, read-only DocumentsProvider through the real Android picker. The provider is absent from production APKs. The integration test requires a retained proot guest; it does not create another Docker, AVD, Linux guest or other execution environment. Exact executed results and any remaining limits are recorded in the PR after validation; the presence of a test file alone is not a passing run.
+Installed tests use an instrumentation-only, read-only DocumentsProvider through the real Android picker. The provider is absent from production APKs. The integration test exercises the actual packaged proot binary using a retained distro when supplied, otherwise the existing Android root. The latter proves the userspace workspace bind, not every Linux-distribution integration. It does not create another Docker, AVD, Linux guest or other execution environment. Exact executed results and any remaining limits are recorded in the PR after validation; the presence of a test file alone is not a passing run.
 
 ## Retained build infrastructure
 
