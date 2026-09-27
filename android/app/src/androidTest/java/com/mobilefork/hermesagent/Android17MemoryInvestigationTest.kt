@@ -91,10 +91,10 @@ class Android17MemoryInvestigationTest {
             save(name, result)
             assertTrue(status.statusMessage, status.started)
             assertTrue(status.statusMessage, status.completionVerified)
-            val body = JSONObject().put("model", status.modelName)
+            // Reuse the production release probe's deterministic, non-thinking request.
+            val body = LlamaCppServerController.releaseMatrixCompletionPayload(status.modelName)
                 .put("messages", JSONArray().put(JSONObject().put("role", "user")
                     .put("content", "What is the capital of France? Answer with just the city name.")))
-                .put("max_tokens", 64).put("temperature", 0)
             // Match the production canary's socket budget. A call timeout alone leaves
             // OkHttp's unrelated ten-second default read timeout active.
             val client = OkHttpClient.Builder().readTimeout(150, TimeUnit.SECONDS)
