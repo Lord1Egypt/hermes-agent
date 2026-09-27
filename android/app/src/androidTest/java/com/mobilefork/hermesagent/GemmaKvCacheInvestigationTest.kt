@@ -49,7 +49,11 @@ class GemmaKvCacheInvestigationTest {
         require(Regex("[a-f0-9]{64}").matches(modelHash))
         val cache = args.getString("agentKvCache", "f16")!!
         require(cache in setOf("f16", "turbo3"))
+        // Opt-in diagnostic only: never change the application's native quality guard.
+        val strictSymmetric = args.getString("agentKvRequireSymmetric") == "true"
+        require(!strictSymmetric || cache == "turbo3")
         val size = args.getString("agentKvContext", "4096")!!.toInt()
+        val caseName = "${cache}-${size}" + if (strictSymmetric) "-symmetric" else ""
         require(size in setOf(2048, 4096, 8192, 16384, 32768))
         val model = File(modelPath)
         require(model.isFile && model.length() in 1..6_000_000_000L)
@@ -74,12 +78,15 @@ class GemmaKvCacheInvestigationTest {
             cacheTypeK = cache, cacheTypeV = cache, flashAttention = "on")
         val command = LlamaCppServerController.shellCommandForLaunch(executable.absolutePath,
             model.absolutePath, port, availableProcessors = 4, contextSizeOverride = size,
-            launchConfig = config, apiKey = key)
+            launchConfig = config, apiKey = key) + " -lv 5"
         val output = File(context.getExternalFilesDir(null), "gemma-kv-investigation").apply { mkdirs() }
         val result = JSONObject().put("schema", "agent-gemma-kv-comparison-v1")
             .put("sdk", Build.VERSION.SDK_INT).put("model_name", model.name)
             .put("model_sha256", modelHash).put("model_bytes", model.length())
             .put("cache_k", cache).put("cache_v", cache).put("context_requested", size)
+            .put("requested_cache_k", cache).put("requested_cache_v", cache)
+            .put("explicit_symmetric_probe", strictSymmetric)
+            .put("native_auto_asymmetric_policy", if (strictSymmetric) "disabled_for_this_test_process_only" else "native_default")
             .put("engine_sha256", executable.inputStream().use { stream ->
                 val hash = MessageDigest.getInstance("SHA-256"); val block = ByteArray(1024 * 1024)
                 while (true) { val n = stream.read(block); if (n < 0) break; hash.update(block, 0, n) }
@@ -87,8 +94,10 @@ class GemmaKvCacheInvestigationTest {
             }).put("before", JSONObject(LocalModelRuntimeDiagnostics.exportSupportSnapshot(context)))
             .put("production_context_policy_changed", false).put("inference_device", "cpu")
             .put("passed", false)
-        val process = ProcessBuilder("/system/bin/sh", "-c", "echo AGENT_PROBE_PID=$$; $command")
-            .directory(context.filesDir).redirectErrorStream(true).start()
+        val processBuilder = ProcessBuilder("/system/bin/sh", "-c", "echo AGENT_PROBE_PID=$$; $command")
+            .directory(context.filesDir).redirectErrorStream(true)
+        if (strictSymmetric) processBuilder.environment()["TURBO_AUTO_ASYMMETRIC"] = "0"
+        val process = processBuilder.start()
         val alive = AtomicBoolean(true)
         val pid = AtomicInteger(0)
         val peakRss = AtomicLong(0)
@@ -96,7 +105,7 @@ class GemmaKvCacheInvestigationTest {
         val lowHeadroom = AtomicBoolean(false)
         val logs = StringBuffer()
         val logReadError = AtomicReference<String?>(null)
-        val logPath = File(output, "${cache}-${size}-engine.log")
+        val logPath = File(output, "${caseName}-engine.log")
         val drain = thread(name = "AgentKvProbeLog", isDaemon = true) {
             try {
                 process.inputStream.bufferedReader().useLines { lines -> lines.forEach { line ->
@@ -160,7 +169,7 @@ class GemmaKvCacheInvestigationTest {
         }
         val samples = JSONArray()
         result.put("samples", samples)
-        val destination = File(output, "${cache}-${size}.json")
+        val destination = File(output, "${caseName}.json")
         fun checkpoint(stage: String) {
             result.put("stage", stage).put("engine_log", logs.toString())
             destination.writeText(result.toString(2))
@@ -175,7 +184,28 @@ class GemmaKvCacheInvestigationTest {
                 if (runCatching { process.exitValue() }.isSuccess) break
             }
             assertTrue("Engine did not become ready: ${logs.takeLast(1400)}", ready)
+            // Capture startup evidence before the rolling log can evict it during prefill.
+            val startupLog = synchronized(logs) { logs.toString() }
+            val promotedK = Regex("upgrading K from ([a-z0-9_]+) to ([a-z0-9_]+)")
+                .findAll(startupLog).map { it.groupValues[2] }.toSet()
+            val allocatedK = Regex("K \\(([a-z0-9_]+)\\):")
+                .findAll(startupLog).map { it.groupValues[1] }.toSet()
+            val allocatedV = Regex("V \\(([a-z0-9_]+)\\):")
+                .findAll(startupLog).map { it.groupValues[1] }.toSet()
+            result.put("native_cache_promotions", JSONArray(promotedK.toList()))
+                .put("allocated_cache_k_types", JSONArray(allocatedK.toList()))
+                .put("allocated_cache_v_types", JSONArray(allocatedV.toList()))
+                .put("effective_cache_k", allocatedK.singleOrNull() ?: promotedK.singleOrNull() ?: cache)
+                .put("effective_cache_v", allocatedV.singleOrNull() ?: cache)
+                .put("cache_allocation_log", startupLog.lineSequence()
+                    .filter { it.contains("llama_kv_cache") || it.contains("K (") || it.contains("V (") }
+                    .take(100).joinToString("\n"))
             checkpoint("engine_ready")
+            if (strictSymmetric) {
+                assertTrue("K was promoted despite explicit symmetric test: $promotedK", promotedK.isEmpty())
+                assertEquals("Native allocation must positively identify real Turbo3 K", setOf("turbo3"), allocatedK)
+                assertEquals("Native allocation must positively identify real Turbo3 V", setOf("turbo3"), allocatedV)
+            }
             val actualName = request("/v1/models").getJSONArray("data").getJSONObject(0).getString("id")
             val short = LlamaCppServerController.releaseMatrixCompletionPayload(actualName, LlamaCppRuntimeLane.TURBOQUANT)
                 .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", "What is the capital of France? Answer only the city.")))
