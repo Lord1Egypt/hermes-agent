@@ -190,6 +190,11 @@
       "path": "tests/test_os_marker_gating.py",
       "previous_git_blob": "5d348fd73e980c3f746ddab60d323b4c597e9516",
       "reason": "Verifies dispatch into the now-retired desktop host OS workflow, not runtime behavior."
+    },
+    {
+      "path": "tests/scripts/test_windows_footguns_full_repo_scan.py",
+      "previous_git_blob": "9d14d368595e84a301f27f048a05c74c43b88382",
+      "reason": "Dedicated checker for unsupported Windows application compatibility; shared import-boundary check retained separately."
     }
   ]
 }

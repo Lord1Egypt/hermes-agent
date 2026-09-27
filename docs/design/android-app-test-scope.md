@@ -34,3 +34,5 @@ existing published release is changed by these deletions. Any required-check
 configuration referring to a retired job must be reviewed explicitly, not
 silently treated as a successful check. The CI aggregate retains its existing
 fail-on-error evaluation over the remaining jobs.
+
+The broad Windows-only Python compatibility lint gate is also removed. Its separate plugin-import-boundary check is retained in an explicitly named Linux job because it protects shared packages embedded in the APK.
