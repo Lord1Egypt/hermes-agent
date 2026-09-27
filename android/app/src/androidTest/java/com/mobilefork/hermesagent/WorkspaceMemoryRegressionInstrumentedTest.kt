@@ -115,9 +115,9 @@ class WorkspaceMemoryRegressionInstrumentedTest {
         assertEquals(WorkspaceFixtureDocumentsProvider.AUTHORITY, granted.authority)
         assertTrue(app.contentResolver.persistedUriPermissions.any { it.uri == granted && it.isReadPermission })
         val command = "cat " + HermesLinuxSubsystemBridge.shellQuote(note.absolutePath)
-        val native = NativeAndroidShellTool.run(app, command, timeoutSeconds = 60)
+        val native = NativeAndroidShellTool.run(app, command, timeoutSeconds = 60, includeLinuxSandboxStatus = false)
         assertEquals(native.toString(), 0, native.optInt("exit_code", -1))
-        assertTrue(native.toString(), native.optString("stdout").contains(WorkspaceFixtureDocumentsProvider.CONTENT.trim()))
+        assertTrue(native.toString(), native.getString("output").contains(WorkspaceFixtureDocumentsProvider.CONTENT.trim()))
         // Prefer a retained distro when supplied. Otherwise exercise the real packaged
         // proot binary against the existing Android root; never download/create a guest.
         val sandbox = InstrumentationRegistry.getArguments().getString("existing_sandbox")
@@ -130,11 +130,11 @@ class WorkspaceMemoryRegressionInstrumentedTest {
             println("WORKSPACE_PROOT_MODE=retained-android-root")
             val binding = DeviceStateWriter.workspaceDir(app).absolutePath + ":/workspace"
             NativeAndroidShellTool.run(app,
-                "proot --rootfs / --bind ${HermesLinuxSubsystemBridge.shellQuote(binding)} " +
-                    "/system/bin/cat ${HermesLinuxSubsystemBridge.shellQuote(guestPath)}", timeoutSeconds = 90)
+                "proot -r / -b ${HermesLinuxSubsystemBridge.shellQuote(binding)} " +
+                    "/system/bin/cat ${HermesLinuxSubsystemBridge.shellQuote(guestPath)}", timeoutSeconds = 90, includeLinuxSandboxStatus = false)
         }
         assertEquals(proot.toString(), 0, proot.optInt("exit_code", -1))
-        assertTrue(proot.toString(), proot.optString("stdout").contains(WorkspaceFixtureDocumentsProvider.CONTENT.trim()))
+        assertTrue(proot.toString(), proot.getString("output").contains(WorkspaceFixtureDocumentsProvider.CONTENT.trim()))
         note.writeText("Local terminal edit; never written to the provider")
         compose.onNodeWithTag("SharedFolderWorkspaceCopyButton").performScrollTo().performClick()
         compose.waitUntil(60_000) { !vm.uiState.value.sharedFolderCopyInProgress &&
