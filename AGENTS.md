@@ -1,3 +1,25 @@
+# Agent Android fork — supported product scope
+
+This fork is now the independent **Agent Android application**, not a promise to
+maintain upstream Windows/macOS desktop installers, Electron/Tauri interfaces,
+Nix packaging or the upstream website. The owner authorized removing those
+product-only tests and CI jobs on 2026-09-27. Do not restore them simply to match
+upstream or make them release prerequisites.
+
+The APK still packages a substantial shared Python runtime. Keep its agent,
+state/database, providers, tools, gateway/API, security and Linux runtime tests,
+as well as Android Full/Play unit/instrumentation, native/Chaquopy, signing,
+source integrity, reporting-service and F-Droid verification. Tests are removed
+by demonstrated product scope, not because they fail. Android-relevant failures
+must still be investigated. The canonical isolated `scripts/run_tests.sh` runner
+remains mandatory. Existing Docker/F-Droid environments are reused; one new
+Android 17 x86_64 hardware AVD is explicitly authorized for issue #24.
+
+See `docs/design/android-app-test-scope.md` for the deletion ledger and retained
+boundaries. The inherited upstream guide below applies only within that scope.
+
+---
+
 # Hermes Agent - Development Guide
 
 Instructions for AI coding assistants and developers working on the hermes-agent codebase.
