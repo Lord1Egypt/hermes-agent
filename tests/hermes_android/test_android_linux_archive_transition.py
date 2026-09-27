@@ -94,7 +94,8 @@ def test_archive_cli_verifies_the_release_invocation_without_extracting_assets(t
     payload = _zip([(package.filename, b"exact package bytes")])
     archive = tmp_path / "release.zip"
     archive.write_bytes(payload)
-    lock = {"package_archive": {"sha256": hashlib.sha256(payload).hexdigest()}}
+    lock = {"version": assets.LOCK_FILE_VERSION,
+            "package_archive": {"sha256": hashlib.sha256(payload).hexdigest()}}
     lock_file = tmp_path / "lock.json"
     lock_file.write_text(json.dumps(lock), encoding="utf-8")
     extraction = tmp_path / "not-extracted"
