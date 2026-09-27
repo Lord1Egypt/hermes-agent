@@ -114,8 +114,7 @@ object LocalModelRuntimeDiagnostics {
         val normalizedBackend = backend.trim().lowercase(Locale.US)
         val contextLimit = safeContextLimit(normalizedBackend, modelBytes, memory)
         val requested = requestedContextTokens.takeIf { it > 0 } ?: contextLimit
-        val effectiveContext = min(requested, contextLimit).coerceAtLeast(MIN_CONTEXT_TOKENS)
-        val contextReserve = contextReserveBytes(normalizedBackend, effectiveContext)
+        var effectiveContext = min(requested, contextLimit).coerceAtLeast(MIN_CONTEXT_TOKENS)
         val modelWorkingSet = when {
             normalizedBackend == "litert-lm" && modelBytes >= VERY_LARGE_MODEL_BYTES ->
                 saturatingAdd(saturatingMultiply(modelBytes, 125L, 100L), 2_000_000_000L)
@@ -129,7 +128,22 @@ object LocalModelRuntimeDiagnostics {
                 saturatingAdd(saturatingMultiply(modelBytes, 75L, 100L), 600_000_000L)
             else -> saturatingAdd(saturatingMultiply(modelBytes, 65L, 100L), 384_000_000L)
         }
-        val estimatedAdditional = saturatingAdd(modelWorkingSet, contextReserve)
+        var estimatedAdditional = saturatingAdd(modelWorkingSet, contextReserveBytes(normalizedBackend, effectiveContext))
+        if (normalizedBackend.startsWith("llama.cpp") && !memory.lowMemory &&
+            memory.availableBytes > 0L && estimatedAdditional > memory.usableAvailableBytes) {
+            // Retry only the estimate at a smaller supported context, before allocating.
+            // Keep the existing model/reserve coefficients and all low-memory/total-RAM gates.
+            // A context change is not RAM-bypass consent and cannot manufacture headroom.
+            for (candidate in listOf(4_096, 2_048, 1_024, MIN_CONTEXT_TOKENS)) {
+                if (candidate >= effectiveContext) continue
+                val estimate = saturatingAdd(modelWorkingSet, contextReserveBytes(normalizedBackend, candidate))
+                if (estimate <= memory.usableAvailableBytes) {
+                    effectiveContext = candidate
+                    estimatedAdditional = estimate
+                    break
+                }
+            }
+        }
         val requiredTotalBytes = when {
             normalizedBackend == "litert-lm" && modelBytes >= VERY_LARGE_MODEL_BYTES ->
                 saturatingMultiply(modelBytes, 250L, 100L)
@@ -233,6 +247,7 @@ object LocalModelRuntimeDiagnostics {
         memory: MemorySnapshot,
         preflight: PreflightDecision,
         runtimeLaunch: RuntimeLaunchBreadcrumb? = null,
+        ramBypassRequested: Boolean = false,
     ): String {
         val attemptId = UUID.randomUUID().toString()
         val previous = readSnapshot(context)
@@ -249,6 +264,7 @@ object LocalModelRuntimeDiagnostics {
             .put("requested_context_tokens", requestedContextTokens)
             .put("effective_context_tokens", effectiveContextTokens)
             .put("memory", memory.toJson())
+            .put("ram_check_bypass_requested", ramBypassRequested)
             .put("preflight_level", preflight.level)
             .put("preflight_detail", preflight.detail)
             .put("estimated_additional_bytes", preflight.estimatedAdditionalBytes)
@@ -293,6 +309,18 @@ object LocalModelRuntimeDiagnostics {
             .put("completion_latency_ms", completionLatencyMs.coerceAtLeast(0L))
         writeSnapshot(context, current)
     }
+
+    /** Available without starting a model or invoking the chat agent. No provider credentials. */
+    fun exportSupportSnapshot(context: Context): String = JSONObject()
+        .put("schema", "agent-native-memory-diagnostics-v1")
+        .put("app_version", com.mobilefork.hermesagent.BuildConfig.VERSION_NAME)
+        .put("android_sdk", android.os.Build.VERSION.SDK_INT)
+        .put("captured_at_ms", System.currentTimeMillis())
+        .put("memory_source", "ActivityManager.MemoryInfo")
+        .put("usable_ram_definition", "available_bytes minus threshold_bytes; not the Java heap class")
+        .put("current_memory", captureMemory(context).toJson())
+        .put("last_start_attempt", readSnapshot(context) ?: JSONObject.NULL)
+        .toString(2)
 
     fun readSnapshot(context: Context): JSONObject? {
         val file = snapshotFile(context.applicationContext)

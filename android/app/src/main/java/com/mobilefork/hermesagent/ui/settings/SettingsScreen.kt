@@ -35,6 +35,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -365,7 +366,7 @@ fun SettingsScreen(
                     }
                     if (uiState.status.isNotBlank()) {
                         item {
-                            Text(uiState.status, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+                            SelectionContainer { Text(uiState.status, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) }
                         }
                     }
                     }
@@ -1783,7 +1784,10 @@ private fun OnDeviceInferenceCard(
                     }
                 }
             }
-            Text(localizedOnDeviceSummary(summary, strings), style = MaterialTheme.typography.bodySmall)
+            SelectionContainer {
+                Text(localizedOnDeviceSummary(summary, strings), style = MaterialTheme.typography.bodySmall)
+            }
+            LocalModelDiagnosticsControls()
         }
     }
 }
