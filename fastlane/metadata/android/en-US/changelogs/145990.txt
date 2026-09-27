@@ -1,0 +1,1 @@
+Security maintenance: update the embedded HTTP client and transport; improve Android-only validation. Workspace import and memory-diagnostics fixes are included. Experimental Gemma KV-cache investigation is documented separately; no blanket quality or memory guarantee.
