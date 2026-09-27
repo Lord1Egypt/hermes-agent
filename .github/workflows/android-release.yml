@@ -369,6 +369,33 @@ jobs:
           python scripts/android_release_manifest.py --tag "$HERMES_RELEASE_TAG"
           python scripts/android_release_manifest.py --tag "$HERMES_RELEASE_TAG" --edition play
 
+      - name: Build and verify versioned terminal dependency archive
+        env:
+          HERMES_RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          # Only publish a new dependency archive when this release owns its URL.
+          # Later releases may keep using the already-public immutable archive.
+          archive_name="$(python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from urllib.parse import urlsplit
+          url = json.loads(Path('hermes_android/termux_linux_assets.lock.json').read_text())['package_archive']['url']
+          prefix = f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/releases/download/{os.environ['HERMES_RELEASE_TAG']}/"
+          if url.startswith(prefix):
+              name = url[len(prefix):]
+              assert name.endswith('.zip') and '/' not in name and '\\' not in name and '..' not in name
+              assert urlsplit(url).query == '' and urlsplit(url).fragment == ''
+              print(name)
+          PY
+          )"
+          if [ -n "$archive_name" ]; then
+            python scripts/prepare_android_linux_assets.py \
+              --build-package-archive "dist/android-release/$archive_name"
+            python scripts/prepare_android_linux_assets.py \
+              --verify-package-archive "dist/android-release/$archive_name"
+            (cd dist/android-release && sha256sum "$archive_name" > "$archive_name.sha256")
+          fi
+
       - name: Verify GitHub CLI is available
         run: |
           command -v gh
@@ -421,11 +448,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           HERMES_RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          gh release upload "$HERMES_RELEASE_TAG" \
-            dist/android-release/*.apk \
-            dist/android-release/*.aab \
-            dist/android-release/*.sha256 \
-            --clobber
+          mapfile -t release_files < <(find dist/android-release -maxdepth 1 -type f \
+            \( -name '*.apk' -o -name '*.aab' -o -name '*.sha256' -o -name '*.zip' \) | sort)
+          test "${#release_files[@]}" -gt 0
+          gh release upload "$HERMES_RELEASE_TAG" "${release_files[@]}" --clobber
 
       - name: Verify complete release asset manifest
         env:
@@ -433,7 +459,7 @@ jobs:
           HERMES_RELEASE_TAG: ${{ github.ref_name }}
         run: |
           mapfile -t expected < <(find dist/android-release -maxdepth 1 -type f \
-            \( -name '*.apk' -o -name '*.aab' -o -name '*.sha256' \) \
+            \( -name '*.apk' -o -name '*.aab' -o -name '*.sha256' -o -name '*.zip' \) \
             -printf '%f\n' | sort)
           mapfile -t published < <(gh release view "$HERMES_RELEASE_TAG" \
             --json assets --jq '.assets[].name' | sort)

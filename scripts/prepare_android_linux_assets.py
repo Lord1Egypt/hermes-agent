@@ -178,38 +178,37 @@ def download_termux_main_path(relative_path: str, expected_sha256: str | None = 
 
 @contextmanager
 def locked_package_archive(lock_payload: dict | None):
-    """Open the immutable package bundle pinned by the lock, when configured."""
-    archive_config = (lock_payload or {}).get("package_archive") or {}
-    url = str(archive_config.get("url", "")).strip()
-    expected_sha256 = str(archive_config.get("sha256", "")).strip()
-    if not url or not expected_sha256:
+    """Prefer the release archive; a hash-pinned previous archive seeds new releases."""
+    primary = (lock_payload or {}).get("package_archive") or {}
+    # One previous archive is enough: this is a release transition, not an
+    # unbounded mirror chain. Individual package hashes remain authoritative.
+    configs = [primary]
+    if primary.get("fallback"):
+        configs.append(primary["fallback"])
+    archive = None
+    for config in configs:
+        url = str(config.get("url", "")).strip()
+        expected_sha256 = str(config.get("sha256", "")).strip()
+        if not url or not expected_sha256:
+            continue
+        try:
+            payload = download_bytes(url)
+            verify_sha256(payload, expected_sha256)
+            candidate = zipfile.ZipFile(BytesIO(payload), "r")
+            names = candidate.namelist()
+            if len(names) != len(set(names)):
+                candidate.close()
+                raise ValueError("Duplicate entries in locked Termux package archive")
+            archive = candidate
+            sys.stderr.write(f"Using locked Termux package archive {url} ({len(names)} entries)\n")
+            break
+        except Exception as exc:  # pragma: no cover - live network diagnostics
+            sys.stderr.write(f"Locked Termux package archive unavailable ({url}): {exc}\n")
+    if archive is None:
+        # Rolling mirrors are still checked against each exact package hash.
+        # This fallback does not constitute archival release certification.
         yield None
         return
-
-    try:
-        payload = download_bytes(url)
-        verify_sha256(payload, expected_sha256)
-        payload_stream = BytesIO(payload)
-        archive = zipfile.ZipFile(payload_stream, "r")
-        names = archive.namelist()
-        duplicate_names = {name for name in names if names.count(name) > 1}
-        if duplicate_names:
-            archive.close()
-            raise ValueError(
-                "Duplicate entries in locked Termux package archive: "
-                + ", ".join(sorted(duplicate_names))
-            )
-        sys.stderr.write(
-            f"Using locked Termux package archive {url} ({len(names)} entries)\n"
-        )
-    except Exception as exc:  # pragma: no cover - live fallback path
-        # Every package still has its own SHA-256 pin, so falling back to mirrors
-        # remains byte-reproducible while keeping source builds recoverable if the
-        # archive host is temporarily unavailable.
-        sys.stderr.write(f"Locked Termux package archive unavailable ({url}): {exc}\n")
-        yield None
-        return
-
     with archive:
         yield archive
 
@@ -250,12 +249,13 @@ def build_package_archive(lock_payload: dict, output_path: Path) -> str:
     partial_path = output_path.with_name(f"{output_path.name}.partial")
     partial_path.unlink(missing_ok=True)
     try:
-        with zipfile.ZipFile(partial_path, "w", compression=zipfile.ZIP_STORED) as archive:
+        # Reuse verified historical packages instead of relying on old versions
+        # remaining on rolling mirrors. Only genuinely new pins need fetching.
+        with locked_package_archive(lock_payload) as previous, zipfile.ZipFile(
+            partial_path, "w", compression=zipfile.ZIP_STORED
+        ) as archive:
             for package in unique_locked_packages(lock_payload):
-                payload = download_termux_main_path(
-                    package.filename,
-                    expected_sha256=package.sha256,
-                )
+                payload = download_locked_package(package, previous)
                 info = zipfile.ZipInfo(package.filename, date_time=(1980, 1, 1, 0, 0, 0))
                 info.compress_type = zipfile.ZIP_STORED
                 info.create_system = 3
@@ -265,6 +265,22 @@ def build_package_archive(lock_payload: dict, output_path: Path) -> str:
     finally:
         partial_path.unlink(missing_ok=True)
     return sha256(output_path.read_bytes()).hexdigest()
+
+
+def verify_package_archive(lock_payload: dict, archive_path: Path) -> dict:
+    """Require the whole release hash and exact, independently hashed package inventory."""
+    expected = lock_payload["package_archive"]["sha256"]
+    payload = archive_path.read_bytes()
+    verify_sha256(payload, expected)
+    packages = unique_locked_packages(lock_payload)
+    with zipfile.ZipFile(BytesIO(payload)) as archive:
+        names = archive.namelist()
+        if len(names) != len(set(names)) or set(names) != {p.filename for p in packages}:
+            raise ValueError("Release package archive inventory differs from the lock")
+        for package in packages:
+            verify_sha256(archive.read(package.filename), package.sha256)
+    return {"status": "verified", "path": str(archive_path), "bytes": len(payload),
+            "sha256": expected, "packages": len(packages)}
 
 
 def read_packages_index(termux_arch: str) -> dict[str, TermuxPackageRecord]:
@@ -660,6 +676,7 @@ def main() -> None:
         "--build-package-archive",
         help="Create a deterministic ZIP containing every package pinned by the lock file",
     )
+    parser.add_argument("--verify-package-archive", help="Verify the release archive hash and complete package inventory")
     parser.add_argument(
         "--check-mirrors",
         action="store_true",
@@ -680,6 +697,15 @@ def main() -> None:
         return
     output_dir = Path(args.output_dir).expanduser().resolve()
     lock_file = Path(args.lock_file).expanduser().resolve() if args.lock_file else None
+    if args.verify_package_archive:
+        if lock_file is None:
+            raise ValueError("--verify-package-archive requires --lock-file")
+        lock_payload = load_lock_file(lock_file)
+        if lock_payload is None:
+            raise FileNotFoundError(lock_file)
+        receipt = verify_package_archive(lock_payload, Path(args.verify_package_archive).expanduser().resolve())
+        sys.stdout.write(json.dumps(receipt, sort_keys=True) + "\n")
+        return
     if args.build_package_archive:
         if lock_file is None:
             raise ValueError("--build-package-archive requires --lock-file")
