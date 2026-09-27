@@ -243,10 +243,10 @@ class GemmaKvCacheInvestigationTest {
             result.put("tokenized_input", tokens)
             checkpoint("long_completion")
             val started = System.nanoTime()
-            // The measured F16 canary prefilled ~7.6 tokens/s on this CPU AVD.
-            // Scale the bounded diagnostic deadline by the ACTUAL prompt size;
-            // a four-minute transport timeout is not evidence of bad model quality.
-            val budget = (tokens / 6L + 120L).coerceIn(600L, 1800L)
+            // The paired long-context runs reached ~5 tokens/s on this CPU AVD,
+            // below the short-canary rate. Reserve measured-workload headroom;
+            // no retrieval assertion, memory guard or production timeout is changed.
+            val budget = (tokens / 4L + 180L).coerceIn(900L, 3600L)
             result.put("long_request_budget_seconds", budget)
             checkpoint("long_completion")
             val response = request("/v1/chat/completions", query, longBudgetSeconds = budget)
