@@ -84,3 +84,28 @@ def test_release_export_reuses_old_pins_fetches_only_new_and_verifies_complete_i
         release_lock["package_archive"]["sha256"] = hashlib.sha256(payload).hexdigest()
         with pytest.raises(ValueError):
             assets.verify_package_archive(release_lock, candidate)
+
+
+def test_archive_cli_verifies_the_release_invocation_without_extracting_assets(tmp_path, monkeypatch, capsys):
+    import json
+    import sys
+
+    package = _record("package", b"exact package bytes")
+    payload = _zip([(package.filename, b"exact package bytes")])
+    archive = tmp_path / "release.zip"
+    archive.write_bytes(payload)
+    lock = {"package_archive": {"sha256": hashlib.sha256(payload).hexdigest()}}
+    lock_file = tmp_path / "lock.json"
+    lock_file.write_text(json.dumps(lock), encoding="utf-8")
+    extraction = tmp_path / "not-extracted"
+    monkeypatch.setattr(assets, "unique_locked_packages", lambda _lock: [package])
+    monkeypatch.setattr(sys, "argv", ["prepare_android_linux_assets.py", "--output-dir", str(extraction),
+                                     "--lock-file", str(lock_file), "--verify-package-archive", str(archive)])
+    assets.main()
+    assert json.loads(capsys.readouterr().out)["status"] == "verified"
+    assert not extraction.exists()
+
+    # A caller cannot accidentally pass a valid wrapper hash but wrong contents.
+    archive.write_bytes(payload + b"changed")
+    with pytest.raises(ValueError):
+        assets.main()

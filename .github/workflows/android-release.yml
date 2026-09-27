@@ -389,9 +389,9 @@ jobs:
           PY
           )"
           if [ -n "$archive_name" ]; then
-            python scripts/prepare_android_linux_assets.py \
+            python scripts/prepare_android_linux_assets.py --output-dir "$RUNNER_TEMP/agent-archive-check" \
               --build-package-archive "dist/android-release/$archive_name"
-            python scripts/prepare_android_linux_assets.py \
+            python scripts/prepare_android_linux_assets.py --output-dir "$RUNNER_TEMP/agent-archive-check" \
               --verify-package-archive "dist/android-release/$archive_name"
             (cd dist/android-release && sha256sum "$archive_name" > "$archive_name.sha256")
           fi
