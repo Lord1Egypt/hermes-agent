@@ -95,7 +95,10 @@ class Android17MemoryInvestigationTest {
                 .put("messages", JSONArray().put(JSONObject().put("role", "user")
                     .put("content", "What is the capital of France? Answer with just the city name.")))
                 .put("max_tokens", 64).put("temperature", 0)
-            val client = OkHttpClient.Builder().callTimeout(180, TimeUnit.SECONDS).build()
+            // Match the production canary's socket budget. A call timeout alone leaves
+            // OkHttp's unrelated ten-second default read timeout active.
+            val client = OkHttpClient.Builder().readTimeout(150, TimeUnit.SECONDS)
+                .callTimeout(180, TimeUnit.SECONDS).build()
             val request = Request.Builder().url(status.baseUrl + "/chat/completions")
                 .header("Authorization", "Bearer ${status.apiKey}")
                 .post(body.toString().toRequestBody("application/json".toMediaType())).build()
