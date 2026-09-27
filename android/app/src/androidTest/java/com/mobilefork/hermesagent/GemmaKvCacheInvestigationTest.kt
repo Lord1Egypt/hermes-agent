@@ -21,6 +21,7 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import java.io.IOException
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.security.MessageDigest
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.concurrent.thread
 
 /** Explicit research gate using the APK's real engine, not a production preflight bypass.
@@ -93,14 +95,24 @@ class GemmaKvCacheInvestigationTest {
         val peakPss = AtomicLong(0)
         val lowHeadroom = AtomicBoolean(false)
         val logs = StringBuffer()
+        val logReadError = AtomicReference<String?>(null)
+        val logPath = File(output, "${cache}-${size}-engine.log")
         val drain = thread(name = "AgentKvProbeLog", isDaemon = true) {
-            process.inputStream.bufferedReader().useLines { lines -> lines.forEach { line ->
-                if (line.startsWith("AGENT_PROBE_PID=")) pid.set(line.substringAfter('=').toInt())
-                synchronized(logs) {
-                    logs.append(line.replace(key, "[redacted]")).append('\n')
-                    if (logs.length > 250_000) logs.delete(0, logs.length - 250_000)
-                }
-            } }
+            try {
+                process.inputStream.bufferedReader().useLines { lines -> lines.forEach { line ->
+                    if (line.startsWith("AGENT_PROBE_PID=")) pid.set(line.substringAfter('=').toInt())
+                    val safe = line.replace(key, "[redacted]")
+                    synchronized(logs) {
+                        logs.append(safe).append('\n')
+                        if (logs.length > 250_000) logs.delete(0, logs.length - 250_000)
+                    }
+                    if (logPath.length() < 250_000) logPath.appendText(safe + "\n")
+                } }
+            } catch (error: IOException) {
+                // Process.destroy closes the pipe on another thread. Preserve unexpected
+                // reads, but do not let expected teardown kill JUnit before evidence saves.
+                if (alive.get()) logReadError.set(error.toString())
+            }
         }
         val monitor = thread(name = "AgentKvProbeMemory", isDaemon = true) {
             while (alive.get()) {
@@ -128,10 +140,12 @@ class GemmaKvCacheInvestigationTest {
         }
         val client = OkHttpClient.Builder().connectTimeout(2, TimeUnit.SECONDS)
             .readTimeout(240, TimeUnit.SECONDS).callTimeout(300, TimeUnit.SECONDS).build()
-        fun request(path: String, payload: JSONObject? = null): JSONObject {
+        val readinessClient = client.newBuilder().readTimeout(2, TimeUnit.SECONDS)
+            .callTimeout(3, TimeUnit.SECONDS).build()
+        fun request(path: String, payload: JSONObject? = null, readiness: Boolean = false): JSONObject {
             val builder = Request.Builder().url("http://127.0.0.1:$port$path").header("Authorization", "Bearer $key")
             if (payload != null) builder.post(payload.toString().toRequestBody("application/json".toMediaType()))
-            return client.newCall(builder.build()).execute().use { response ->
+            return (if (readiness) readinessClient else client).newCall(builder.build()).execute().use { response ->
                 val body = response.body?.string().orEmpty()
                 check(response.isSuccessful) { "HTTP ${response.code}: ${body.take(400)}" }
                 JSONObject(body)
@@ -140,22 +154,30 @@ class GemmaKvCacheInvestigationTest {
         val samples = JSONArray()
         result.put("samples", samples)
         val destination = File(output, "${cache}-${size}.json")
+        fun checkpoint(stage: String) {
+            result.put("stage", stage).put("engine_log", logs.toString())
+            destination.writeText(result.toString(2))
+        }
+        checkpoint("launching")
         try {
             val readyDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(150)
             var ready = false
             while (System.nanoTime() < readyDeadline && !lowHeadroom.get()) {
-                try { if (request("/v1/models").getJSONArray("data").length() > 0) { ready = true; break } }
+                try { if (request("/v1/models", readiness = true).getJSONArray("data").length() > 0) { ready = true; break } }
                 catch (_: Exception) { Thread.sleep(250) }
                 if (runCatching { process.exitValue() }.isSuccess) break
             }
             assertTrue("Engine did not become ready: ${logs.takeLast(1400)}", ready)
+            checkpoint("engine_ready")
             val actualName = request("/v1/models").getJSONArray("data").getJSONObject(0).getString("id")
             val short = LlamaCppServerController.releaseMatrixCompletionPayload(actualName, LlamaCppRuntimeLane.TURBOQUANT)
                 .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", "What is the capital of France? Answer only the city.")))
+            checkpoint("short_completion")
             val shortResponse = request("/v1/chat/completions", short)
             val shortAnswer = shortResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").optString("content")
             result.put("short_answer", shortAnswer)
             assertTrue("Short factual answer failed: $shortAnswer", shortAnswer.contains("Paris", true))
+            checkpoint("short_completion_verified")
             fun text(lines: Int): String = buildString {
                 append("Read the following reference. Find the exact codes for ALPHA, BETA, and GAMMA. Other lines are background.\n")
                 for (i in 0 until lines) {
@@ -181,6 +203,8 @@ class GemmaKvCacheInvestigationTest {
             require(tokens in (size * 0.55).toInt()..(size * 0.85).toInt()) { "Actual prompt did not exercise the requested window: $tokens/$size" }
             val query = LlamaCppServerController.releaseMatrixCompletionPayload(actualName, LlamaCppRuntimeLane.TURBOQUANT)
                 .put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", prompt)))
+            result.put("tokenized_input", tokens)
+            checkpoint("long_completion")
             val started = System.nanoTime()
             val response = request("/v1/chat/completions", query)
             val answer = response.getJSONArray("choices").getJSONObject(0).getJSONObject("message").optString("content")
@@ -191,6 +215,7 @@ class GemmaKvCacheInvestigationTest {
             assertTrue("Prompt was silently truncated", used >= tokens)
             assertTrue("Long-context retrieval failed: $answer", listOf("CEDAR-731", "MAPLE-492", "BIRCH-286").all { answer.contains(it) })
             assertFalse("Memory safety monitor stopped the owned process", lowHeadroom.get())
+            assertNull("Native log reader failed unexpectedly", logReadError.get())
             result.put("passed", true)
         } finally {
             alive.set(false)
@@ -199,7 +224,7 @@ class GemmaKvCacheInvestigationTest {
             val stopped = process.waitFor(5, TimeUnit.SECONDS)
             monitor.join(2000)
             drain.join(2000)
-            result.put("stopped", stopped).put("low_headroom_abort", lowHeadroom.get())
+            result.put("log_read_error", logReadError.get()).put("stopped", stopped).put("low_headroom_abort", lowHeadroom.get())
                 .put("peak_native_rss_kib", peakRss.get()).put("peak_native_pss_kib", peakPss.get())
                 .put("after", JSONObject(LocalModelRuntimeDiagnostics.exportSupportSnapshot(context)))
                 .put("engine_log", logs.toString())
