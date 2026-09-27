@@ -142,10 +142,17 @@ class GemmaKvCacheInvestigationTest {
             .readTimeout(240, TimeUnit.SECONDS).callTimeout(300, TimeUnit.SECONDS).build()
         val readinessClient = client.newBuilder().readTimeout(2, TimeUnit.SECONDS)
             .callTimeout(3, TimeUnit.SECONDS).build()
-        fun request(path: String, payload: JSONObject? = null, readiness: Boolean = false): JSONObject {
+        fun request(path: String, payload: JSONObject? = null, readiness: Boolean = false, longBudgetSeconds: Long = 0): JSONObject {
             val builder = Request.Builder().url("http://127.0.0.1:$port$path").header("Authorization", "Bearer $key")
             if (payload != null) builder.post(payload.toString().toRequestBody("application/json".toMediaType()))
-            return (if (readiness) readinessClient else client).newCall(builder.build()).execute().use { response ->
+            val transport = when {
+                readiness -> readinessClient
+                longBudgetSeconds > 0 -> client.newBuilder()
+                    .readTimeout(longBudgetSeconds, TimeUnit.SECONDS)
+                    .callTimeout(longBudgetSeconds + 15, TimeUnit.SECONDS).build()
+                else -> client
+            }
+            return transport.newCall(builder.build()).execute().use { response ->
                 val body = response.body?.string().orEmpty()
                 check(response.isSuccessful) { "HTTP ${response.code}: ${body.take(400)}" }
                 JSONObject(body)
@@ -206,7 +213,13 @@ class GemmaKvCacheInvestigationTest {
             result.put("tokenized_input", tokens)
             checkpoint("long_completion")
             val started = System.nanoTime()
-            val response = request("/v1/chat/completions", query)
+            // The measured F16 canary prefilled ~7.6 tokens/s on this CPU AVD.
+            // Scale the bounded diagnostic deadline by the ACTUAL prompt size;
+            // a four-minute transport timeout is not evidence of bad model quality.
+            val budget = (tokens / 6L + 120L).coerceIn(600L, 1800L)
+            result.put("long_request_budget_seconds", budget)
+            checkpoint("long_completion")
+            val response = request("/v1/chat/completions", query, longBudgetSeconds = budget)
             val answer = response.getJSONArray("choices").getJSONObject(0).getJSONObject("message").optString("content")
             val used = response.getJSONObject("usage").getInt("prompt_tokens")
             samples.put(JSONObject().put("prompt_tokens_tokenizer", tokens).put("prompt_tokens_used", used)
