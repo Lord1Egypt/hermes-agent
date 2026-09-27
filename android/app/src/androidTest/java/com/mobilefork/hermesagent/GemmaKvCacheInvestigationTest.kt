@@ -52,6 +52,11 @@ class GemmaKvCacheInvestigationTest {
         // Opt-in diagnostic only: never change the application's native quality guard.
         val strictSymmetric = args.getString("agentKvRequireSymmetric") == "true"
         require(!strictSymmetric || cache == "turbo3")
+        val probeId = args.getString("agentProbeId") ?: UUID.randomUUID().toString()
+        require(Regex("[a-z0-9-]{1,64}").matches(probeId))
+        val workers = args.getString("agentKvWorkers", "4")!!.toInt()
+        val niceness = args.getString("agentKvNiceness", "0")!!.toInt()
+        require(workers in 1..4 && niceness in 0..19)
         val size = args.getString("agentKvContext", "4096")!!.toInt()
         val caseName = "${cache}-${size}" + if (strictSymmetric) "-symmetric" else ""
         require(size in setOf(2048, 4096, 8192, 16384, 32768))
@@ -77,10 +82,17 @@ class GemmaKvCacheInvestigationTest {
         val config = LlamaCppLaunchConfig(lane = LlamaCppRuntimeLane.TURBOQUANT,
             cacheTypeK = cache, cacheTypeV = cache, flashAttention = "on")
         val command = LlamaCppServerController.shellCommandForLaunch(executable.absolutePath,
-            model.absolutePath, port, availableProcessors = 4, contextSizeOverride = size,
-            launchConfig = config, apiKey = key) + " -lv 5"
-        val output = File(context.getExternalFilesDir(null), "gemma-kv-investigation").apply { mkdirs() }
-        val result = JSONObject().put("schema", "agent-gemma-kv-comparison-v1")
+            model.absolutePath, port, availableProcessors = workers, contextSizeOverride = size,
+            launchConfig = config, apiKey = key).let { command ->
+                // Lower only this owned diagnostic process's scheduling priority.
+                // Watchdog, Android admission and production launch policy are unchanged.
+                if (niceness == 0) command else command.replaceFirst("exec ", "exec /system/bin/nice -n $niceness ")
+            } + " -lv 5"
+        val output = File(context.getExternalFilesDir(null), "gemma-kv-investigation/$probeId")
+        check(output.mkdirs()) { "Each probe requires a fresh evidence directory" }
+        val result = JSONObject().put("schema", "agent-gemma-kv-comparison-v2")
+            .put("probe_id", probeId).put("workers_requested", workers).put("niceness_requested", niceness)
+            .put("watchdog_policy_changed", false)
             .put("sdk", Build.VERSION.SDK_INT).put("model_name", model.name)
             .put("model_sha256", modelHash).put("model_bytes", model.length())
             .put("cache_k", cache).put("cache_v", cache).put("context_requested", size)
@@ -105,12 +117,31 @@ class GemmaKvCacheInvestigationTest {
         val lowHeadroom = AtomicBoolean(false)
         val logs = StringBuffer()
         val logReadError = AtomicReference<String?>(null)
+        val monitorError = AtomicReference<String?>(null)
+        val progress = AtomicReference("")
+        val currentStage = AtomicReference("launching")
+        val memorySamples = AtomicInteger(0)
+        val progressFile = File(output, "progress.json")
+        val startedElapsed = android.os.SystemClock.elapsedRealtime()
+        fun persistProgress() {
+            val payload = JSONObject().put("probe_id", probeId).put("stage", currentStage.get())
+                .put("elapsed_ms", android.os.SystemClock.elapsedRealtime() - startedElapsed)
+                .put("native_pid", pid.get()).put("memory_samples", memorySamples.get())
+                .put("peak_native_rss_kib", peakRss.get()).put("peak_native_pss_kib", peakPss.get())
+                .put("last_native_progress", progress.get()).put("low_headroom_abort", lowHeadroom.get())
+            val temporary = File(output, "progress.partial")
+            temporary.writeText(payload.toString(2))
+            check(temporary.renameTo(progressFile)) { "Cannot publish diagnostic progress" }
+        }
         val logPath = File(output, "${caseName}-engine.log")
         val drain = thread(name = "AgentKvProbeLog", isDaemon = true) {
             try {
                 process.inputStream.bufferedReader().useLines { lines -> lines.forEach { line ->
                     if (line.startsWith("AGENT_PROBE_PID=")) pid.set(line.substringAfter('=').toInt())
                     val safe = line.replace(key, "[redacted]")
+                    if (safe.contains("prompt processing") || safe.contains("prompt eval time") || safe.contains("eval time")) {
+                        progress.set(safe.takeLast(500))
+                    }
                     synchronized(logs) {
                         logs.append(safe).append('\n')
                         if (logs.length > 250_000) logs.delete(0, logs.length - 250_000)
@@ -124,27 +155,42 @@ class GemmaKvCacheInvestigationTest {
             }
         }
         val monitor = thread(name = "AgentKvProbeMemory", isDaemon = true) {
-            while (alive.get()) {
-                val ownedPid = pid.get()
-                if (ownedPid > 0) {
-                    runCatching {
-                        val status = File("/proc/$ownedPid/status").readText()
-                        Regex("(?m)^VmRSS:\\s+(\\d+)").find(status)?.groupValues?.get(1)?.toLong()?.let {
-                            peakRss.updateAndGet { old -> maxOf(old, it) }
-                        }
-                        val rollup = File("/proc/$ownedPid/smaps_rollup").readText()
-                        Regex("(?m)^Pss:\\s+(\\d+)").find(rollup)?.groupValues?.get(1)?.toLong()?.let {
-                            peakPss.updateAndGet { old -> maxOf(old, it) }
+            var lastCheckpoint = 0L
+            try {
+                while (alive.get()) {
+                    val ownedPid = pid.get()
+                    if (ownedPid > 0) {
+                        val status = File("/proc/$ownedPid/status")
+                        val rollup = File("/proc/$ownedPid/smaps_rollup")
+                        if (status.isFile && rollup.isFile) {
+                            Regex("(?m)^VmRSS:\\s+(\\d+)").find(status.readText())?.groupValues?.get(1)?.toLong()?.let {
+                                peakRss.updateAndGet { old -> maxOf(old, it) }
+                            }
+                            Regex("(?m)^Pss:\\s+(\\d+)").find(rollup.readText())?.groupValues?.get(1)?.toLong()?.let {
+                                peakPss.updateAndGet { old -> maxOf(old, it) }
+                            }
+                            memorySamples.incrementAndGet()
                         }
                     }
+                    val current = LocalModelRuntimeDiagnostics.captureMemory(context)
+                    if (current.lowMemory || current.usableAvailableBytes < 512_000_000L) {
+                        lowHeadroom.set(true)
+                        persistProgress()
+                        process.destroy()
+                        break
+                    }
+                    val now = android.os.SystemClock.elapsedRealtime()
+                    if (now - lastCheckpoint >= 5_000L) {
+                        persistProgress()
+                        lastCheckpoint = now
+                    }
+                    Thread.sleep(500)
                 }
-                val current = LocalModelRuntimeDiagnostics.captureMemory(context)
-                if (current.lowMemory || current.usableAvailableBytes < 512_000_000L) {
-                    lowHeadroom.set(true)
+            } catch (error: Exception) {
+                if (alive.get()) {
+                    monitorError.set(error.toString())
                     process.destroy()
-                    break
                 }
-                Thread.sleep(500)
             }
         }
         val client = OkHttpClient.Builder().connectTimeout(2, TimeUnit.SECONDS)
@@ -171,11 +217,12 @@ class GemmaKvCacheInvestigationTest {
         result.put("samples", samples)
         val destination = File(output, "${caseName}.json")
         fun checkpoint(stage: String) {
+            currentStage.set(stage)
             result.put("stage", stage).put("engine_log", logs.toString())
             destination.writeText(result.toString(2))
         }
-        checkpoint("launching")
         try {
+            checkpoint("launching")
             val readyDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(150)
             var ready = false
             while (System.nanoTime() < readyDeadline && !lowHeadroom.get()) {
@@ -195,12 +242,18 @@ class GemmaKvCacheInvestigationTest {
             result.put("native_cache_promotions", JSONArray(promotedK.toList()))
                 .put("allocated_cache_k_types", JSONArray(allocatedK.toList()))
                 .put("allocated_cache_v_types", JSONArray(allocatedV.toList()))
-                .put("effective_cache_k", allocatedK.singleOrNull() ?: promotedK.singleOrNull() ?: cache)
-                .put("effective_cache_v", allocatedV.singleOrNull() ?: cache)
+                .put("effective_cache_k", allocatedK.singleOrNull() ?: JSONObject.NULL)
+                .put("effective_cache_v", allocatedV.singleOrNull() ?: JSONObject.NULL)
                 .put("cache_allocation_log", startupLog.lineSequence()
                     .filter { it.contains("llama_kv_cache") || it.contains("K (") || it.contains("V (") }
                     .take(100).joinToString("\n"))
+            val contextSlots = Regex("n_ctx_slot = (\\d+)").findAll(startupLog)
+                .map { it.groupValues[1].toInt() }.toSet()
+            result.put("effective_context_slots", JSONArray(contextSlots.toList()))
             checkpoint("engine_ready")
+            assertEquals("Native context must match the requested window", setOf(size), contextSlots)
+            assertEquals("Native V allocation was not positively identified", setOf(cache), allocatedV)
+            if (!strictSymmetric && cache == "f16") assertEquals(setOf("f16"), allocatedK)
             if (strictSymmetric) {
                 assertTrue("K was promoted despite explicit symmetric test: $promotedK", promotedK.isEmpty())
                 assertEquals("Native allocation must positively identify real Turbo3 K", setOf("turbo3"), allocatedK)
@@ -246,7 +299,7 @@ class GemmaKvCacheInvestigationTest {
             // The paired long-context runs reached ~5 tokens/s on this CPU AVD,
             // below the short-canary rate. Reserve measured-workload headroom;
             // no retrieval assertion, memory guard or production timeout is changed.
-            val budget = (tokens / 4L + 180L).coerceIn(900L, 3600L)
+            val budget = (tokens / 4L * 4L / workers + 180L).coerceIn(900L, 3600L)
             result.put("long_request_budget_seconds", budget)
             checkpoint("long_completion")
             val response = request("/v1/chat/completions", query, longBudgetSeconds = budget)
@@ -259,6 +312,8 @@ class GemmaKvCacheInvestigationTest {
             assertTrue("Long-context retrieval failed: $answer", listOf("CEDAR-731", "MAPLE-492", "BIRCH-286").all { answer.contains(it) })
             assertFalse("Memory safety monitor stopped the owned process", lowHeadroom.get())
             assertNull("Native log reader failed unexpectedly", logReadError.get())
+            assertNull("Memory monitor failed unexpectedly", monitorError.get())
+            assertTrue("No native memory samples were captured", memorySamples.get() > 0 && peakRss.get() > 0 && peakPss.get() > 0)
             result.put("passed", true)
         } finally {
             alive.set(false)
@@ -267,7 +322,11 @@ class GemmaKvCacheInvestigationTest {
             val stopped = process.waitFor(5, TimeUnit.SECONDS)
             monitor.join(2000)
             drain.join(2000)
-            result.put("log_read_error", logReadError.get()).put("stopped", stopped).put("low_headroom_abort", lowHeadroom.get())
+            currentStage.set(if (result.optBoolean("passed") && stopped) "completed" else "failed")
+            persistProgress()
+            result.put("stage", currentStage.get()).put("monitor_error", monitorError.get())
+                .put("native_pid", pid.get()).put("memory_samples", memorySamples.get())
+                .put("log_read_error", logReadError.get()).put("stopped", stopped).put("low_headroom_abort", lowHeadroom.get())
                 .put("peak_native_rss_kib", peakRss.get()).put("peak_native_pss_kib", peakPss.get())
                 .put("after", JSONObject(LocalModelRuntimeDiagnostics.exportSupportSnapshot(context)))
                 .put("engine_log", logs.toString())
