@@ -1,0 +1,40 @@
+{
+  "source": "29f67301cb4ce9e1d3d32d994d939d2d340df7da",
+  "junit": {},
+  "lint": {},
+  "warm_environment_reused": true,
+  "new_containers": 0,
+  "new_volumes": 0,
+  "fdroid_candidate": {
+    "passed": true,
+    "source": "29f67301cb4ce9e1d3d32d994d939d2d340df7da",
+    "source_digest": "cb295c5ab79f38b19b2ae90ac0a1fccefecdced4802d553ddd17b9ac7ad97cea",
+    "unsigned_apk_bytes": 349497203,
+    "unsigned_apk_sha256": "759b6de88ee040a346bc780aae02d23cf9dbc82c64d8dddb8a39c8cc79ed500e",
+    "gradle_tasks_executed": 63,
+    "source_scan_enabled": true,
+    "source_binding_verified": true,
+    "genuine_runtime_verified": true,
+    "public_signed_binary_comparison": false,
+    "private_version_inherited": "0.13.158 / 145890",
+    "release_published": false
+  },
+  "raw_inputs": {
+    "play-final.log": {
+      "bytes": 64192,
+      "sha256": "240b913033b15e8b3551a6711ac848703178ff169e0a734c0ed02570fafce61d"
+    },
+    "fdroid/reused-build.log": {
+      "bytes": 367961,
+      "sha256": "a4f913db3b8152fc961b71dae1cdeabacf6ea0bf21876abe887a5ea2ae55ad2b"
+    },
+    "fdroid/source-digest.log": {
+      "bytes": 137,
+      "sha256": "949c890ed12edc585bab89711722a6199944a4b46384d94e85dafaf9bd71b6fd"
+    },
+    "fdroid/runtime-package.json": {
+      "bytes": 369,
+      "sha256": "a8062b55ae5879fc516e7d23fdc567bfcea1f72f6c7b01b531b19d72a06aa37f"
+    }
+  }
+}

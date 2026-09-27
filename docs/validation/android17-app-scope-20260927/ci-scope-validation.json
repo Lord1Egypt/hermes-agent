@@ -1,0 +1,8 @@
+{
+  "workflow_graph": "valid",
+  "retired_workflows": 10,
+  "deleted_test_files": 29,
+  "shared_import_guard": "\u2705 no in-tree dependency on the 2091 plugin-compat pointers",
+  "Android_security_release_checks_retained": true,
+  "branch_protection_changed": false
+}

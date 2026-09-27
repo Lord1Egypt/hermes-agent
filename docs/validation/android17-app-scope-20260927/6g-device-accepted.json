@@ -1,0 +1,15 @@
+{
+  "avd": "Agent_API37_Issue24_20260927",
+  "configured_ram_mib": 6144,
+  "actual_memtotal_kib": 6066748,
+  "boot_id": "1cf4c73d-d82a-460d-a270-8f025b7f3e15",
+  "android_release": "17",
+  "sdk": "37",
+  "abi": "x86_64",
+  "hardware_acceleration": "WHPX confirmed in current boot log",
+  "page_size": "4096",
+  "memory_limiter_status": "Memory limiter\n  disabled",
+  "OS_limiter_configuration_changed": false,
+  "new_AVDs_this_resume": 0,
+  "at": "2026-09-27T15:06:00.608638+00:00"
+}

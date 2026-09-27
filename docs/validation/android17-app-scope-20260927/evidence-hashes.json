@@ -1,0 +1,87 @@
+[
+  {
+    "file": "8192mib-normal.json",
+    "raw_sha256": "f3eaf1fe033265e21dcdd8e6dac81ec6ee8eda5de5ae65c15d7555b487ab9bdd",
+    "review_sha256": "f3eaf1fe033265e21dcdd8e6dac81ec6ee8eda5de5ae65c15d7555b487ab9bdd"
+  },
+  {
+    "file": "8192mib-normal.log",
+    "raw_sha256": "89ece541514c868e02616af8b8ef167d050f83dc5817126ede26aa5ca51025ba",
+    "review_sha256": "3038239c4b83d41e36fc81a4869aad0aaef3b533671963460f29fdc3b76817ba"
+  },
+  {
+    "file": "8192mib-bypass.json",
+    "raw_sha256": "6bccb3b38d5872a929fdfbf7bd4919dac26da8dbeaa2788c8cf9b89b31f3e104",
+    "review_sha256": "6bccb3b38d5872a929fdfbf7bd4919dac26da8dbeaa2788c8cf9b89b31f3e104"
+  },
+  {
+    "file": "8192mib-bypass.log",
+    "raw_sha256": "6888687e6fc1bebf27f07cbdf7c63176cacaf18d95e10f801b6b9d5801d5a62f",
+    "review_sha256": "ed75284ab8906ee14ab359b347469fde816a7e265ed4499a91172151b60ca246"
+  },
+  {
+    "file": "6144mib-normal.json",
+    "raw_sha256": "b58db541058d6f45645d291cd124c99be56c0884ddcb9d99aab2fb1ceddda303",
+    "review_sha256": "b58db541058d6f45645d291cd124c99be56c0884ddcb9d99aab2fb1ceddda303"
+  },
+  {
+    "file": "6144mib-normal.log",
+    "raw_sha256": "67db3714c087bb44475e2ec53066762c7c527c2ebd127df49f0cef06cde7e801",
+    "review_sha256": "652c22d9a6e181e27a1f9606d845222ffc2463de6b10c7207cf1686894f0e82a"
+  },
+  {
+    "file": "6144mib-bypass.json",
+    "raw_sha256": "de508d61bc70002fca4f977d12c20b35d14a1ab08180b397ae804bf30d4dbadb",
+    "review_sha256": "de508d61bc70002fca4f977d12c20b35d14a1ab08180b397ae804bf30d4dbadb"
+  },
+  {
+    "file": "6144mib-bypass.log",
+    "raw_sha256": "79720c04a500fcdfc727ea0267a57a11311950d7f0110212110d7773e377f45b",
+    "review_sha256": "24c3c0a51ec25b4131140b9452b08515d82d9e80cbe246174957e60f13a92e07"
+  },
+  {
+    "file": "8g-device-accepted.json",
+    "raw_sha256": "0b7654b55e256798cafff631dfe32c26f63f498b196b0520ed793c82e2477fd5",
+    "review_sha256": "4e349448d680a5b7a9e9afbbd3aac3a90ff8fb6c739738dab3f13c7effce1a7b",
+    "review_line_endings_normalized": true
+  },
+  {
+    "file": "6g-device-accepted.json",
+    "raw_sha256": "d4de3a134def2d0a0ff62ea219a7feb0d30d64545ac51545ca5b93b8c863e922",
+    "review_sha256": "041c9423ad4df17b289a06f98317c91a4b0ef6d283d0c2863a315c2810c23f43",
+    "review_line_endings_normalized": true
+  },
+  {
+    "file": "model-fixture.json",
+    "raw_sha256": "7285e80eb80d34eb92568734a95c2904abfd6142d748ba374f2af103a4c1d870",
+    "review_sha256": "18e0166c679b977ecaf79022146f0031cf4ce9e3f49ce23f1afde033654da3ff",
+    "review_line_endings_normalized": true
+  },
+  {
+    "file": "ci-scope-validation.json",
+    "raw_sha256": "2609eafbf966f59dcdf385c2938c0146c5ae44430c3b8a7126efcf9a0d02d7ed",
+    "review_sha256": "63b07bd316ffa521a74b77104096a3fdd9f0648ea775568887cc6d7cec7d317c",
+    "review_line_endings_normalized": true
+  },
+  {
+    "file": "python-milestones.log",
+    "raw_bytes": 10738,
+    "raw_sha256": "282acb21fed0a5d7660e9d984d55cc6c31c24313223c2c027d8fcd23337532ac",
+    "review_sha256": "1bbf130a7d74a541e9b06bec0e0592b7e1df3d02f1a9815cb4908ba9b020f3ed",
+    "review_line_endings_normalized": true
+  },
+  {
+    "file": "fdroid-milestones.log",
+    "raw_bytes": 367961,
+    "raw_sha256": "a4f913db3b8152fc961b71dae1cdeabacf6ea0bf21876abe887a5ea2ae55ad2b",
+    "review_sha256": "7ab9e031cd2714c1aa3fd88ebcaefa5418400d5353d6802dc92b2fb59381be44",
+    "review_line_endings_normalized": true
+  },
+  {
+    "file": "native-build-milestones.log",
+    "raw_bytes": 6723,
+    "raw_sha256": "bd0b0ff4991a9aff4e8010f7bd1bec4c094b93168e87328e1675f4fe6a8bae81",
+    "review_sha256": "73c1078871e1370b977c34eacda7179af3669ab8751d154964fdf4a146f0d688",
+    "review_line_endings_normalized": true
+  }
+]
