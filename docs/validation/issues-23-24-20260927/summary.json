@@ -1,0 +1,168 @@
+{
+  "schema": "agent-issues-23-24-validation-v1",
+  "verified_at": "2026-09-27T13:29:04.661804+00:00",
+  "tested_source": "022eb5ce5dfba67be09ae25e39c91ba5839aac88",
+  "base_release_source": "697d034432847d3f18f7316e0324c8cc5bf28607",
+  "PR": 25,
+  "full_jvm": {
+    "tests": 1055,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 118
+  },
+  "play_scoped_jvm": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 8
+  },
+  "python": {
+    "files": 60,
+    "passed": 900,
+    "failed": 0,
+    "skipped": 1
+  },
+  "installed_tests": {
+    "status": "passed",
+    "source": "022eb5ce5dfba67be09ae25e39c91ba5839aac88",
+    "artifacts": [
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/full/app-debug.apk",
+        "bytes": 371178842,
+        "sha256": "4e2a973ba45a54e772f1d9a00378ba963abda8a8552e4554f316bfa4e0c8992a"
+      },
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/full-test/app-debug-androidTest.apk",
+        "bytes": 1406234,
+        "sha256": "b170e3e3d4ad06d54cf114446078c0b546708e0b72e3d1c4bb3566c28a2f6540"
+      },
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/play/app-playDebug.apk",
+        "bytes": 190503290,
+        "sha256": "e2c18be36001b1ca0c0920e1b1cf942c26ff259e2ea1c78c24190ea89c093635"
+      },
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/play-test/app-playDebug-androidTest.apk",
+        "bytes": 1406950,
+        "sha256": "90511443bfacccbee57d6a0e8cd711dbc8bed8fa64d5bb636d49b9c1940cdf55"
+      }
+    ],
+    "tests": 4,
+    "new_environments": 0,
+    "retained_AVD": true,
+    "physical_test": false,
+    "started_at": "2026-09-27T13:16:18.842917+00:00",
+    "finished_at": "2026-09-27T13:18:51.958561+00:00",
+    "proot_mode": "actual packaged proot against retained Android root, not a newly provisioned Linux guest",
+    "stdout_sha256": "8d498da0f201c851279d44454da66832047eb10cbedd079d1bc26d4bfc8dd226"
+  },
+  "package_validation": {
+    "status": "passed",
+    "source": "022eb5ce5dfba67be09ae25e39c91ba5839aac88",
+    "Full_runtime_source_bundle_verified": true,
+    "Play_debug_package_policy_verified": true,
+    "test_provider_not_in_application_manifests": true,
+    "large_heap_not_enabled": true,
+    "minSdk": 24,
+    "targetSdk": 36,
+    "version": "0.13.146",
+    "versionCode": 144690,
+    "version_context": "tag-less development fallback, not a release build",
+    "debug_builds_not_production_updates": true,
+    "artifact_hashes": [
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/full/app-debug.apk",
+        "bytes": 371178842,
+        "sha256": "4e2a973ba45a54e772f1d9a00378ba963abda8a8552e4554f316bfa4e0c8992a"
+      },
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/full-test/app-debug-androidTest.apk",
+        "bytes": 1406234,
+        "sha256": "b170e3e3d4ad06d54cf114446078c0b546708e0b72e3d1c4bb3566c28a2f6540"
+      },
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/play/app-playDebug.apk",
+        "bytes": 190503290,
+        "sha256": "e2c18be36001b1ca0c0920e1b1cf942c26ff259e2ea1c78c24190ea89c093635"
+      },
+      {
+        "file": ".artifacts/issues-23-24/apks-loaders/play-test/app-playDebug-androidTest.apk",
+        "bytes": 1406950,
+        "sha256": "90511443bfacccbee57d6a0e8cd711dbc8bed8fa64d5bb636d49b9c1940cdf55"
+      }
+    ]
+  },
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "warnings": 58
+    },
+    "playDebug": {
+      "errors": 0,
+      "warnings": 61
+    },
+    "baseline_modified": false
+  },
+  "fdroid_candidate": {
+    "scope": "unpublished issue23/24 candidate; not a signed release",
+    "source": "022eb5ce5dfba67be09ae25e39c91ba5839aac88",
+    "metadata_sha256": "8b9bdd7ea55be92005d0ae9013e7d4bc428e0903736052f1dbe9cace9880e83a",
+    "existing_container_reused": true,
+    "existing_source_checkout_and_volumes_reused": true,
+    "dependency_cache_reused": true,
+    "new_environments": 0,
+    "public_tag_or_assets_changed": false,
+    "metadata_submitted": false,
+    "public_reference_comparison": false,
+    "status": "passed",
+    "source_digest": "739dd14825861fd439fedc7207e181c5ecea6bcab0d6df998e9ecf2a4654ff78",
+    "builds_succeeded": 1,
+    "gradle_tasks_executed": 63,
+    "scanner_enabled": true,
+    "strict_source_binding_enabled": true,
+    "built_artifact_digest_verified": true,
+    "genuine_runtime_verified": true,
+    "unsigned_apk_sha256": "d2ded259c27ac8e224f7df2b6edc8aab8557060ffa1fbfe56e9ee7ce0ff17969",
+    "unsigned_apk_bytes": 349497259,
+    "recipe_version": "0.13.158",
+    "recipe_version_code": 145890,
+    "private_candidate_not_published": true
+  },
+  "public_updater": {
+    "status": "passed",
+    "scope": "current public v158 updater; not unpublished issue23/24 candidate",
+    "existing_container_reused": true,
+    "existing_checkout_reused": true,
+    "new_execution_environments": 0,
+    "source": "697d034432847d3f18f7316e0324c8cc5bf28607",
+    "version": "0.13.158",
+    "history_preserved": true,
+    "Binaries_preserved": true,
+    "signer_preserved": true,
+    "metadata_submitted": false,
+    "fdroiddata_head": "f603137e37ec7ce524e811cbf631242630c06ad5",
+    "metadata_sha256": "16db298f4c36e5720913335548e0f9a613e18d83f622057e0c08df28c33ea35b"
+  },
+  "reuse": {
+    "new_containers": 0,
+    "new_volumes": 0,
+    "new_venvs": 0,
+    "new_AVDs": 0,
+    "retained_builder": "e6f5ea71d179e6ae99f987eb571f4cb6c1691a8d231bc0000def042ad5198836",
+    "retained_updater": "147969547e60cc815aad55bd61767c94696759fa2fa8f1acee108e86521d840f",
+    "AVD_task_restored": true,
+    "physical_tests": false
+  },
+  "issue24_exact_report_reproduced": false,
+  "release_created": false,
+  "existing_v158_modified": false,
+  "diagnostics": [
+    "Original missing DocumentsProvider Kotlin runtime was a test-only provider packaging failure; standalone Java provider corrected it.",
+    "Native-shell test used stdout instead of actual output; corrected assertion retains byte verification.",
+    "Test proot long-option syntax corrected to documented -r/-b. Actual loader then failed due to writable-prefix routing. That product defect was fixed in both environment and shell prelude; red JVM regression and installed proot read now pass.",
+    "Initial private APK checker expected release version158, but tag-less developer builds correctly use existing146 fallback; validator now records actual identity without relabeling the APK.",
+    "No loader execute policy, scanner, memory-pressure guard, timeout, signature rule or source-binding rule was relaxed."
+  ]
+}
