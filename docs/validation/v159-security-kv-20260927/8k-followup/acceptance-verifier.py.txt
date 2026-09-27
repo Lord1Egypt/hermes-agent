@@ -1,0 +1,39 @@
+"""Revalidate the completed F16 reference from its retained, run-bound native startup log."""
+from pathlib import Path
+import hashlib,json,re
+root=Path(__file__).resolve().parent
+folder=root/'f16-8192-priority13'
+original=json.loads((folder/'result.json').read_text())
+model=json.loads((folder/'device/f16-8192.json').read_text())
+startup=(folder/'device/f16-8192-engine.log').read_text()
+instrumentation=(folder/'instrumentation.log').read_text()
+observations=json.loads((folder/'observations.json').read_text())
+assert original['native_threads_confirmed'] is False and original['host_exception'] is None
+assert original['shell_exit']==0 and original['artifact_pull_exit']==0
+assert 'OK (1 test)' in instrumentation and 'FAILURES!!!' not in instrumentation
+assert model['schema']=='agent-gemma-kv-comparison-v2'
+assert model['probe_id']==original['probe_id']
+assert model['passed'] is True and model['stopped'] is True and model['stage']=='completed'
+assert model['effective_cache_k']==model['effective_cache_v']=='f16'
+assert model['effective_context_slots']==[8192]
+assert model['short_answer']=='Paris'
+assert len(model['samples'])==1
+sample=model['samples'][0]
+assert sample['prompt_tokens_used']>=sample['prompt_tokens_tokenizer']>=6000
+assert sample['checks']==[True,True,True]
+assert all(code in sample['answer'] for code in ['CEDAR-731','MAPLE-492','BIRCH-286'])
+assert model['peak_native_rss_kib']>0 and model['peak_native_pss_kib']>0
+assert original['system_before']==original['system_after']
+assert startup.startswith('AGENT_PROBE_PID='+str(model['native_pid'])+'\n')
+threads=re.search(r'n_threads = (\d+) \(n_threads_batch = (\d+)\)',startup)
+assert threads and threads.groups()==('3','3')
+assert re.search(r'n_ctx_slot = 8192\b',startup)
+priorities=[row['native_niceness'] for row in observations if 'native_niceness' in row]
+assert priorities and set(priorities)=={5}
+assert all(row['progress']['probe_id']==model['probe_id'] for row in observations if 'progress' in row)
+result=dict(original,passed=True,native_threads_confirmed=True,acceptance_source='retained positive native startup evidence, not the truncated rolling tail',
+ original_driver_result_preserved='result.json',original_driver_failure='The thread-count parser searched only the rolling log tail; startup was evicted during long prefill.',
+ positive_native_thread_log_sha256=hashlib.sha256(startup.encode()).hexdigest(),
+ native_thread_count_matches=[3,3],verified_native_priority_samples=len(priorities))
+(folder/'accepted_from_retained_evidence.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps(result,indent=2))

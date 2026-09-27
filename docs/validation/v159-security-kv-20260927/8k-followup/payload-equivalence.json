@@ -1,0 +1,193 @@
+{
+  "old_apk_sha256": "0cecf60272157aca1e8bf038828f734790d16f9d82869a8773db768a66c16005",
+  "rebuilt_apk_sha256": "f004f2ed229fd3e90e97b4ed891c3443f6342e9fcbc3d7dd04718d3db33428ff",
+  "entries_sha256_equal": 4906,
+  "entry_inventory_sha256": "0994e0669b47f36a952da464a562d7dc48323e46641a654175747735c526ae21",
+  "layout_examples": [
+    {
+      "path": "AndroidManifest.xml",
+      "old_compressed": 5056,
+      "new_compressed": 5056,
+      "old_method": 8,
+      "new_method": 8,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "path": "DebugProbesKt.bin",
+      "old_compressed": 774,
+      "new_compressed": 774,
+      "old_method": 8,
+      "new_method": 8,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "path": "META-INF/androidx.activity_activity-compose.version",
+      "old_compressed": 6,
+      "new_compressed": 6,
+      "old_method": 0,
+      "new_method": 0,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "path": "META-INF/androidx.activity_activity-ktx.version",
+      "old_compressed": 6,
+      "new_compressed": 6,
+      "old_method": 0,
+      "new_method": 0,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "path": "META-INF/androidx.activity_activity.version",
+      "old_compressed": 6,
+      "new_compressed": 6,
+      "old_method": 0,
+      "new_method": 0,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "path": "META-INF/androidx.annotation_annotation-experimental.version",
+      "old_compressed": 6,
+      "new_compressed": 6,
+      "old_method": 0,
+      "new_method": 0,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "path": "META-INF/androidx.arch.core_core-runtime.version",
+      "old_compressed": 61,
+      "new_compressed": 61,
+      "old_method": 8,
+      "new_method": 8,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "path": "META-INF/androidx.autofill_autofill.version",
+      "old_compressed": 6,
+      "new_compressed": 6,
+      "old_method": 0,
+      "new_method": 0,
+      "old_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "new_time": [
+        1981,
+        1,
+        1,
+        1,
+        1,
+        2
+      ]
+    }
+  ],
+  "decision": "Reuse the exact previously validated installed app APK; install only the new instrumentation package. Newly packed APK is not claimed byte-identical or installed."
+}

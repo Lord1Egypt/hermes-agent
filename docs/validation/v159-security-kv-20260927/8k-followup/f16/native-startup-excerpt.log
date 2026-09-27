@@ -1,0 +1,10 @@
+AGENT_PROBE_PID=3695
+0.00.003.370 I cmn  common_param: common_params_print_info: build 10539 (e30664a710b62aaf13c6b12e39e74500e6ce21ef) with Clang 21.0.0 for Android x86_64
+0.00.003.503 I cmn  common_param: system_info: n_threads = 3 (n_threads_batch = 3) / 4 | CPU : SSE3 = 1 | SSSE3 = 1 | REPACK = 1 |
+0.00.791.263 I llama_kv_cache: size =   48.00 MiB (  8192 cells,   3 layers,  1/1 seqs), K (f16):   24.00 MiB, V (f16):   24.00 MiB
+0.00.791.993 I llama_kv_cache: size =    9.00 MiB (   768 cells,  12 layers,  1/1 seqs), K (f16):    4.50 MiB, V (f16):    4.50 MiB
+0.01.616.681 I llama_kv_cache: size =   48.00 MiB (  8192 cells,   3 layers,  1/1 seqs), K (f16):   24.00 MiB, V (f16):   24.00 MiB
+0.01.622.963 I llama_kv_cache: size =    9.00 MiB (   768 cells,  12 layers,  1/1 seqs), K (f16):    4.50 MiB, V (f16):    4.50 MiB
+0.01.931.949 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8192, kv_unified = 'false'
+0.02.203.995 I slot   operator(): id  0 | task 0 | new prompt, n_ctx_slot = 8192, n_keep = 0, task.n_tokens = 21
+0.05.062.884 I slot   operator(): id  0 | task 5 | new prompt, n_ctx_slot = 8192, n_keep = 0, task.n_tokens = 6478

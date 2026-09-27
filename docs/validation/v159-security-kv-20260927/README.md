@@ -1,6 +1,10 @@
 # Agent v0.13.159 — security review and Gemma KV qualification
 
-## Result and release boundary
+## Later 8K follow-up
+
+The historical report below records the earlier 4K acceptance and failed 8K attempts. A later, separately source-bound diagnostic has now accepted **independent F16/F16 and true Turbo3/Turbo3 8K-context runs**, each with 6,478 actual prompt tokens. Their original job logs and final records show the same boot and system-server lifetime; an earlier between-run-restart narrative was corrected, and no causal watchdog fix, product-default change or blanket model-quality guarantee is claimed. See the [8K follow-up report](8k-followup/README.md) and [structured evidence](8k-followup/summary.json). The original failures and source identities below are preserved.
+
+## Earlier result and release boundary
 
 The app-relevant dependency fixes are implemented and validated in the existing Android/F-Droid infrastructure. The real installed terminal reproduced the unsafe old pip filename behavior and verified the patched behavior after an APK upgrade. The actual v159 F-Droid candidate built successfully with scanning and source binding enabled. No vulnerability ignore was added.
 

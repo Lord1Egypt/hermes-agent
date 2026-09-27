@@ -1,0 +1,50 @@
+{
+  "same_boot_as_F16_reference": true,
+  "independent_run": true,
+  "source": "ca9b2eb05c936c880bda0b3d3884f92f7d6b49ce",
+  "probe_id": "cooperative-76154f494e124c52a536e23c731a8adf",
+  "requested_cache": "turbo3",
+  "symmetric": true,
+  "workers": 3,
+  "niceness_adjustment": 13,
+  "expected_native_niceness": 5,
+  "native_threads_confirmed": true,
+  "native_priority_confirmed": true,
+  "context": 8192,
+  "started": "2026-09-27T20:15:07.806396+00:00",
+  "finished": "2026-09-27T20:47:08.246009+00:00",
+  "passed": true,
+  "host_exception": null,
+  "shell_exit": 0,
+  "artifact_pull_exit": 0,
+  "effective_k": "turbo3",
+  "effective_v": "turbo3",
+  "samples": [
+    {
+      "prompt_tokens_tokenizer": 6469,
+      "prompt_tokens_used": 6478,
+      "answer": "ALPHA: CEDAR-731\nBETA: MAPLE-492\nGAMMA: BIRCH-286",
+      "milliseconds": 1903900,
+      "checks": [
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "short_answer": "Paris",
+  "stopped": true,
+  "peak_rss_kib": 2614212,
+  "peak_pss_kib": 2611281,
+  "system_before": {
+    "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+    "system_server_pid": 693,
+    "system_server_start_ticks": "1648"
+  },
+  "system_after": {
+    "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+    "system_server_pid": 693,
+    "system_server_start_ticks": "1648"
+  },
+  "host_peak_cpu_percent": 41.733282578353005
+}
