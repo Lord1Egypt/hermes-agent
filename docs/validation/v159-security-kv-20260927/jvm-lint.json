@@ -1,0 +1,30 @@
+{
+  "source": "d5732582aaf737a303ec7f39605b0ef27f0eace4",
+  "junit": {
+    "Full": {
+      "tests": 1055,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 118
+    },
+    "Play": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 9
+    }
+  },
+  "lint": {
+    "Full": {
+      "Error": 0,
+      "Warning": 58
+    },
+    "Play": {
+      "Error": 0,
+      "Warning": 61
+    }
+  },
+  "native_assets_skipped": false
+}

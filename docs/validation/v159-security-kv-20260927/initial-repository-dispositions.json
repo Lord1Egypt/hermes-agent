@@ -1,0 +1,750 @@
+[
+  {
+    "id": "CVE-2026-84373",
+    "package": "@vitest/mocker",
+    "scanner_version": "4.1.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83605",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83605",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83606",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83607",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83607",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83608",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83608",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83609",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83610",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83610",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83611",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83611",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83612",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83613",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83613",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83614",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83614",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83615",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83615",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83616",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83616",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83618",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.9.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-83619",
+    "package": "@xmldom/xmldom",
+    "scanner_version": "0.8.13",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-63374",
+    "package": "anyio",
+    "scanner_version": "4.12.1",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "4.14.2",
+    "disposition": "APK carries a different independently queried version; scanner lock entry not the APK version"
+  },
+  {
+    "id": "CVE-2026-64847",
+    "package": "anyio",
+    "scanner_version": "4.12.1",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "4.14.2",
+    "disposition": "APK carries a different independently queried version; scanner lock entry not the APK version"
+  },
+  {
+    "id": "CVE-2026-45819",
+    "package": "baseline-browser-mapping",
+    "scanner_version": "2.10.43",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-73088",
+    "package": "browserslist",
+    "scanner_version": "4.28.6",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-73089",
+    "package": "browserslist",
+    "scanner_version": "4.28.6",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-45829",
+    "package": "chromadb",
+    "scanner_version": "1.5.9",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-45830",
+    "package": "chromadb",
+    "scanner_version": "1.5.9",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-45831",
+    "package": "chromadb",
+    "scanner_version": "1.5.9",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-45833",
+    "package": "chromadb",
+    "scanner_version": "1.5.9",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-85062",
+    "package": "colord",
+    "scanner_version": "2.9.3",
+    "locations": [
+      "package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-70606",
+    "package": "electron",
+    "scanner_version": "40.10.2",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-70608",
+    "package": "electron",
+    "scanner_version": "40.10.2",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-19693",
+    "package": "extract-zip",
+    "scanner_version": "2.0.1",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-56876",
+    "package": "extract-zip",
+    "scanner_version": "2.0.1",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-75899",
+    "package": "fast-uri",
+    "scanner_version": "3.1.5",
+    "locations": [
+      "package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-75931",
+    "package": "fast-uri",
+    "scanner_version": "3.1.5",
+    "locations": [
+      "package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-75975",
+    "package": "fast-uri",
+    "scanner_version": "3.1.5",
+    "locations": [
+      "package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-76172",
+    "package": "fast-uri",
+    "scanner_version": "3.1.5",
+    "locations": [
+      "package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-71554",
+    "package": "h2",
+    "scanner_version": "4.3.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-10221",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-10222",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-10223",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-10224",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-53869",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-53870",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-9353",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-9366",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-9369",
+    "package": "hermes-agent",
+    "scanner_version": "0.13.146",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "0.13.146",
+    "disposition": "first-party source assessment required; fork version is not upstream fix identity"
+  },
+  {
+    "id": "CVE-2026-59980",
+    "package": "hpack",
+    "scanner_version": "4.1.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84381",
+    "package": "httpcore2",
+    "scanner_version": "2.7.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "2.13.1",
+    "disposition": "patched exact pair present in built APK; live matching query no longer reports these advisories"
+  },
+  {
+    "id": "CVE-2026-84378",
+    "package": "httpx2",
+    "scanner_version": "2.7.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "2.13.1",
+    "disposition": "patched exact pair present in built APK; live matching query no longer reports these advisories"
+  },
+  {
+    "id": "CVE-2026-84379",
+    "package": "httpx2",
+    "scanner_version": "2.7.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "2.13.1",
+    "disposition": "patched exact pair present in built APK; live matching query no longer reports these advisories"
+  },
+  {
+    "id": "CVE-2026-84380",
+    "package": "httpx2",
+    "scanner_version": "2.7.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "2.13.1",
+    "disposition": "patched exact pair present in built APK; live matching query no longer reports these advisories"
+  },
+  {
+    "id": "CVE-2026-84381",
+    "package": "httpx2",
+    "scanner_version": "2.7.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "2.13.1",
+    "disposition": "patched exact pair present in built APK; live matching query no longer reports these advisories"
+  },
+  {
+    "id": "CVE-2026-84382",
+    "package": "httpx2",
+    "scanner_version": "2.7.0",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": "2.13.1",
+    "disposition": "patched exact pair present in built APK; live matching query no longer reports these advisories"
+  },
+  {
+    "id": "CVE-2026-84367",
+    "package": "joi",
+    "scanner_version": "18.2.3",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84367",
+    "package": "joi",
+    "scanner_version": "17.13.4",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84368",
+    "package": "joi",
+    "scanner_version": "18.2.3",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84368",
+    "package": "joi",
+    "scanner_version": "17.13.4",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84375",
+    "package": "js-yaml",
+    "scanner_version": "4.3.1",
+    "locations": [
+      "package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-67213",
+    "package": "nanoid",
+    "scanner_version": "3.3.17",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-82417",
+    "package": "qs",
+    "scanner_version": "6.15.3",
+    "locations": [
+      "scripts/whatsapp-bridge/package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-82562",
+    "package": "qs",
+    "scanner_version": "6.15.3",
+    "locations": [
+      "scripts/whatsapp-bridge/package-lock.json",
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "GHSA-rgj7-g3m4-5g8c",
+    "package": "sharp",
+    "scanner_version": "0.35.3",
+    "locations": [
+      "scripts/whatsapp-bridge/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84369",
+    "package": "svgo",
+    "scanner_version": "3.3.4",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84370",
+    "package": "svgo",
+    "scanner_version": "3.3.4",
+    "locations": [
+      "website/package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-82397",
+    "package": "tornado",
+    "scanner_version": "6.5.7",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-91990",
+    "package": "tornado",
+    "scanner_version": "6.5.7",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-91991",
+    "package": "tornado",
+    "scanner_version": "6.5.7",
+    "locations": [
+      "uv.lock"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  },
+  {
+    "id": "CVE-2026-84373",
+    "package": "vitest",
+    "scanner_version": "4.1.10",
+    "locations": [
+      "package-lock.json"
+    ],
+    "apk_version": null,
+    "disposition": "not in built Android Python inventory; retained as repository/optional-surface risk"
+  }
+]

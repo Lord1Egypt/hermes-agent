@@ -1,0 +1,14 @@
+{
+  "status": "verified",
+  "path": "C:\\Users\\adyba\\agent-v158-final-source-20260926\\.artifacts\\v159-security-kv\\agent-termux-packages-v159.zip",
+  "bytes": 79516344,
+  "sha256": "a0e59dbbeeafb6e74574a8744a4f76f9daee8cad60fe93c1c6529361ef4cedfb",
+  "packages": 141,
+  "published": false,
+  "previous_archive": {
+    "sha256": "cb61a40fddf294bd2f246b9077e6ffa2fc9cc54febac4f3e936223320e93a681",
+    "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.141/hermes-termux-packages-v1.zip"
+  },
+  "official_pip_deb": "92a9cb4b3c99dd20086f90fedc95c604eefc5bd0f88d1862690884474f82de44",
+  "scope": "Prepared immutable dependency artifact for future v159 workflow; no tag/release uploaded."
+}

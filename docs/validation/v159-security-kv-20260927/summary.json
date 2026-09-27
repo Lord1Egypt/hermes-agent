@@ -1,0 +1,173 @@
+{
+  "schema": "agent-v159-security-kv-qualification-v1",
+  "recorded_at": "2026-09-27T19:04:00.887176+00:00",
+  "qualification_source": "42fcd2d33a7db739265a8d39520f66966c6d1fd6",
+  "runtime_and_installed_source": "d5732582aaf737a303ec7f39605b0ef27f0eace4",
+  "fdroid_source": "72c7257bae8b79a7e90ecbd0f13153710807c62a",
+  "qualification_only_delta": [
+    ".github/workflows/android-release.yml",
+    "tests/hermes_android/test_android_linux_archive_transition.py"
+  ],
+  "version": "0.13.159",
+  "version_code": 145990,
+  "security_python_tests": {
+    "files": 89,
+    "passed": 1790,
+    "failed": 0,
+    "skipped": 28
+  },
+  "archive_cli_tests": {
+    "files": 3,
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0
+  },
+  "junit": {
+    "Full": {
+      "tests": 1055,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 118
+    },
+    "Play": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 9
+    }
+  },
+  "lint": {
+    "Full": {
+      "Error": 0,
+      "Warning": 58
+    },
+    "Play": {
+      "Error": 0,
+      "Warning": 61
+    }
+  },
+  "installed_tests": 4,
+  "old_native_pip_url_issue_reproduced": true,
+  "updated_native_pip_verified": true,
+  "final_python_scan_queries": 93,
+  "remaining_scan_packages": [
+    "hermes-agent",
+    "msgpack",
+    "setuptools"
+  ],
+  "scanner_ignores_added": false,
+  "SDK_http_pair": "2.13.1",
+  "terminal_pip": "26.2.1",
+  "Full_prefix_ABIs": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "Play_terminal_prefix_present": false,
+  "Play_SDK_http_pair_present": true,
+  "native_engine_identical_to_KV_experiment": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+  "model_cases_4k_passed": 3,
+  "true_turbo3_whole_RSS_saving_kib": 38400,
+  "true_turbo3_whole_RSS_saving_percent": 1.450712057835054,
+  "higher_context_8k_qualified": false,
+  "context_16k_tested": false,
+  "kv_measurements_final_app_run": false,
+  "KV_evidence_limit": "Same immutable engine/model; terminal-only dependency update afterwards. Single CPU AVD samples are not broad model-quality/performance guarantees.",
+  "apks": [
+    {
+      "edition": "Full",
+      "path": ".artifacts/v159-security-kv/final-apks/Full/app-debug.apk",
+      "bytes": 371351563,
+      "sha256": "0cecf60272157aca1e8bf038828f734790d16f9d82869a8773db768a66c16005"
+    },
+    {
+      "edition": "Full-test",
+      "path": ".artifacts/v159-security-kv/final-apks/Full-test/app-debug-androidTest.apk",
+      "bytes": 1791092,
+      "sha256": "8189419ff8282f3f6b07cf78bcb25e9ca1094a4e740a13230ea1f0457c77699a"
+    },
+    {
+      "edition": "Play",
+      "path": ".artifacts/v159-security-kv/final-apks/Play/app-playDebug.apk",
+      "bytes": 190538134,
+      "sha256": "cf86241fa2f629b2c0006a19fd8f56d267e7457a32f47907631d7de110edc686"
+    },
+    {
+      "edition": "Play-test",
+      "path": ".artifacts/v159-security-kv/final-apks/Play-test/app-playDebug-androidTest.apk",
+      "bytes": 1424534,
+      "sha256": "1416ce7f7702f1d76a9bc1a9b2856911b2ff5f8f11cc554bc08e10ea5c03d355"
+    }
+  ],
+  "fdroid": {
+    "schema": "agent-v159-security-fdroid-candidate-v1",
+    "status": "passed",
+    "checked_at": "2026-09-27T18:59:21.654011+00:00",
+    "source": "72c7257bae8b79a7e90ecbd0f13153710807c62a",
+    "source_digest": "6910595b073118e76d6a9b6b1aef94998f1ce72fd069d069cccfc8c241119074",
+    "gradle_tasks_executed": 63,
+    "source_scan_enabled": true,
+    "source_binding_verified": true,
+    "genuine_runtime_verified": true,
+    "native_prefixes": [
+      {
+        "abi": "arm64-v8a",
+        "pip_version": "26.2.1",
+        "vendor_sha256": "3df0c9601bfa2e0dca23cc574a4f900a4d7fdad060ab203fab8354350ed93320"
+      },
+      {
+        "abi": "x86_64",
+        "pip_version": "26.2.1",
+        "vendor_sha256": "3df0c9601bfa2e0dca23cc574a4f900a4d7fdad060ab203fab8354350ed93320"
+      }
+    ],
+    "version": "0.13.159",
+    "version_code": 145990,
+    "apk_bytes": 349497948,
+    "apk_sha256": "857cf0c951386ce1e11df466d94e0eef70bc7eea04ba9ea235e7356e06b13a0e",
+    "linux_archive_rebuild_matches_windows": true,
+    "archive": {
+      "bytes": 79516344,
+      "packages": 141,
+      "path": "/home/vagrant/agent-issues-23-24-results/v159-security-kv/fdroid-final/agent-termux-packages-v159.zip",
+      "sha256": "a0e59dbbeeafb6e74574a8744a4f76f9daee8cad60fe93c1c6529361ef4cedfb",
+      "status": "verified"
+    },
+    "cache_reused": true,
+    "new_environment": false,
+    "candidate_only": true,
+    "signed": false,
+    "release_published": false,
+    "public_binary_compared": false
+  },
+  "retired_session": {
+    "restored_arguments": "-NoProfile -File \"C:\\Users\\adyba\\agent-v158-final-source-20260926\\.artifacts\\android17-app-scope\\run_android17.ps1\"",
+    "physical_devices_used": false,
+    "docker_environments_retained": true,
+    "created": "2026-09-27T16:38:40.7662220Z",
+    "avd": "Agent_API37_Issue24_20260927",
+    "shared_adb_untouched": true,
+    "model_and_AVD_retained": true,
+    "private_adb_stop_requested": true,
+    "at": "2026-09-27T18:56:07.6806015Z",
+    "status": "retired_and_original_task_restored",
+    "pid": 50424
+  },
+  "new_containers": 0,
+  "new_volumes": 0,
+  "new_AVDs": 0,
+  "merged": false,
+  "release_published": false,
+  "public_FDroid_submission": false,
+  "release_gate_evidence_complete_claimed": false,
+  "intermediate_errors_preserved": [
+    "Test stdout reader pipe closure fixed in test only",
+    "Initial long deadlines expired before prompt prefill completed; no pass inferred",
+    "8K true symmetric attempt aborted by system_server watchdog; no source fix or OOM claim fabricated",
+    "Direct env probe misparsed equals signs in APK path; fixed system-shell positional dispatch, not app execution protections",
+    "Archive helper requires --output-dir; release command corrected and real CLI regression added",
+    "New CLI test fixture initially omitted the lock schema version; fixture corrected, strict parser retained",
+    "Abandoned zero-byte optional Git status lock archived after identity/no-handle verification; index and processes untouched"
+  ]
+}

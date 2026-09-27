@@ -1,0 +1,18 @@
+Selected system-watchdog fields only; full private log hash is recorded.
+Searching for: system_server_watchdog
+2026-09-27 19:31:51 system_server_watchdog (compressed text, 20329 bytes)
+Process: system_server
+Build: google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.019/15611780:userdebug/dev-keys
+----- Output from /proc/pressure/memory -----
+some avg10=0.00 avg60=0.00 avg300=0.00 total=520969
+full avg10=0.00 avg60=0.00 avg300=0.00 total=436855
+----- End output from /proc/pressure/memory -----
+----- Output from /proc/pressure/cpu -----
+some avg10=76.09 avg60=74.80 avg300=52.20 total=1180949904
+full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+----- End output from /proc/pressure/cpu -----
+some avg10=0.13 avg60=0.44 avg300=0.44 total=58374667
+full avg10=0.00 avg60=0.00 avg300=0.00 total=26250024
+  338% 5954/libhermes_android_llama_server_experimental.so: 336% user + 1.5% kernel / faults: 20 minor
+94% TOTAL: 85% user + 9.2% kernel + 0% iowait + 0.1% softirq
+Subject: Blocked in handler on main thread (main) for 61s

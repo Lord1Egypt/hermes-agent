@@ -1,0 +1,87 @@
+{
+  "source_commit": "6f0504f89ccddf66b426a457f672eac0605597ae",
+  "scope": "Source review of the nine first-party package matches; not a claim that arbitrary prompt injection is solved or that fork version numbers equal upstream patch versions.",
+  "scanner_ignores_added": false,
+  "review": [
+    {
+      "id": "CVE-2026-53869",
+      "advisory": "GHSA-4pqm-j46f-795x",
+      "status": "specific reported HTTP-only validation defect has an existing WebSocket guard and executed regression coverage",
+      "source": ["hermes_cli/web_server_chat.py:_ws_host_origin_reason", "hermes_cli/web_server_chat.py:_ws_request_is_allowed", "hermes_cli/web_server.py:_is_accepted_host"],
+      "evidence": ["tests/hermes_cli/test_web_server_host_header.py:TestWebSocketHostOriginGuard", "tests/hermes_cli/test_dashboard_auth_ws_auth.py"],
+      "detail": "The WebSocket path independently validates Host and web Origin before credential handling; actual WebSocket tests reject hostile Host and cross-site Origin, and accept loopback/declared public hosts. Android does not gain a new unauthenticated dashboard listener through this PR.",
+      "limit": "Deliberately exposed optional dashboard configurations and non-web origins still require their documented credential/network boundaries. This review does not certify every deployment topology."
+    },
+    {
+      "id": "CVE-2026-53870",
+      "advisory": "GHSA-99f9-j8r3-p853",
+      "status": "existing owner-only file protections found; no newly exposed Android storage path",
+      "source": ["gateway/platforms/api_server.py:ResponseStore._tighten_file_permissions", "hermes_cli/webhook.py:_save_subscriptions"],
+      "detail": "ResponseStore tightens database, WAL and SHM permissions to 0600 during initialization. Webhook secret storage uses atomic_json_write(mode=0600), securing the temporary file before rename. These sources are not changed by the v159 HTTP update.",
+      "limit": "The database permission change occurs after SQLite initialization; no claim of proving every creation-race or external-filesystem behavior. Existing broadly exposed user-selected storage and same-UID code are separate trust boundaries."
+    },
+    {
+      "id": "CVE-2026-9369",
+      "advisory": "GHSA-cv5c-mh6j-wvp9",
+      "status": "reported nonempty-string opt-in defect already mitigated in current source",
+      "source": ["hermes_cli/web_server_dashboard.py:_dashboard_plugin_search_dirs"],
+      "evidence": ["tests/hermes_cli/test_project_plugin_rce_bypass.py"],
+      "detail": "Project plugin discovery uses the shared env_var_enabled predicate rather than treating any nonempty string as enabled. Values such as false, no and 0 do not silently enable project plugin discovery.",
+      "limit": "A user who explicitly trusts and enables a project plugin is permitting plugin code execution; this is not an arbitrary-code sandbox."
+    },
+    {
+      "id": "CVE-2026-10222",
+      "advisory": "GHSA-mv8x-fg99-32mf",
+      "status": "reported assignment-splitting behavior already removed from current source",
+      "source": ["hermes_cli/config.py:_sanitize_env_lines"],
+      "evidence": ["tests/hermes_cli/test_config.py"],
+      "detail": "Sanitization normalizes line whitespace but treats content after the first equals sign as value data. It does not promote a recognized variable name embedded in a value into a second assignment.",
+      "limit": "Explicit configuration changes remain privileged user actions."
+    },
+    {
+      "id": "CVE-2026-10224",
+      "advisory": "GHSA-pmqc-57g8-c22c",
+      "status": "reported unbounded webhook read has existing size, time and rate limits",
+      "source": ["plugins/platforms/feishu/adapter.py:_read_limited_feishu_webhook_body", "plugins/platforms/feishu/adapter.py:FeishuAdapter._handle_webhook_request"],
+      "evidence": ["tests/gateway/test_feishu.py"],
+      "detail": "The optional Feishu webhook enforces a 1 MiB body cap before JSON decoding, bounded streaming reads, a 30-second body deadline, per-IP rate limits and bounded rate-key tracking. Oversized or stalled requests are rejected. The adapter is not automatically made a public listener by the Android app.",
+      "limit": "Deployments that enable this optional platform still require transport/authentication and resource planning; no public service penetration test was run."
+    },
+    {
+      "id": "CVE-2026-9353",
+      "advisory": "GHSA-238w-f66p-w349",
+      "status": "current centralized scanner and behavioral tests retained; general prompt-injection risk remains",
+      "source": ["tools/skills_guard.py", "tools/threat_patterns.py"],
+      "evidence": ["tests/tools/test_skills_guard.py", "tests/tools/test_skills_guard_agent_config.py", "tests/tools/test_threat_patterns.py"],
+      "detail": "Current skill checks use the shared threat scanner instead of relying only on the earlier isolated pattern table. The selected behavioral suite passed; protection was not deleted to silence the advisory.",
+      "limit": "Pattern coverage is not a proof that hostile prose can never influence a model. This advisory is not globally suppressed or declared universally inapplicable."
+    },
+    {
+      "id": "CVE-2026-10223",
+      "advisory": "GHSA-33qv-c5qm-799v",
+      "status": "strict memory-content scanning present; semantic injection remains a residual risk",
+      "source": ["tools/memory_tool_store.py:_scan_memory_content"],
+      "evidence": ["tests/tools/test_memory_tool.py", "tests/tools/test_threat_patterns.py"],
+      "detail": "Persisted memory mutations are checked through the shared strict threat scope. The executed memory and scanner tests are retained, not bypassed.",
+      "limit": "Regex/heuristic filtering alone does not establish a complete semantic security boundary."
+    },
+    {
+      "id": "CVE-2026-9366",
+      "advisory": "GHSA-pgp4-xr4j-h5cg",
+      "status": "matching context-file threats are blocked in current source; universal injection resistance not claimed",
+      "source": ["agent/prompt_builder.py:_scan_context_content"],
+      "evidence": ["tests/agent/test_prompt_builder.py", "tests/tools/test_threat_patterns.py"],
+      "detail": "Detected context threats produce a BLOCKED placeholder rather than loading the original content with only a warning. Context and strict scopes remain distinct so ordinary source documentation is not indiscriminately disabled.",
+      "limit": "Unmatched semantic instructions are still a research/security concern; this is not a reason to mark all prompt-injection advisories fixed by a version bump."
+    },
+    {
+      "id": "CVE-2026-10221",
+      "advisory": "GHSA-xq8w-9jvx-gm3v",
+      "status": "compression trust/role behavior reviewed; residual model-mediated injection not closed",
+      "source": ["agent/context_compressor.py", "agent/conversation_compression.py"],
+      "evidence": ["tests/agent/test_context_compressor.py"],
+      "detail": "Current compression uses summary/handoff metadata and explicit message-role handling rather than treating a fork package version as evidence of a security patch. The retained compressor suite passed.",
+      "limit": "The test suite does not prove that every adversarial conversation summary cannot influence later generation. Keep this source-level concern visible and do not add an OSV ignore."
+    }
+  ]
+}

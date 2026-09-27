@@ -1,0 +1,104 @@
+[
+  {
+    "path": "initial-repository-dispositions.json",
+    "source_record": "security-disposition-ledger.json",
+    "raw_sha256": "c28a07faef188d78cdbb39244c231a99a4d476e0c86f136e1889a628047daad4",
+    "review_sha256": "28ddfe5e60e8fdb95c6c71769d63f77bdbffbfa6e4ecb65efd14c590a3230d02"
+  },
+  {
+    "path": "first-party-review.json",
+    "source_record": "first-party-review.json",
+    "raw_sha256": "52246a161edfbb924708f2972439b59646aa3f4f4d990f280def841ccb7c7fd7",
+    "review_sha256": "52246a161edfbb924708f2972439b59646aa3f4f4d990f280def841ccb7c7fd7"
+  },
+  {
+    "path": "final-python-scan.json",
+    "source_record": "final-python-surface-scan.json",
+    "raw_sha256": "efbbbb931bdadc482401eb2ed7950aea19bb6f70f3c5c4bd217e8ab5e4810705",
+    "review_sha256": "efbbbb931bdadc482401eb2ed7950aea19bb6f70f3c5c4bd217e8ab5e4810705"
+  },
+  {
+    "path": "apk-optional-surface.json",
+    "source_record": "apk-optional-surface.json",
+    "raw_sha256": "cbea8d18965c6dd54d1267cbe50502aa2b74b212f1acde2674c2c8db71a07e95",
+    "review_sha256": "cbea8d18965c6dd54d1267cbe50502aa2b74b212f1acde2674c2c8db71a07e95"
+  },
+  {
+    "path": "terminal-pip-inspection.json",
+    "source_record": "termux-pip-inspection.json",
+    "raw_sha256": "acc1432b1c48bba522e704f42142aef6d70f5158e7f04bd5bdd6c0bccc3395cf",
+    "review_sha256": "acc1432b1c48bba522e704f42142aef6d70f5158e7f04bd5bdd6c0bccc3395cf"
+  },
+  {
+    "path": "terminal-archive-preparation.json",
+    "source_record": "terminal-release-archive.json",
+    "raw_sha256": "b2b7502ac8346345bf64c3d07bf59a06ab65d64009763a126df5a121b984782a",
+    "review_sha256": "b2b7502ac8346345bf64c3d07bf59a06ab65d64009763a126df5a121b984782a"
+  },
+  {
+    "path": "fdroid-candidate.json",
+    "source_record": "fdroid-receipts/accepted.json",
+    "raw_sha256": "79b2c4b123bf9bb18a6006d0778a0168497fe51ae4b0467ca16223cfaf6e7858",
+    "review_sha256": "79b2c4b123bf9bb18a6006d0778a0168497fe51ae4b0467ca16223cfaf6e7858"
+  },
+  {
+    "path": "fdroid-source-digest.log",
+    "source_record": "fdroid-receipts/source-digest.log",
+    "raw_sha256": "2159a934e48bf37b2b98befe0ceecb32c023eb34c20951ed57b1b3d40de713c7",
+    "review_sha256": "21416cc1d8486229066224db1aace2c6244bc76e61c9f8173fb323ba696c1905"
+  },
+  {
+    "path": "fdroid-runtime-package.json",
+    "source_record": "fdroid-receipts/runtime-package.json",
+    "raw_sha256": "2a82ed9b395ae64837ecceea63dbba989598038a8ec021223337ddfdcbee9289",
+    "review_sha256": "2bf35e070c8317be1b946b37fd48fff798e14d67c46401dcb570fea8ed9ef0c2"
+  },
+  {
+    "path": "installed-terminal-regression.json",
+    "source_record": "installed-security-corrected/accepted.json",
+    "raw_sha256": "59b91bd3a9edcd690b3b879ace1109c53ea125a3bfaa89bbf9037fded8efe909",
+    "review_sha256": "59b91bd3a9edcd690b3b879ace1109c53ea125a3bfaa89bbf9037fded8efe909"
+  },
+  {
+    "path": "installed-tests.log",
+    "source_record": "installed-security-corrected/instrumentation.log",
+    "raw_sha256": "b83c5600e86fe4ba293d69225ab2dd969ee3c6b4dbd2974b829f34303276279f",
+    "review_sha256": "b895149570ccde5e87825174be5f604c232cce4cb37d06d39bb136f42d522c2b"
+  },
+  {
+    "path": "jvm-lint.json",
+    "source_record": "final-apks/native-results/accepted.json",
+    "raw_sha256": "022d96d5150a7dbec2e7172c69a9c5878c9c51f4c117542ec51ff8bc5ace3b8f",
+    "review_sha256": "022d96d5150a7dbec2e7172c69a9c5878c9c51f4c117542ec51ff8bc5ace3b8f"
+  },
+  {
+    "path": "python-security-milestones.log",
+    "source_record": "security-complete-final.log",
+    "raw_sha256": "bfe2c19b2b0efba80b4fcd251763c1167c783e4e34f275ccc15a928e51a8a8b5",
+    "review_sha256": "88c263d94d4822f063126ec432f3b4555c833173665885d2ed95bbce8a2d06a7"
+  },
+  {
+    "path": "archive-cli-milestones.log",
+    "source_record": "terminal-cli-schema-tests.log",
+    "raw_sha256": "edb6ee39a4acc1d9beb6d85e4cb8bff99cf525e9aeadd537c5afb578215e7964",
+    "review_sha256": "694aa0dccca44ce0040acda8115db31edd0eb853bbfde53eddda8dd87d1da8ca"
+  },
+  {
+    "path": "fdroid-milestones.log",
+    "source_record": "fdroid-receipts/build.log",
+    "raw_sha256": "5ce756b5aa881fd2a338f844e9c8df0a4739a83a7c9286d3ce2e06aff7dd1cbe",
+    "review_sha256": "f0df2a8decf97ad99edf23a00c91e7ab836fcbd5dcd783b6edbdcdfbf8753bda"
+  },
+  {
+    "path": "8k-watchdog-excerpt.txt",
+    "source_record": "8k-watchdog.txt",
+    "raw_sha256": "22aa89ee5e00a30bf666b1a8c570e332906b15ca70dd72e057519bf7010cf851",
+    "review_sha256": "17cf6f3293f0f1bbdf987e563a06b659fc8c9b86e764931e35ed00d2b5361582"
+  },
+  {
+    "path": "release-step-validation.json",
+    "source_record": "release-step-validation.json",
+    "raw_sha256": "b6b23f1b75d496747b170b53c03a46574a2ca080912242936ca68ad762295e66",
+    "review_sha256": "b6b23f1b75d496747b170b53c03a46574a2ca080912242936ca68ad762295e66"
+  }
+]
