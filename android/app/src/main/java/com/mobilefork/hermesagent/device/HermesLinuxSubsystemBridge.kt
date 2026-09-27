@@ -1086,8 +1086,9 @@ object HermesLinuxSubsystemBridge {
         val pythonLibPath = state.optString("python_lib_path").ifBlank {
             resolvePythonLibPath(File(prefixPath)).absolutePath
         }
-        val prootLoaderPath = shellPathUnder(prefixPath, "libexec/proot/loader")
-        val prootLoader32Path = shellPathUnder(prefixPath, "libexec/proot/loader32")
+        // Loader shims resolve to immutable APK libraries; writable prefix ELF is data only.
+        val prootLoaderPath = shellPathUnder(state.optString("native_libexec_path"), "proot/loader")
+        val prootLoader32Path = shellPathUnder(state.optString("native_libexec_path"), "proot/loader32")
         return mapOf(
             "PREFIX" to prefixPath,
             "TERMUX_PREFIX" to prefixPath,
@@ -1209,8 +1210,9 @@ object HermesLinuxSubsystemBridge {
         }
         val directProotPath = state.optString("native_proot_path")
         val nativeCommandEnvironment = state.optString("native_command_env_path")
-        val prootLoaderPath = shellPathUnder(prefixPath, "libexec/proot/loader")
-        val prootLoader32Path = shellPathUnder(prefixPath, "libexec/proot/loader32")
+        // Loader shims resolve to immutable APK libraries; writable prefix ELF is data only.
+        val prootLoaderPath = shellPathUnder(state.optString("native_libexec_path"), "proot/loader")
+        val prootLoader32Path = shellPathUnder(state.optString("native_libexec_path"), "proot/loader32")
         val prootDistroScript = File(prefixPath, "bin/proot-distro").absolutePath
         val runtimeLibraryPath = listOf(
             state.optString("lib_path"),

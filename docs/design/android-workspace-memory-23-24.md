@@ -27,6 +27,23 @@ Both the native web tool and Devbox's native web research were used. The Devbox 
 
 The exact packaged proot-distro 5.4.0 source in the retained build container was also inspected. Its login parser supports custom binds; its default home/prefix bindings do not automatically expose this separate app workspace. The command change uses its existing `--bind` interface, with a quoted absolute app-owned path, rather than creating a new filesystem service.
 
+## Additional proot execution defect found by the installed test
+
+After the real SAF grant, recursive copy and native `cat` succeeded, the packaged
+proot command failed with `execve(...): Permission denied`. Both the process
+environment and generated shell prelude selected `prefix/libexec/proot/loader`,
+a regular executable file in writable app storage. The existing `native-exec`
+loader shims instead resolve to package-manager-extracted APK libraries. Both
+execution paths now use those existing trusted shims; no Android execute policy,
+filesystem permissions, loader binary or signature requirement is relaxed.
+
+The regression test was red on the old environment mapping. The installed test
+retains the actual proot command, original-document verification and repeat-copy
+checks. Its earlier test-only errors (standalone provider Kotlin dependency,
+wrong `stdout` key and long-option syntax) are recorded separately, not treated
+as product fixes or passing runs. Android documents the restriction on executing
+writable app-home files in [Android 10 behavior changes](https://developer.android.com/about/versions/10/behavior-changes-10#execute-permission).
+
 ## Validation scope
 
 The original memory regression was red before the estimate fallback and passed afterward. Provider-backed JVM tests exercise real ContentResolver queries and streams, nested copies, preservation of originals/previous edits, null queries, read failures, invalid names, duplicates, byte/entry/depth caps, cycles and cancellation. Diagnostic tests distinguish live memory from a historical attempt and verify that export does not start a backend. Command tests keep legacy calls unchanged and reject content URIs or relative/ambiguous bind paths.
