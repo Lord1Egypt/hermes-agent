@@ -118,7 +118,6 @@ class AgentDiagnosticsExportInstrumentedTest {
                 awaitPicker()
                 chooseDownloads()
                 createFolder(folder)
-                setFileName(fileName)
                 capture("chosen-folder-$index")
                 if (index == 1) {
                     // Rotate while the external activity owns the foreground; the result must
@@ -128,11 +127,16 @@ class AgentDiagnosticsExportInstrumentedTest {
                     awaitPicker()
                     capture("picker-rotated")
                 }
+                // DocumentsUI can rebuild its filename field during rotation. Choose and
+                // positively verify the final filename on the currently visible dialog.
+                setFileName(fileName)
+                capture("chosen-filename-$index")
                 clickNode { it.text?.toString()?.equals("Save", ignoreCase = true) == true && it.isEnabled }
                 awaitStatus("Diagnostic log saved to the selected location.")
                 ui.onNodeWithTag("ExportDiagnosticLog").assertIsEnabled()
                 val path = "/sdcard/Download/$folder/$fileName"
-                val report = shell("cat '$path'")
+                val report = shell("cat $path")
+                File(evidence, "actual-read-$index.txt").writeText(report)
                 assertTrue("Actual saved file must contain complete report: $path", report.endsWith("End of Agent diagnostics\n"))
                 assertTrue(report.contains("agent-diagnostic-report-v1"))
                 assertTrue(report.contains("export-marker-$runId"))
@@ -172,7 +176,11 @@ class AgentDiagnosticsExportInstrumentedTest {
     }
 
     private fun awaitStatus(expected: String) {
-        ui.waitUntil(30_000) { ui.onAllNodesWithText(expected).fetchSemanticsNodes().isNotEmpty() }
+        ui.waitUntil(30_000) {
+            // The external picker temporarily owns the foreground; no Compose root is
+            // expected until ActivityResult has returned to the app.
+            runCatching { ui.onAllNodesWithText(expected).fetchSemanticsNodes().isNotEmpty() }.getOrDefault(false)
+        }
         ui.onNodeWithTag("DiagnosticLogExportStatus").assertTextEquals(expected)
     }
 
@@ -200,9 +208,11 @@ class AgentDiagnosticsExportInstrumentedTest {
 
     private fun setFileName(name: String) {
         val edit = awaitNode { it.isEditable && (it.viewIdResourceName?.endsWith("/title") == true || it.text?.toString()?.contains(".txt") == true) }
+        edit.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
         assertTrue(edit.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, Bundle().apply {
             putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, name)
         }))
+        waitFor("Chosen filename $name") { findNode { it.isEditable && it.text?.toString() == name } != null }
     }
 
     private fun clickNode(predicate: (AccessibilityNodeInfo) -> Boolean) {
