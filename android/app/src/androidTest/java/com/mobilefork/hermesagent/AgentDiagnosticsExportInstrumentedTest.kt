@@ -204,7 +204,13 @@ class AgentDiagnosticsExportInstrumentedTest {
         waitFor("Android DocumentsUI") { automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true }
     }
 
+    private fun atDownloadsRoot(): Boolean = findNode { it.text?.toString() == "Downloads" &&
+        hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/toolbar") == true } } != null
+
     private fun chooseDownloads() {
+        // A previously selected Downloads root is already the requested location.
+        // Do not open and reselect a disabled current-root item unnecessarily.
+        if (atDownloadsRoot()) return
         clickNode { it.contentDescription?.toString()?.let { text -> text.contains("Show roots", true) || text.contains("Navigate up", true) } == true }
         // The selected root row in DocumentsUI is not advertised as clickable;
         // a toolbar label also says Downloads. Bind to the actual roots-list row
@@ -212,10 +218,7 @@ class AgentDiagnosticsExportInstrumentedTest {
         val downloads = awaitNode { it.text?.toString() == "Downloads" && it.isEnabled &&
             hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/roots_list") == true } }
         tapSystemControl(downloads)
-        waitFor("Downloads root selected and drawer closed") {
-            findNode { it.viewIdResourceName?.endsWith("/roots_list") == true } == null &&
-                findNode { it.text?.toString() == "Downloads" } != null
-        }
+        waitFor("Downloads root selected") { atDownloadsRoot() }
     }
 
     private fun hasAncestor(node: AccessibilityNodeInfo, predicate: (AccessibilityNodeInfo) -> Boolean): Boolean {
@@ -238,6 +241,7 @@ class AgentDiagnosticsExportInstrumentedTest {
                 bounds.exactCenterX(), bounds.exactCenterY(), 0)
             event.source = InputDevice.SOURCE_TOUCHSCREEN
             try { assertTrue(automation.injectInputEvent(event, true)) } finally { event.recycle() }
+            if (action == MotionEvent.ACTION_DOWN) SystemClock.sleep(80)
         }
     }
 
