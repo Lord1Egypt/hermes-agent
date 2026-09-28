@@ -217,13 +217,23 @@ class AgentDiagnosticsExportInstrumentedTest {
     } != null
 
     private fun closeRootsDrawer() {
-        if (!rootsAreVisible()) return
-        // Back is only used while the positively identified roots drawer is
-        // open. It closes that drawer, never navigates a remembered folder.
-        assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
-        waitFor("Roots drawer closed without cancelling the save request") {
-            !rootsAreVisible() && automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true
+        var node = findNode { it.viewIdResourceName?.endsWith("/roots_list") == true }
+        while (node != null) {
+            // DrawerLayout exposes DISMISS on the actual open, unlocked drawer.
+            // A visible roots list alone can also describe a persistent side pane.
+            // Never use global Back here: it can cancel ACTION_CREATE_DOCUMENT.
+            if (node.actionList.any { it.id == AccessibilityNodeInfo.ACTION_DISMISS }) {
+                assertTrue("Only the drawer-owned dismiss action may close the root chooser",
+                    node.performAction(AccessibilityNodeInfo.ACTION_DISMISS))
+                waitFor("Drawer dismissed while save request remains active") {
+                    !rootsAreVisible() && automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true
+                }
+                return
+            }
+            node = node.parent
         }
+        // No dismissable drawer is exposed. Leave a permanent pane alone;
+        // directory selection below still requires the actual Downloads header.
     }
 
     private fun chooseDownloads() {
@@ -352,7 +362,8 @@ class AgentDiagnosticsExportInstrumentedTest {
                 nodes.put(JSONObject().put("depth", depth).put("id", node.viewIdResourceName)
                     .put("text", node.text?.toString()).put("description", node.contentDescription?.toString())
                     .put("visible", node.isVisibleToUser).put("clickable", node.isClickable)
-                    .put("package", node.packageName?.toString()))
+                    .put("package", node.packageName?.toString())
+                    .put("actions", org.json.JSONArray(node.actionList.map { it.id })))
                 for (index in 0 until node.childCount) visit(node.getChild(index), depth + 1)
             }
             visit(automation.rootInActiveWindow, 0)
