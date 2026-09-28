@@ -6,6 +6,9 @@ import android.app.Application
 import android.app.Instrumentation.ActivityResult
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Rect
+import android.view.InputDevice
+import android.view.MotionEvent
 import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
@@ -203,8 +206,39 @@ class AgentDiagnosticsExportInstrumentedTest {
 
     private fun chooseDownloads() {
         clickNode { it.contentDescription?.toString()?.let { text -> text.contains("Show roots", true) || text.contains("Navigate up", true) } == true }
-        clickNode { it.text?.toString() == "Downloads" && it.isEnabled }
-        waitFor("Downloads folder") { findNode { it.text?.toString() == "Downloads" } != null }
+        // The selected root row in DocumentsUI is not advertised as clickable;
+        // a toolbar label also says Downloads. Bind to the actual roots-list row
+        // and tap its observed bounds, as a user would, not the background title.
+        val downloads = awaitNode { it.text?.toString() == "Downloads" && it.isEnabled &&
+            hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/roots_list") == true } }
+        tapSystemControl(downloads)
+        waitFor("Downloads root selected and drawer closed") {
+            findNode { it.viewIdResourceName?.endsWith("/roots_list") == true } == null &&
+                findNode { it.text?.toString() == "Downloads" } != null
+        }
+    }
+
+    private fun hasAncestor(node: AccessibilityNodeInfo, predicate: (AccessibilityNodeInfo) -> Boolean): Boolean {
+        var parent = node.parent
+        while (parent != null) {
+            if (predicate(parent)) return true
+            parent = parent.parent
+        }
+        return false
+    }
+
+    private fun tapSystemControl(node: AccessibilityNodeInfo) {
+        assertTrue("Only the visible document picker may receive a native tap",
+            node.packageName?.toString()?.contains("documentsui", true) == true && node.isVisibleToUser && node.isEnabled)
+        val bounds = Rect().also(node::getBoundsInScreen)
+        assertTrue("Picker control must have actual on-screen bounds", bounds.width() > 0 && bounds.height() > 0)
+        val downTime = SystemClock.uptimeMillis()
+        for (action in listOf(MotionEvent.ACTION_DOWN, MotionEvent.ACTION_UP)) {
+            val event = MotionEvent.obtain(downTime, SystemClock.uptimeMillis(), action,
+                bounds.exactCenterX(), bounds.exactCenterY(), 0)
+            event.source = InputDevice.SOURCE_TOUCHSCREEN
+            try { assertTrue(automation.injectInputEvent(event, true)) } finally { event.recycle() }
+        }
     }
 
     private fun createFolder(name: String) {
