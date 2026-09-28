@@ -7,3 +7,5 @@ Optional online providers and downloads are separate from local files. Response 
 The Full edition includes Android tools for files, app launch, accessibility-assisted actions, notifications, shortcuts, widgets, and automations. Permissions and remote processing remain opt-in. The Play edition has a more restricted tool set.
 
 Agent is not an official Nous Research product and is not endorsed by Nous Research or Teknium. Open-source credits and licenses are retained. The existing application identifier is kept so installed users retain their upgrade path and app data.
+
+Save a diagnostic report without starting a model: Settings > General > Diagnostics and logs > Export diagnostic log. Android lets you choose the folder and filename. Reports include current memory and the last model-start attempt. Review the redacted file before sharing; nothing is uploaded automatically.
