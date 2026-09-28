@@ -212,21 +212,38 @@ class AgentDiagnosticsExportInstrumentedTest {
             node.viewIdResourceName?.endsWith("/breadcrumb_text") == true &&
             hasAncestor(node) { parent -> parent.viewIdResourceName?.endsWith("/horizontal_breadcrumb") == true }
 
-    private fun chooseDownloads() {
-        if (atDownloadsRoot()) return
-        // Reopening a save dialog restores its previous folder. Android's Back
-        // stack can be empty in that state (notably on tablets), so Back cancels
-        // the export instead of navigating to the parent. Use the observed
-        // directory breadcrumb, never a global navigation action, to go up.
-        if (findNode(::isDownloadsBreadcrumb) != null) {
-            clickNode(::isDownloadsBreadcrumb)
-            waitFor("Downloads root selected through its directory breadcrumb") { atDownloadsRoot() }
-            return
+    private fun rootsAreVisible(): Boolean = findNode {
+        it.viewIdResourceName?.endsWith("/roots_list") == true
+    } != null
+
+    private fun closeRootsDrawer() {
+        if (!rootsAreVisible()) return
+        // Back is only used while the positively identified roots drawer is
+        // open. It closes that drawer, never navigates a remembered folder.
+        assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
+        waitFor("Roots drawer closed without cancelling the save request") {
+            !rootsAreVisible() && automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true
         }
-        clickNode { it.contentDescription?.toString()?.let { text -> text.contains("Show roots", true) || text.contains("Navigate up", true) } == true }
-        val downloads = awaitNode { it.text?.toString() == "Downloads" && it.isEnabled &&
-            hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/roots_list") == true } }
-        tapSystemControl(downloads)
+    }
+
+    private fun chooseDownloads() {
+        waitFor("Document location ready") {
+            atDownloadsRoot() || findNode(::isDownloadsBreadcrumb) != null || rootsAreVisible() ||
+                findNode { it.contentDescription?.toString()?.contains("Show roots", true) == true } != null
+        }
+        closeRootsDrawer()
+        if (atDownloadsRoot()) return
+        if (findNode(::isDownloadsBreadcrumb) == null) {
+            clickNode { it.contentDescription?.toString()?.let { text -> text.contains("Show roots", true) || text.contains("Navigate up", true) } == true }
+            val downloads = awaitNode { it.text?.toString() == "Downloads" && it.isEnabled &&
+                hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/roots_list") == true } }
+            // A selected Downloads row can be inert. Wait for its animation,
+            // tap the actual row, then explicitly dismiss a still-open drawer.
+            SystemClock.sleep(350)
+            tapSystemControl(downloads)
+            SystemClock.sleep(350)
+            closeRootsDrawer()
+        }
         waitFor("Downloads root or restored Downloads directory") {
             atDownloadsRoot() || findNode(::isDownloadsBreadcrumb) != null
         }
@@ -322,7 +339,28 @@ class AgentDiagnosticsExportInstrumentedTest {
     private fun capture(name: String) {
         SystemClock.sleep(200)
         val bitmap = requireNotNull(automation.takeScreenshot())
-        try { File(evidence, "$name.png").outputStream().use { assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)) } }
-        finally { bitmap.recycle() }
+        try {
+            File(evidence, "$name.png").outputStream().use { output ->
+                assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output))
+                output.fd.sync()
+            }
+        } finally { bitmap.recycle() }
+        if (name.startsWith("failure-")) {
+            val nodes = org.json.JSONArray()
+            fun visit(node: AccessibilityNodeInfo?, depth: Int) {
+                if (node == null || depth > 30 || nodes.length() >= 250) return
+                nodes.put(JSONObject().put("depth", depth).put("id", node.viewIdResourceName)
+                    .put("text", node.text?.toString()).put("description", node.contentDescription?.toString())
+                    .put("visible", node.isVisibleToUser).put("clickable", node.isClickable)
+                    .put("package", node.packageName?.toString()))
+                for (index in 0 until node.childCount) visit(node.getChild(index), depth + 1)
+            }
+            visit(automation.rootInActiveWindow, 0)
+            File(evidence, "$name.json").outputStream().use { output ->
+                output.write(nodes.toString(2).toByteArray(Charsets.UTF_8))
+                output.fd.sync()
+            }
+        }
     }
+
 }
