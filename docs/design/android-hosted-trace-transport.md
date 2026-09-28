@@ -1,0 +1,11 @@
+# Hosted Perfetto transport without another local runner
+
+The release trace workflow supports a hosted upload path in addition to its historical isolated-runner path. An operator may stage only the closed, measured trace ZIP as the sole asset of a temporary private draft release named `agent-traces-<release-tag>-<32 lowercase hex characters>`. The draft is transport, not publication or evidence acceptance. Its target commit must equal the dispatched workflow head.
+
+The workflow accepts exact positive release/asset IDs and an independently computed SHA-256. On a GitHub-hosted runner it verifies the draft identity, sole-asset name/state/size/digest and source commit; downloads through the authenticated release-assets API; verifies the whole archive and closed regular-file inventory; and verifies every trace size/hash against the source-bound performance manifest. Links, extra/duplicate/traversing entries, altered bytes, existing output and partial publication are rejected. No arbitrary URL or code from the transport is executed.
+
+The normal Actions upload follows those checks. A second independent GitHub-hosted job downloads the immutable Actions artifact and rehashes every trace. The final receipt retains its existing successful-workflow, source-tooling, artifact-ID/digest and retention checks. The draft transport is never a substitute for that receipt. After the independent artifact and local round-trip have passed, remove only the exact temporary draft/asset and any associated non-release transport tag, preserving its identity receipt. Never create or move the application release tag during transport.
+
+This mode uses existing GitHub authorization, does not register another local runner or create another Docker/AVD/virtualenv, and does not place local workspace mounts or a Docker socket on a self-hosted runner. The legacy isolated runner remains opt-in for old operator procedures; the two input modes cannot be combined.
+
+Tests exercise valid extraction and tampering, missing/extra/duplicate/link/traversal/size/hash failures, cleanup after rejection, and draft/asset/source authority. The original trace/receipt mutation tests remain. Documentation: GitHub REST release-assets endpoints and the existing `android_perfetto_release_artifact.py` contract.
