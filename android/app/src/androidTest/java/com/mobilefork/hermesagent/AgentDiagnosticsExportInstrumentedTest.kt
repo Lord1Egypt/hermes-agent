@@ -218,6 +218,16 @@ class AgentDiagnosticsExportInstrumentedTest {
         val downloads = awaitNode { it.text?.toString() == "Downloads" && it.isEnabled &&
             hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/roots_list") == true } }
         tapSystemControl(downloads)
+        // Picking a root can restore its last folder. Navigate up within the save
+        // dialog until the positive toolbar identity is Downloads; do not equate
+        // selecting a root row with actually reaching its root directory.
+        repeat(5) {
+            if (atDownloadsRoot()) return
+            assertTrue("Must stay in the system save dialog while choosing its location",
+                automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true)
+            assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
+            SystemClock.sleep(350)
+        }
         waitFor("Downloads root selected") { atDownloadsRoot() }
     }
 
