@@ -311,21 +311,51 @@ object LocalModelRuntimeDiagnostics {
     }
 
     /** Available without starting a model or invoking the chat agent. No provider credentials. */
-    fun exportSupportSnapshot(context: Context): String = JSONObject()
+    fun exportSupportSnapshot(context: Context): String = HermesCrashLogStore.redactJsonForDiagnostics(JSONObject()
         .put("schema", "agent-native-memory-diagnostics-v1")
         .put("app_version", com.mobilefork.hermesagent.BuildConfig.VERSION_NAME)
+        .put("app_version_code", com.mobilefork.hermesagent.BuildConfig.VERSION_CODE)
+        .put("application_id", com.mobilefork.hermesagent.BuildConfig.APPLICATION_ID)
+        .put("edition", if (com.mobilefork.hermesagent.BuildConfig.HERMES_PLAY_EDITION) "Play" else "Full")
+        .put("build_type", com.mobilefork.hermesagent.BuildConfig.BUILD_TYPE)
         .put("android_sdk", android.os.Build.VERSION.SDK_INT)
+        .put("device", JSONObject()
+            .put("manufacturer", android.os.Build.MANUFACTURER)
+            .put("model", android.os.Build.MODEL)
+            .put("device", android.os.Build.DEVICE)
+            .put("hardware", android.os.Build.HARDWARE)
+            .put("android_release", android.os.Build.VERSION.RELEASE)
+            .put("build_id", android.os.Build.ID)
+            .put("build_incremental", android.os.Build.VERSION.INCREMENTAL)
+            .put("security_patch", android.os.Build.VERSION.SECURITY_PATCH)
+            .put("abis", org.json.JSONArray(android.os.Build.SUPPORTED_ABIS.toList())))
         .put("captured_at_ms", System.currentTimeMillis())
         .put("memory_source", "ActivityManager.MemoryInfo")
         .put("usable_ram_definition", "available_bytes minus threshold_bytes; not the Java heap class")
         .put("current_memory", captureMemory(context).toJson())
-        .put("last_start_attempt", readSnapshot(context) ?: JSONObject.NULL)
+        .put("last_start_attempt", readSnapshot(context) ?: JSONObject.NULL))
         .toString(2)
 
     fun readSnapshot(context: Context): JSONObject? {
         val file = snapshotFile(context.applicationContext)
         if (!file.isFile) return null
-        return runCatching { JSONObject(file.readText(Charsets.UTF_8)) }.getOrNull()
+        return runCatching {
+            val bytes = file.inputStream().use { input ->
+                val buffer = ByteArray(128 * 1024 + 1)
+                var used = 0
+                while (used < buffer.size) {
+                    val count = input.read(buffer, used, buffer.size - used)
+                    if (count < 0) break
+                    used += count
+                }
+                buffer.copyOf(used)
+            }
+            if (bytes.size > 128 * 1024) {
+                JSONObject().put("status", "unavailable").put("detail", "Saved runtime diagnostic exceeds 128 KiB")
+            } else {
+                JSONObject(bytes.toString(Charsets.UTF_8))
+            }
+        }.getOrNull()
     }
 
     internal fun clearForTest(context: Context) {

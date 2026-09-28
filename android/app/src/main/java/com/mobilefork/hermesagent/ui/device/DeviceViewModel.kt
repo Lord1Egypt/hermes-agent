@@ -109,8 +109,6 @@ data class DeviceUiState(
     val diagnosticsLogCapturedAtLabel: String = "",
     val diagnosticsLogExceptionType: String = "",
     val diagnosticsLogPreviewLines: List<String> = emptyList(),
-    val diagnosticsLogExportFileName: String = "hermes-diagnostics-logs.txt",
-    val diagnosticsLogExportReady: Boolean = true,
     val lastCrashPresent: Boolean = false,
     val resizableWindowSupport: Boolean = true,
     val freeformWindowSupported: Boolean = false,
@@ -365,23 +363,6 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun exportDiagnosticsLogs(destinationUri: Uri) {
-        viewModelScope.launch {
-            runCatching {
-                val context = getApplication<Application>()
-                val exportText = HermesCrashLogStore.exportLogsText(context) +
-                    "\n\nNative model memory diagnostics (available before model startup):\n" +
-                    com.mobilefork.hermesagent.device.LocalModelRuntimeDiagnostics.exportSupportSnapshot(context)
-                context.contentResolver.openOutputStream(destinationUri)?.use { output ->
-                    output.write(exportText.toByteArray(Charsets.UTF_8))
-                } ?: throw IOException("Unable to open diagnostics log export destination")
-                refresh(DeviceOperationStatus.DiagnosticsExported)
-            }.getOrElse { error ->
-                refresh(DeviceOperationStatus.DiagnosticsExportFailed(deviceDiagnosticDetail(error)))
-            }
-        }
-    }
-
     fun clearLastCrashDiagnostics() {
         val context = getApplication<Application>()
         HermesCrashLogStore.clearLastCrash(context)
@@ -530,8 +511,6 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
             diagnosticsLogCapturedAtLabel = crashLogStatus.capturedAtLabel,
             diagnosticsLogExceptionType = crashLogStatus.exceptionType,
             diagnosticsLogPreviewLines = crashLogStatus.previewLines,
-            diagnosticsLogExportFileName = crashLogStatus.exportFileName,
-            diagnosticsLogExportReady = crashLogStatus.hasLastCrash || crashLogStatus.logBytes > 0,
             lastCrashPresent = crashLogStatus.hasLastCrash,
             resizableWindowSupport = systemStatus.resizableWindowSupport,
             freeformWindowSupported = systemStatus.freeformWindowSupported,

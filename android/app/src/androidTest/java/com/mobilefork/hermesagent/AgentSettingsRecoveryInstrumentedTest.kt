@@ -143,6 +143,8 @@ class AgentSettingsRecoveryInstrumentedTest {
         }
         compose.onNodeWithTag("HermesImportModelButton").performScrollTo().assertIsDisplayed().assertIsEnabled()
         compose.onNodeWithTag("HermesSettingsPage_Models").assertIsDisplayed().assertIsSelected()
+        compose.onNodeWithTag("HermesSettingsContentList").performScrollToNode(hasTestTag("ExportDiagnosticLog"))
+        compose.onNodeWithTag("ExportDiagnosticLog").assertIsDisplayed().assertIsEnabled()
         compose.onNodeWithTag("HermesSettingsContentList")
             .performScrollToNode(hasTestTag("ModelSettings-generation"))
         compose.onNodeWithTag("ModelSettings-generation").performClick()

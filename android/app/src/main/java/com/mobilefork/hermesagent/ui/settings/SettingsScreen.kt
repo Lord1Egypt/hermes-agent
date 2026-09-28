@@ -158,6 +158,9 @@ fun SettingsScreen(
                     }
                     }
                     if (selectedPage == SettingsPage.Overview) {
+                    item(key = "diagnostic-export") {
+                        com.mobilefork.hermesagent.ui.diagnostics.DiagnosticsExportCard()
+                    }
                     item {
                         SettingsHelpCard(providerLabel = selectedProviderLabel, strings = strings)
                     }
@@ -222,6 +225,9 @@ fun SettingsScreen(
                             onRequiredLlamaCppRuntimeLane = viewModel::syncPersistedRequiredLlamaCppRuntimeLane,
                             onCompletedDownloadReady = viewModel::startAcceptedLocalRuntimeHandoff,
                         )
+                    }
+                    item(key = "model-diagnostic-export") {
+                        com.mobilefork.hermesagent.ui.diagnostics.DiagnosticsExportCard()
                     }
                     item(key = "model-provider") {
                         SettingsDisclosure(

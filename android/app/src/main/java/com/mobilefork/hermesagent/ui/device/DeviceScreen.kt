@@ -86,11 +86,6 @@ fun DeviceScreen(
         }
         pendingExportFile = null
     }
-    val diagnosticsLogExportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-        if (uri != null) {
-            viewModel.exportDiagnosticsLogs(uri)
-        }
-    }
     val notificationPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         viewModel.refresh(
             DeviceOperationStatus.PermissionResult(DevicePermission.Notifications, granted),
@@ -238,7 +233,6 @@ fun DeviceScreen(
                 )
                     DiagnosticsLogCard(
                     uiState = uiState,
-                    onExport = { diagnosticsLogExportLauncher.launch(uiState.diagnosticsLogExportFileName) },
                     onClearLastCrash = viewModel::clearLastCrashDiagnostics,
                 )
                     AccessibilityCard(
@@ -376,7 +370,6 @@ private fun DeviceStatusPill(text: String, active: Boolean) {
 @Composable
 private fun DiagnosticsLogCard(
     uiState: DeviceUiState,
-    onExport: () -> Unit,
     onClearLastCrash: () -> Unit,
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
@@ -415,9 +408,7 @@ private fun DiagnosticsLogCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Button(onClick = onExport, enabled = uiState.diagnosticsLogExportReady) {
-                    Text(strings.diagnosticsExportLogsLabel())
-                }
+                com.mobilefork.hermesagent.ui.diagnostics.DiagnosticsExportControls()
                 Button(onClick = onClearLastCrash, enabled = uiState.lastCrashPresent) {
                     Text(strings.diagnosticsClearLastCrashLabel())
                 }
