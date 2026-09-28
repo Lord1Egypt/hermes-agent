@@ -67,19 +67,19 @@ class AgentDiagnosticsExportInstrumentedTest {
         automation.setRotation(android.app.UiAutomation.ROTATION_UNFREEZE)
     }
 
-    private fun openGeneral(scenario: ActivityScenario<MainActivity>) {
-        val navigation = listOf("HermesChatDrawerButton", "HermesShellDrawerButton", "HermesRailSettings")
+    private fun openGeneral(scenario: ActivityScenario<out Activity>) {
+        val navigation = listOf("PlaySettingsTab", "HermesChatDrawerButton", "HermesShellDrawerButton", "HermesRailSettings")
         ui.waitUntil(60_000) { navigation.any { ui.onAllNodesWithTag(it).fetchSemanticsNodes().isNotEmpty() } }
         val visible = navigation.first { ui.onAllNodesWithTag(it).fetchSemanticsNodes().isNotEmpty() }
         ui.onNodeWithTag(visible).performClick()
-        if (visible != "HermesRailSettings") ui.onNodeWithTag("HermesNavSettings").performScrollTo().performClick()
+        if (visible !in listOf("HermesRailSettings", "PlaySettingsTab")) ui.onNodeWithTag("HermesNavSettings").performScrollTo().performClick()
         ui.onNodeWithTag("HermesSettingsPage_Overview").performClick()
         capture("general-before-export-assertion")
         ui.onNodeWithTag("ExportDiagnosticLog").assertIsDisplayed().assertIsEnabled()
     }
 
     @Test fun settingsHasAlwaysAvailableLogExportBeforeAnyModelStarts() {
-        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+        ActivityScenario.launch<Activity>(requireNotNull(app.packageManager.getLaunchIntentForPackage(app.packageName))).use { scenario ->
             openGeneral(scenario)
             assertNull(LocalModelRuntimeDiagnostics.readSnapshot(app))
             capture("general-visible-export")
@@ -111,7 +111,7 @@ class AgentDiagnosticsExportInstrumentedTest {
             ramBypassRequested = true)
         LocalModelRuntimeDiagnostics.finishAttempt(app, attemptId, "failed", "memory_preflight",
             "export-marker-$runId user@example.test Authorization: Bearer hidden-export-token")
-        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+        ActivityScenario.launch<Activity>(requireNotNull(app.packageManager.getLaunchIntentForPackage(app.packageName))).use { scenario ->
             openGeneral(scenario)
             val saved = mutableListOf<JSONObject>()
             for (index in 1..2) {
