@@ -1,0 +1,13 @@
+{
+  "status": "retired_and_original_task_restored",
+  "shared_adb_untouched": true,
+  "Full_app_restored": true,
+  "model_and_AVD_retained": true,
+  "pid": 34780,
+  "physical_devices_used": false,
+  "private_adb_stop_requested": true,
+  "created": "2026-09-28T08:53:50.7560970Z",
+  "at": "2026-09-28T10:07:50.0031412Z",
+  "avd": "Agent_API37_Issue24_20260927",
+  "restored_arguments": "-NoProfile -File \"C:\\Users\\adyba\\agent-v158-final-source-20260926\\.artifacts\\android17-app-scope\\run_android17.ps1\""
+}

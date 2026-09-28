@@ -1,0 +1,17 @@
+{
+  "phase": "regressions",
+  "source": "3fa1ff7a487c7ddb85feb92d1c0a3354a9e23b24",
+  "started_at": "2026-09-28T10:00:45.933613+00:00",
+  "serial": "emulator-5592",
+  "AVD": "Agent_API37_Issue24_20260927",
+  "physical_Pixel8": false,
+  "APK_sha256": "c4ff406974937083a7df01672d7e53eb6d8704174eb4baee359c758b512df7e0",
+  "test_APK_sha256": "64d498bcce07dfc5b1259a607abce4ed641171685b8200da1a9738f49163ffe3",
+  "test_classes": "com.mobilefork.hermesagent.AgentModelSettingsInstrumentedTest,com.mobilefork.hermesagent.AgentSettingsRecoveryInstrumentedTest,com.mobilefork.hermesagent.WorkspaceMemoryRegressionInstrumentedTest",
+  "expected_tests": 8,
+  "finished_at": "2026-09-28T10:01:28.274969+00:00",
+  "shell_exit": 0,
+  "accepted": true,
+  "new_evidence_directories": [],
+  "producer_records": []
+}

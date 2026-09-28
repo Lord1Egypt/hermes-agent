@@ -1,0 +1,86 @@
+Agent diagnostics logs
+Generated: 2026-09-28T10:00:23.307Z
+Crash capture installed: true
+Report schema: agent-diagnostic-report-v1
+Scope: app/device identity, current memory, last model start, saved crash and diagnostic events.
+No chat history, provider settings, device-unique IDs or system-wide logcat are collected.
+Known secret patterns are redacted. Model filenames and error details may remain; review before sharing.
+
+Status: No crash captured
+
+Native model memory diagnostics (available before model startup)
+{
+  "schema": "agent-native-memory-diagnostics-v1",
+  "app_version": "0.13.146",
+  "app_version_code": 144690,
+  "application_id": "com.mobilefork.hermesagent",
+  "edition": "Full",
+  "build_type": "debug",
+  "source_digest": "hermes-source-unbound",
+  "android_sdk": 37,
+  "device": {
+    "manufacturer": "Google",
+    "model": "sdk_gphone64_x86_64",
+    "device": "emu64xa",
+    "hardware": "ranchu",
+    "android_release": "17",
+    "build_id": "CE2A.260420.019",
+    "build_incremental": "15611780",
+    "security_patch": "2026-05-05",
+    "abis": [
+      "x86_64",
+      "arm64-v8a"
+    ]
+  },
+  "captured_at_ms": 1790589623308,
+  "memory_source": "ActivityManager.MemoryInfo",
+  "usable_ram_definition": "available_bytes minus threshold_bytes; not the Java heap class",
+  "current_memory": {
+    "total_bytes": 6212345856,
+    "available_bytes": 4160630784,
+    "threshold_bytes": 226492416,
+    "usable_available_bytes": 3934138368,
+    "low_memory": false,
+    "memory_class_bytes": 201326592,
+    "large_memory_class_bytes": 603979776,
+    "native_heap_allocated_bytes": 20126000
+  },
+  "last_start_attempt": {
+    "attempt_id": "30ce9b5a-d86d-49fb-b147-930e49b4b26d",
+    "status": "failed",
+    "stage": "memory_preflight",
+    "started_at_ms": 1790589611631,
+    "backend": "llama.cpp",
+    "model_file": "export-fixture-21a517bb-892.gguf",
+    "model_bytes": 128,
+    "requested_accelerator": "cpu",
+    "requested_context_tokens": 2048,
+    "effective_context_tokens": 512,
+    "memory": {
+      "total_bytes": 8000000000,
+      "available_bytes": 2672004000,
+      "threshold_bytes": 500000000,
+      "usable_available_bytes": 2172004000,
+      "low_memory": false,
+      "memory_class_bytes": 201326592,
+      "large_memory_class_bytes": 536870912,
+      "native_heap_allocated_bytes": 10000000
+    },
+    "ram_check_bypass_requested": true,
+    "preflight_level": "blocked",
+    "preflight_detail": "Synthetic export regression fixture; not a Pixel 8 reproduction",
+    "estimated_additional_bytes": 3000000000,
+    "updated_at_ms": 1790589611633,
+    "detail": "export-marker-21a517bb-892 [REDACTED_EMAIL] Authorization: Bearer [REDACTED_BEARER]",
+    "accelerator": null,
+    "accelerator_fallback": null,
+    "completion_verified": false,
+    "completion_latency_ms": 0
+  }
+}
+
+Recent diagnostic events
+{"timestamp_ms":1790589611902,"timestamp":"2026-09-28T10:00:11.902Z","level":"info","message":"crash_capture_armed"}
+
+
+End of Agent diagnostics

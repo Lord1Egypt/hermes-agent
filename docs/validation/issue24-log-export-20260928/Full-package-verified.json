@@ -1,0 +1,14 @@
+{
+  "schema": "hermes-runtime-package-v1",
+  "status": "passed",
+  "chaquopy_lab": false,
+  "abis": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "python_dependency_mode": "genuine-sdks",
+  "source_bundle_verified": true,
+  "apk_sha256": "c4ff406974937083a7df01672d7e53eb6d8704174eb4baee359c758b512df7e0",
+  "runtime_execution_verified": false,
+  "release_certified": false
+}

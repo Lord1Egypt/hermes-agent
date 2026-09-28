@@ -1,0 +1,54 @@
+{
+  "phase": "Full",
+  "source": "3fa1ff7a487c7ddb85feb92d1c0a3354a9e23b24",
+  "started_at": "2026-09-28T10:00:00.227944+00:00",
+  "serial": "emulator-5592",
+  "AVD": "Agent_API37_Issue24_20260927",
+  "physical_Pixel8": false,
+  "APK_sha256": "c4ff406974937083a7df01672d7e53eb6d8704174eb4baee359c758b512df7e0",
+  "test_APK_sha256": "64d498bcce07dfc5b1259a607abce4ed641171685b8200da1a9738f49163ffe3",
+  "test_classes": "com.mobilefork.hermesagent.AgentDiagnosticsExportInstrumentedTest",
+  "expected_tests": 2,
+  "finished_at": "2026-09-28T10:00:32.742553+00:00",
+  "shell_exit": 0,
+  "accepted": true,
+  "new_evidence_directories": [
+    "21a517bb-892",
+    "d23cdd7c-6ac"
+  ],
+  "producer_records": [
+    {
+      "path": "21a517bb-892\\saved-files.json",
+      "record": {
+        "passed": true,
+        "files": [
+          {
+            "path": "/sdcard/Download/Agent-log-export-21a517bb-892-1/pixel8-log-café-1.txt",
+            "bytes": 2983,
+            "sha256": "e6ea85cc8d255b7f0c44ad53dd6a959165e9e68f418670d48aa3e984ae17f71e"
+          },
+          {
+            "path": "/sdcard/Download/Agent-log-export-21a517bb-892-2/pixel8-log-café-2.txt",
+            "bytes": 2983,
+            "sha256": "accf60b225466a0705b05530d973b7ab8907c905e85ada4f84777b6e658df5b0"
+          }
+        ],
+        "real_documents_ui": true,
+        "rotation_while_picker_open": true,
+        "provider_failure_and_retry": true,
+        "model_inference_performed": false,
+        "source": "hermes-source-unbound"
+      }
+    },
+    {
+      "path": "d23cdd7c-6ac\\presence-cancel.json",
+      "record": {
+        "passed": true,
+        "model_started": false,
+        "native_picker_opened": true,
+        "cancelled": true,
+        "activity_recreated": true
+      }
+    }
+  ]
+}

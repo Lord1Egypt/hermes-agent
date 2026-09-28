@@ -1,0 +1,137 @@
+{
+  "schema": "agent-log-export-validation-v1",
+  "collected_at": "2026-09-28T10:14:18.445648+00:00",
+  "issue": 24,
+  "PR": 25,
+  "application_and_JVM_source": "e1b64cd910c509202562b94e1f5b6a278b87bbc9",
+  "installed_instrumentation_and_fdroid_source": "3fa1ff7a487c7ddb85feb92d1c0a3354a9e23b24",
+  "later_changes_in_test_only": [
+    "android/app/src/androidTest/java/com/mobilefork/hermesagent/AgentDiagnosticsExportInstrumentedTest.kt",
+    "android/app/src/androidTest/java/com/mobilefork/hermesagent/AgentModelSettingsInstrumentedTest.kt"
+  ],
+  "JVM": {
+    "Full": {
+      "tests": 1060,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 120
+    },
+    "Play": {
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 10
+    }
+  },
+  "lint": {
+    "Full": {
+      "Error": 0,
+      "Warning": 58
+    },
+    "Play": {
+      "Error": 0,
+      "Warning": 61
+    }
+  },
+  "installed_tests": {
+    "Full_export": 2,
+    "Full_accessibility_settings_workspace": 8,
+    "Play_export": 2,
+    "Play_accessibility_settings": 6
+  },
+  "saved_files": [
+    {
+      "path": "/sdcard/Download/Agent-log-export-21a517bb-892-1/pixel8-log-café-1.txt",
+      "bytes": 2983,
+      "sha256": "e6ea85cc8d255b7f0c44ad53dd6a959165e9e68f418670d48aa3e984ae17f71e",
+      "edition": "Full",
+      "synthetic_fixture": true
+    },
+    {
+      "path": "/sdcard/Download/Agent-log-export-21a517bb-892-2/pixel8-log-café-2.txt",
+      "bytes": 2983,
+      "sha256": "accf60b225466a0705b05530d973b7ab8907c905e85ada4f84777b6e658df5b0",
+      "edition": "Full",
+      "synthetic_fixture": true
+    },
+    {
+      "path": "/sdcard/Download/Agent-log-export-0d0248e6-ed8-1/pixel8-log-café-1.txt",
+      "bytes": 2844,
+      "sha256": "efaf835e01576e97431a42f0a94a642a5d35336a03c32d01b89595e309649038",
+      "edition": "Play",
+      "synthetic_fixture": true
+    },
+    {
+      "path": "/sdcard/Download/Agent-log-export-0d0248e6-ed8-2/pixel8-log-café-2.txt",
+      "bytes": 2844,
+      "sha256": "11e32324181dd5a865f83eed7940eb43fca448fe77aae356c3034b74366e7eb1",
+      "edition": "Play",
+      "synthetic_fixture": true
+    }
+  ],
+  "full_apk_sha256": "c4ff406974937083a7df01672d7e53eb6d8704174eb4baee359c758b512df7e0",
+  "play_apk_sha256": "98a8cb7e400bd2e2f9900621b4ca41678bed43df27632c4891ae0ba17b974efc",
+  "full_test_apk_sha256": "64d498bcce07dfc5b1259a607abce4ed641171685b8200da1a9738f49163ffe3",
+  "play_test_apk_sha256": "8c25ae395108d84eac18756350017b4a8d2afa242e61055ed7742df7641afe82",
+  "full_apk_bytes": 372663120,
+  "play_apk_bytes": 190554858,
+  "debug_version_name": "0.13.146",
+  "debug_version_code": 144690,
+  "embedded_debug_source_digest": "hermes-source-unbound",
+  "consumer_APKs_match_unit_accepted_bytes": true,
+  "provider_failures_tested": [
+    "null stream",
+    "open exception",
+    "write exception",
+    "flush exception",
+    "close exception",
+    "inaccessible URI"
+  ],
+  "field_redaction_and_numeric_RAM_preservation": true,
+  "UI_rotation_and_cancel_tested": true,
+  "API": 37,
+  "ABI": "x86_64",
+  "AVD": "Agent_API37_Issue24_20260927",
+  "physical_Pixel8_tested": false,
+  "reported_phone": "Pixel 8",
+  "reported_GGUF": "gemma-4-E2B-it-UD-IQ3_XXS.gguf",
+  "memory_bug_declared_fixed": false,
+  "model_inference_performed": false,
+  "new_environments": 0,
+  "release_published": false,
+  "fdroid_candidate": {
+    "source": "3fa1ff7a487c7ddb85feb92d1c0a3354a9e23b24",
+    "metadata_sha256": "5b2dde527e879da0d2a00b25ab4d11cb76151ca77b8426ac61e307afcd866751",
+    "version": "0.13.159",
+    "version_code": 145990,
+    "candidate_only": true,
+    "published": false,
+    "public_signed_reference": false,
+    "reused_container_and_caches": true,
+    "new_environments": 0,
+    "prior_unit_and_device_evidence_preserved": true,
+    "accepted": true,
+    "source_digest": "90a6fb109d036fe58ce8087e44cb98593839847c62b0758dbb25b9e7c8632123",
+    "apk_sha256": "479a3fa8cb90d273de52757d437fe9d21410551e2655b4e76818d17a535a735b",
+    "apk_bytes": 349507028,
+    "source_scanning_enabled": true,
+    "artifact_digest_verified": true,
+    "genuine_runtime_verified": true,
+    "build_log_sha256": "132847b160a373a326936533708258c8376b0eaef93414fb032d3ff8730fe272",
+    "build_summary": [
+      "BUILD SUCCESSFUL in 3m 26s",
+      "63 actionable tasks: 63 executed",
+      "2026-09-28 10:12:49,893 INFO: 1 build succeeded"
+    ]
+  },
+  "owned_AVD_retired": true,
+  "original_scheduled_task_restored": true,
+  "notes": [
+    "Log copies normalize whitespace only; unchanged raw files are hashed separately.",
+    "Synthetic saved preflight fixtures are not measurements of the reporter phone.",
+    "No claim that every third-party document provider, cloud persistence delay, or physical OEM build has been tested.",
+    "Existing published v158 does not contain this unmerged export UI; these are debug-signed development builds."
+  ]
+}
