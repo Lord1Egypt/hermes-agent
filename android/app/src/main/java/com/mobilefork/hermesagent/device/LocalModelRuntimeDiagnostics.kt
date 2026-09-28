@@ -318,6 +318,7 @@ object LocalModelRuntimeDiagnostics {
         .put("application_id", com.mobilefork.hermesagent.BuildConfig.APPLICATION_ID)
         .put("edition", if (com.mobilefork.hermesagent.BuildConfig.HERMES_PLAY_EDITION) "Play" else "Full")
         .put("build_type", com.mobilefork.hermesagent.BuildConfig.BUILD_TYPE)
+        .put("source_digest", com.mobilefork.hermesagent.BuildConfig.HERMES_SOURCE_DIGEST)
         .put("android_sdk", android.os.Build.VERSION.SDK_INT)
         .put("device", JSONObject()
             .put("manufacturer", android.os.Build.MANUFACTURER)
