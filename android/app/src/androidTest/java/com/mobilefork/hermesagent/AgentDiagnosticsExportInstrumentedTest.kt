@@ -207,28 +207,33 @@ class AgentDiagnosticsExportInstrumentedTest {
     private fun atDownloadsRoot(): Boolean = findNode { it.text?.toString() == "Downloads" &&
         hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/toolbar") == true } } != null
 
+    private fun isDownloadsBreadcrumb(node: AccessibilityNodeInfo): Boolean =
+        node.text?.toString() == "Downloads" && node.isEnabled &&
+            node.viewIdResourceName?.endsWith("/breadcrumb_text") == true &&
+            hasAncestor(node) { parent -> parent.viewIdResourceName?.endsWith("/horizontal_breadcrumb") == true }
+
     private fun chooseDownloads() {
-        // A previously selected Downloads root is already the requested location.
-        // Do not open and reselect a disabled current-root item unnecessarily.
         if (atDownloadsRoot()) return
+        // Reopening a save dialog restores its previous folder. Android's Back
+        // stack can be empty in that state (notably on tablets), so Back cancels
+        // the export instead of navigating to the parent. Use the observed
+        // directory breadcrumb, never a global navigation action, to go up.
+        if (findNode(::isDownloadsBreadcrumb) != null) {
+            clickNode(::isDownloadsBreadcrumb)
+            waitFor("Downloads root selected through its directory breadcrumb") { atDownloadsRoot() }
+            return
+        }
         clickNode { it.contentDescription?.toString()?.let { text -> text.contains("Show roots", true) || text.contains("Navigate up", true) } == true }
-        // The selected root row in DocumentsUI is not advertised as clickable;
-        // a toolbar label also says Downloads. Bind to the actual roots-list row
-        // and tap its observed bounds, as a user would, not the background title.
         val downloads = awaitNode { it.text?.toString() == "Downloads" && it.isEnabled &&
             hasAncestor(it) { parent -> parent.viewIdResourceName?.endsWith("/roots_list") == true } }
         tapSystemControl(downloads)
-        // Picking a root can restore its last folder. Navigate up within the save
-        // dialog until the positive toolbar identity is Downloads; do not equate
-        // selecting a root row with actually reaching its root directory.
-        repeat(5) {
-            if (atDownloadsRoot()) return
-            assertTrue("Must stay in the system save dialog while choosing its location",
-                automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true)
-            assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
-            SystemClock.sleep(350)
+        waitFor("Downloads root or restored Downloads directory") {
+            atDownloadsRoot() || findNode(::isDownloadsBreadcrumb) != null
         }
+        if (!atDownloadsRoot()) clickNode(::isDownloadsBreadcrumb)
         waitFor("Downloads root selected") { atDownloadsRoot() }
+        assertTrue("Choosing a directory must not cancel the save dialog",
+            automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true)
     }
 
     private fun hasAncestor(node: AccessibilityNodeInfo, predicate: (AccessibilityNodeInfo) -> Boolean): Boolean {
