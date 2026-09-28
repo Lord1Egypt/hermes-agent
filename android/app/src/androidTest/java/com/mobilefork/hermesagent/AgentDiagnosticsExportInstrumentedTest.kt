@@ -187,8 +187,9 @@ class AgentDiagnosticsExportInstrumentedTest {
     }
 
     private fun createFolder(name: String) {
-        clickNode { it.contentDescription?.toString()?.contains("More options", true) == true }
-        clickNode { it.text?.toString()?.equals("New folder", true) == true }
+        // Android 17 exposes New folder directly on the toolbar, not in overflow.
+        clickNode { it.contentDescription?.toString()?.equals("New folder", true) == true ||
+            it.text?.toString()?.equals("New folder", true) == true }
         val edit = awaitNode { it.isEditable }
         assertTrue(edit.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, Bundle().apply {
             putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, name)
