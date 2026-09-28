@@ -83,7 +83,7 @@ class AgentDiagnosticsExportInstrumentedTest {
             ui.onNodeWithTag("ExportDiagnosticLog").performClick()
             awaitPicker()
             capture("native-save-dialog")
-            assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
+            cancelPicker()
             awaitStatus("Export cancelled. No log was saved.")
             ui.onNodeWithTag("ExportDiagnosticLog").assertIsEnabled()
             assertNull(LocalModelRuntimeDiagnostics.readSnapshot(app))
@@ -166,12 +166,25 @@ class AgentDiagnosticsExportInstrumentedTest {
             } finally { Intents.release() }
             ui.onNodeWithTag("ExportDiagnosticLog").performClick()
             awaitPicker()
-            assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
+            cancelPicker()
             awaitStatus("Export cancelled. No log was saved.")
             File(evidence, "saved-files.json").writeText(JSONObject()
                 .put("passed", true).put("files", org.json.JSONArray(saved)).put("real_documents_ui", true)
                 .put("rotation_while_picker_open", true).put("provider_failure_and_retry", true)
                 .put("model_inference_performed", false).put("source", BuildConfig.HERMES_SOURCE_DIGEST).toString(2))
+        }
+    }
+
+    private fun cancelPicker() {
+        // Back first closes the keyboard or navigates to a parent folder. It is not
+        // a cancellation result until DocumentsUI actually returns to this app.
+        repeat(8) {
+            if (automation.rootInActiveWindow?.packageName?.toString() == app.packageName) return
+            assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
+            SystemClock.sleep(350)
+        }
+        waitFor("Return from Android save dialog") {
+            automation.rootInActiveWindow?.packageName?.toString() == app.packageName
         }
     }
 
