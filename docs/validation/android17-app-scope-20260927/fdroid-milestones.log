@@ -1,0 +1,8 @@
+# Selected milestones only; raw input hash is recorded in evidence-hashes.json.
+sourceDigest=cb295c5ab79f38b19b2ae90ac0a1fccefecdced4802d553ddd17b9ac7ad97cea
+2026-09-27 15:14:52,757 INFO: Scanning source for common problems...
+Successfully built hermes-agent
+BUILD SUCCESSFUL in 2m 49s
+63 actionable tasks: 63 executed
+2026-09-27 15:17:43,174 INFO: Successfully built com.mobilefork.hermesagent:145890 from 29f67301cb4ce9e1d3d32d994d939d2d340df7da
+2026-09-27 15:17:43,252 INFO: 1 build succeeded

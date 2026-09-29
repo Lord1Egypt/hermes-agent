@@ -58,6 +58,10 @@ class ModelFirstSettingsUiTest {
         val vm = SettingsViewModel(application)
         owner.put("settings", vm)
         val localModels = LocalModelDownloadsViewModel(application, huggingFaceTokenLoader = { "" })
+        // This isolated fixture overrides the Activity's owner and has no Android/SavedState
+        // factory. Supply the real export VM explicitly, as for the download VM below.
+        owner.put("agent-diagnostics-export",
+            com.mobilefork.hermesagent.ui.diagnostics.DiagnosticsExportViewModel(application, androidx.lifecycle.SavedStateHandle()))
         val fixtureOwner = object : ViewModelStoreOwner { override val viewModelStore = owner }
         ViewModelProvider(fixtureOwner, object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

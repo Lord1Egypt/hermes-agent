@@ -1,0 +1,60 @@
+{
+  "label": "F16",
+  "passed": true,
+  "context": 8192,
+  "effective_K": "f16",
+  "effective_V": "f16",
+  "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+  "native_pid": 3695,
+  "workers": 3,
+  "verified_native_niceness": 5,
+  "prompt_tokens_tokenizer": 6469,
+  "prompt_tokens_used": 6478,
+  "answer": "CEDAR-731,MAPLE-492,BIRCH-286",
+  "three_reference_codes_correct": true,
+  "short_answer": "Paris",
+  "peak_RSS_KiB": 2672004,
+  "peak_PSS_KiB": 2669120,
+  "request_milliseconds": 978816,
+  "memory_samples": 1869,
+  "native_cache_allocations": [
+    {
+      "cells": 8192,
+      "layers": 3,
+      "K": "f16",
+      "V": "f16",
+      "combined_MiB_rounded": 48.0,
+      "K_MiB_rounded": 24.0,
+      "V_MiB_rounded": 24.0
+    },
+    {
+      "cells": 768,
+      "layers": 12,
+      "K": "f16",
+      "V": "f16",
+      "combined_MiB_rounded": 9.0,
+      "K_MiB_rounded": 4.5,
+      "V_MiB_rounded": 4.5
+    }
+  ],
+  "KV_allocation_MiB_rounded": 57.0,
+  "stopped": true,
+  "system_before": {
+    "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+    "system_server_pid": 693,
+    "system_server_start_ticks": "1648"
+  },
+  "system_after": {
+    "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+    "system_server_pid": 693,
+    "system_server_start_ticks": "1648"
+  },
+  "host_peak_CPU_percent": 48.13194210703466,
+  "source": "ca9b2eb05c936c880bda0b3d3884f92f7d6b49ce",
+  "installed_app_sha256": "0cecf60272157aca1e8bf038828f734790d16f9d82869a8773db768a66c16005",
+  "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+  "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+  "explicit_symmetric_diagnostic": false,
+  "production_default_unchanged": true,
+  "watchdog_policy_unchanged": true
+}

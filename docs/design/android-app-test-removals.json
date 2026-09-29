@@ -1,0 +1,200 @@
+{
+  "base": "654c213847f758ae3239081b028f631f6dc82c0e",
+  "removed": [
+    {
+      "path": ".github/workflows/tests-os.yml",
+      "previous_git_blob": "d3acd009d0c27c4c8ddb93147801ec12556216dd",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/windows-venv-e2e.yml",
+      "previous_git_blob": "a09b2f2d45377ad3efe50ecac7477cce482fb318",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/installer-tests.yml",
+      "previous_git_blob": "109db526ff1ee090febe134636d09bc0cc11e74a",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/e2e-desktop.yml",
+      "previous_git_blob": "8692f05d7a41305c476d61526bf76c08d3084aa9",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/js-tests.yml",
+      "previous_git_blob": "613ab9db8ee2ae48d14267dc2cf66b3eee5ba0c9",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/js-autofix.yml",
+      "previous_git_blob": "bd4ee6d1c92dc57c4eb63ae86d8f304785d00d46",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/rust-tests.yml",
+      "previous_git_blob": "c50e182f5949f7645980ea0dabe4fa50b0a1118f",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/docs-site-checks.yml",
+      "previous_git_blob": "1e82698218e411c2776dae90ff671799d10da1b7",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/nix.yml",
+      "previous_git_blob": "4b80d54eaadb967b6b1334ef9784241f133596e5",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": ".github/workflows/deploy-site.yml",
+      "previous_git_blob": "e399353eab41d2c2ffa2c8fdf786dc732c5b8376",
+      "reason": "Workflow exclusively validates desktop host OS, Electron/Tauri/JS renderer, website or Nix distribution; none is the Android app/build runtime."
+    },
+    {
+      "path": "tests/test_desktop_update_shim_progress.py",
+      "previous_git_blob": "5af2ab9e9604bbfe0f0b839acd1bb0e58973584c",
+      "reason": "Desktop self-updater and native Windows/macOS handoff; not used by APK installation."
+    },
+    {
+      "path": "tests/test_desktop_update_tcc_heal.py",
+      "previous_git_blob": "a8eae77c4950c1c2d7b8bb3f50cf6fe6a1a3a3ee",
+      "reason": "Desktop self-updater and native Windows/macOS handoff; not used by APK installation."
+    },
+    {
+      "path": "tests/test_desktop_update_windows_pipe_drain.py",
+      "previous_git_blob": "d3cd1e8ee8098f80aa504c84caab4beac21d77e9",
+      "reason": "Desktop self-updater and native Windows/macOS handoff; not used by APK installation."
+    },
+    {
+      "path": "tests/test_desktop_update_windows_progress.py",
+      "previous_git_blob": "70708d754bc21da1e6fe60e0ab3137e1ebb693e0",
+      "reason": "Desktop self-updater and native Windows/macOS handoff; not used by APK installation."
+    },
+    {
+      "path": "tests/test_desktop_update_windows_python_handoff.py",
+      "previous_git_blob": "5a2739641f6318475e8b7a12d44b111123a91a28",
+      "reason": "Desktop self-updater and native Windows/macOS handoff; not used by APK installation."
+    },
+    {
+      "path": "tests/test_desktop_update_windows_retry_policy.py",
+      "previous_git_blob": "8fafbca24c535097ad1a443fb10ae860e4abeb4f",
+      "reason": "Desktop self-updater and native Windows/macOS handoff; not used by APK installation."
+    },
+    {
+      "path": "tests/test_desktop_update_windows_timestamp.py",
+      "previous_git_blob": "5efd0cc04b4eda3ed661887fcf87db8878c7b6b5",
+      "reason": "Desktop self-updater and native Windows/macOS handoff; not used by APK installation."
+    },
+    {
+      "path": "tests/test_install_ps1_ascii_only.py",
+      "previous_git_blob": "71638620c2a54bf3f258e319eb407f16b1c74520",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_browser_install.py",
+      "previous_git_blob": "0a6b9b556a14a0e6d7d7fcad39d959c9039e8467",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_managed_node_swap.py",
+      "previous_git_blob": "7ab389a95c78055da4b2ad29808aca33bd13d784",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_managed_python_provenance.py",
+      "previous_git_blob": "7cccce360e741967bb5f7c6b2c9bb876dffdfd8f",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_native_stderr_eap.py",
+      "previous_git_blob": "6afcd0cb87841175b0f310c502d961b2081542d7",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_node_path_for_npm.py",
+      "previous_git_blob": "9f3a6cb432db7989485f35ec86cfeb28591aad9d",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_python_fallback_venv.py",
+      "previous_git_blob": "91c2286942e798fcac5501f54598d32eb97de773",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_resolver_strictmode.py",
+      "previous_git_blob": "dbdf921c7f226c16704c0612e87163d1a7674e87",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_uv_install_fallback.py",
+      "previous_git_blob": "0871fd94d17f0933a77fb9f3ce31593778697ad7",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_uv_powershell_host.py",
+      "previous_git_blob": "ea442ce484a84fdb8345c5738a1ca52d4825b0f7",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_venv_process_tree.py",
+      "previous_git_blob": "23e817e281644d50037203d8681de98de814a001",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_venv_recreate_safety.py",
+      "previous_git_blob": "934a97fae08cbe8c48e623017674d8a585b87000",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_venv_rename_abort.py",
+      "previous_git_blob": "a77984170958234a936c906fef7a4567017b13a6",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_venv_transaction_boundary.py",
+      "previous_git_blob": "52f4183ec854a3791fea6b17bc04562ca2d63cf3",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/test_install_ps1_web_server_syntax_probe.py",
+      "previous_git_blob": "14f99f725c846cf835260a02403671a689f9bda5",
+      "reason": "Standalone Windows PowerShell installer; Android uses Gradle/Chaquopy and its packaged bootstrap."
+    },
+    {
+      "path": "tests/desktop/test_bots_chat_live_append.py",
+      "previous_git_blob": "b57be0d4c3791a7ac3914e7236d4b522c2c2304a",
+      "reason": "Desktop Electron distribution tests; native Android UI has separate installed coverage."
+    },
+    {
+      "path": "tests/desktop/test_bots_chat_stream_rekey.py",
+      "previous_git_blob": "27c6e71507463697a8798473860307e663276059",
+      "reason": "Desktop Electron distribution tests; native Android UI has separate installed coverage."
+    },
+    {
+      "path": "tests/website/test_extract_skills.py",
+      "previous_git_blob": "0cb2c20281564f7f18accb4c100807b2a8980e43",
+      "reason": "Unshipped Docusaurus website tests; not app help/runtime."
+    },
+    {
+      "path": "tests/website/test_generate_llms_txt.py",
+      "previous_git_blob": "738ba55a0925ee51388c05caa5837be13446c6e3",
+      "reason": "Unshipped Docusaurus website tests; not app help/runtime."
+    },
+    {
+      "path": "tests/website/test_generate_skill_docs.py",
+      "previous_git_blob": "fca565191902eef3cdff6d2a81d38088e493f873",
+      "reason": "Unshipped Docusaurus website tests; not app help/runtime."
+    },
+    {
+      "path": "tests/test_os_marker_gating.py",
+      "previous_git_blob": "5d348fd73e980c3f746ddab60d323b4c597e9516",
+      "reason": "Verifies dispatch into the now-retired desktop host OS workflow, not runtime behavior."
+    },
+    {
+      "path": "tests/scripts/test_windows_footguns_full_repo_scan.py",
+      "previous_git_blob": "9d14d368595e84a301f27f048a05c74c43b88382",
+      "reason": "Dedicated checker for unsupported Windows application compatibility; shared import-boundary check retained separately."
+    }
+  ]
+}

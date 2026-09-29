@@ -1,6 +1,10 @@
 # Local F-Droid toolchain
 
-Hermes uses two local environments because fdroiddata contains real symbolic links that a normal Windows checkout materializes incorrectly.
+Agent reuses the existing Linux updater checkout and Docker buildserver. The
+owner's standing instruction (2026-09-27) is to update these environments in
+place, not allocate a new container, image, volume, checkout or virtualenv for
+each release. Native Linux is still required for fdroiddata's real symlinks;
+a normal Windows checkout can materialize them incorrectly.
 
 For v0.13.154 onward, both the generated metadata recipe and local helper install
 `platforms;android-36` and `build-tools;36.0.0`; the application targets API 36.
@@ -10,25 +14,30 @@ public APK as well as in source configuration.
 
 ## Metadata checks in WSL2
 
-Keep a Linux checkout at `~/fdroiddata-hermes` and install the same pinned
-fdroidserver revision used by the exact local build into
-`~/.venvs/fdroidserver`:
+Use the already-provisioned updater container and its existing fdroiddata
+checkout by default. An existing WSL checkout/venv may also be reused. Resolve
+its actual path and the pinned fdroidserver identity first; do not recreate a
+virtualenv or source clone merely to run the next check. Archive any previous
+local metadata diff before restoring only those preview changes, then update
+the existing checkout to the current public branch:
 
 ```sh
-git clone --depth=1 --branch master https://gitlab.com/fdroid/fdroiddata.git ~/fdroiddata-hermes
-python3 -m venv ~/.venvs/fdroidserver
-~/.venvs/fdroidserver/bin/pip install \
-  'git+https://gitlab.com/fdroid/fdroidserver.git@8f52ae3ce287bc28964db544b970b88dce9c38bf'
-cd ~/fdroiddata-hermes
-~/.venvs/fdroidserver/bin/fdroid lint com.mobilefork.hermesagent
-~/.venvs/fdroidserver/bin/fdroid checkupdates --auto --allow-dirty com.mobilefork.hermesagent
+# Existing paths only; stop rather than silently provisioning replacements.
+: "${FDROIDDATA_ROOT:?Set the retained Linux metadata checkout}"
+: "${FDROID:?Set the retained, version-verified fdroid entrypoint}"
+cd "$FDROIDDATA_ROOT"
+test -z "$(git status --porcelain)"
+git fetch origin master
+git merge --ff-only FETCH_HEAD
+"$FDROID" lint com.mobilefork.hermesagent
+"$FDROID" checkupdates --auto --allow-dirty com.mobilefork.hermesagent
 ```
 
-Run that preview from a fresh clone of the live `fdroiddata` metadata after the
-GitHub tag exists. `--auto` must create the local 0.13.158/145890 build recipe
+Run that preview against freshly fetched live `fdroiddata` metadata in the
+retained checkout after the GitHub tag exists. `--auto` must create the local 0.13.159/145990 build recipe
 and resolve its exact tag commit. The autoupdater copies the prior build recipe,
 so its output is not yet eligible for the pinned build. From the same WSL shell,
-render and verify the v0.13.158 source-binding fields from the committed Hermes
+render and verify the v0.13.159 source-binding fields from the committed Hermes
 template into that generated build:
 
 ```sh
@@ -46,7 +55,7 @@ git -C "$FDROIDDATA_ROOT" diff -- \
   metadata/com.mobilefork.hermesagent.yml
 ```
 
-The render transaction requires exactly one 0.13.158/145890 build, preserves
+The render transaction requires exactly one 0.13.159/145990 build, preserves
 the autoupdater-resolved full Git commit, every historical `Builds` entry, and
 all unrelated live metadata, and overlays the exact `sudo`, `ndk`, `gradle`,
 `gradleprops`, `scanignore`, and `prebuild` fields. It then verifies that
@@ -203,29 +212,45 @@ You can inspect the complete side-effect-free contract before starting Docker:
 bash fdroid/run-local-buildserver.sh --print-contract
 ```
 
-Mount the locally rendered fdroiddata checkout at `/workspace`, the repository
-`fdroid` directory and source-binding helper read-only, and retain the
-Gradle/build caches in named volumes. The Gradle volume also retains the
-hash-verified TurboQuant source archive at
-`/home/vagrant/.gradle/caches/hermes-experimental-llama/source`; generated
-source-tree paths under `android/app/build` remain disposable. The helper
-verifies the rendered metadata again before the container downloads an SDK,
-fdroidserver, source, or dependency:
+Reuse the registered builder and its existing build/Gradle volumes. Before
+changing its source or recipe, retain the previous gate receipt, metadata diff,
+relevant logs and output hashes. Confirm no earlier task still owns a running
+build. Restore only known generated source transformations, not unrelated user
+changes, and update the same checkout to the exact candidate or tag commit.
+The source-binding verifier and full scanner remain enabled.
 
 ```powershell
-docker volume create hermes-fdroid-gradle
-docker volume create hermes-fdroid-build
-docker run --name hermes-fdroid-build --memory 6g --cpus 12 `
-  --mount "type=bind,source=$FdroidDataRoot,target=/workspace,readonly" `
-  --mount "type=bind,source=$HermesRoot\fdroid,target=/hermes-fdroid,readonly" `
-  --mount "type=bind,source=$HermesRoot\scripts\android_fdroid_source_binding.py,target=/hermes-android-fdroid-source-binding.py,readonly" `
-  --mount "type=volume,source=hermes-fdroid-gradle,target=/home/vagrant/.gradle" `
-  --mount "type=volume,source=hermes-fdroid-build,target=/home/vagrant/build" `
-  --env HERMES_FDROID_TEMPLATE=/hermes-fdroid/com.mobilefork.hermesagent.yml.template `
-  --env HERMES_SOURCE_BINDING_HELPER=/hermes-android-fdroid-source-binding.py `
-  registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie@sha256:9cb68105642ca4e7b295f0ceab10f069f5b3247dc18fa7c36046e9d81aa469a8 `
-  bash /hermes-fdroid/run-local-buildserver.sh
+# Resolve/verify these existing identities; never create or auto-replace them.
+$Builder = 'agent-v158-public-repro-cache-21cd3019'
+docker inspect $Builder --format '{{.Id}} {{.Config.Image}} {{json .Mounts}}'
+# After confirming this retained builder is idle and the host has capacity:
+docker update --cpus 12 $Builder
+docker start $Builder
+# Copy reviewed current metadata/helper inputs into the existing /inputs paths,
+# retaining the old gate receipts. Reverify their hashes before this invocation.
+docker exec --env HERMES_FDROID_TEMPLATE=/inputs/metadata.template `
+  --env HERMES_SOURCE_BINDING_HELPER=/inputs/android_fdroid_source_binding.py `
+  $Builder bash /inputs/run-local-buildserver.sh
 ```
+
+The existing updater is `agent-v158-public-updater-4b924f1c`. Names are discovery
+hints, not ownership proofs: verify full container IDs, mounts and actual runtime
+versions before use. Keep one active build owner per reused checkout/cache.
+New result/log directories are permitted; new execution environments are not.
+
+Reusable caches are not evidence of a cold-cache build. Record cache reuse and
+tool versions honestly on every run. Do not relabel a warm replay as a new empty-
+volume reproducibility test. Public-release checks still require the actual
+released source, exact generated recipe, allowed signature, embedded source
+digest and successful comparison to the public signed APK. Development candidate
+checks are labelled separately and must not overwrite the public version.
+
+Update installed tooling in place only when the reviewed source contract calls
+for it, and record the actual tool identities rather than assuming the container
+image label describes later package updates. Keep the pinned-image check strict;
+if a mandatory new image cannot be represented in an existing container, report
+that incompatibility for an explicit decision instead of creating a replacement
+or claiming the old image is the new one.
 
 Set `VERSION_NAME`, `VERSION_CODE`, `APP_ID`, and a matching committed
 `HERMES_FDROID_TEMPLATE` together when reproducing a different recipe; a

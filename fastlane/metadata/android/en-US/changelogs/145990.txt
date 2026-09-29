@@ -1,0 +1,2 @@
+Security maintenance: update the embedded HTTP client and transport; improve Android-only validation. Workspace import and memory-diagnostics fixes are included. Experimental Gemma KV-cache investigation is documented separately; no blanket quality or memory guarantee.
+Save a diagnostic log from Settings > General to a folder and filename you choose, even before a model starts. Includes device and memory details with known-secret redaction.

@@ -988,6 +988,7 @@ private fun ChatHeaderPageActionsButton(onOpenActions: () -> Unit) {
 
 @Composable
 private fun StatusBanner(text: String, isError: Boolean = false) {
+    val context = LocalContext.current
     val strings = LocalHermesStrings.current
     val displayText = if (isError) text else strings.chatStatusText(text)
     val endpointStatus = isEndpointStatusText(displayText)
@@ -1023,11 +1024,19 @@ private fun StatusBanner(text: String, isError: Boolean = false) {
                         fontWeight = FontWeight.SemiBold,
                     )
                 }
+                SelectionContainer {
                 Text(
                     text = displayText,
                     color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.bodySmall,
                 )
+                }
+                if (isError) {
+                    TextButton(onClick = { copyTextToClipboard(context, strings.messageClipboardLabel(), displayText) },
+                        modifier = Modifier.testTag("CopyRuntimeError")) {
+                        Text(strings.copyMessageLabel())
+                    }
+                }
                 if (endpointStatus && isError) {
                     Text(
                         text = strings.endpointStatusTroubleshootingHint(),

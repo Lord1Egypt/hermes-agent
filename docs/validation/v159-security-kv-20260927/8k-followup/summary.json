@@ -1,0 +1,147 @@
+{
+  "schema": "agent-gemma-8k-followup-v1",
+  "collected_at": "2026-09-27T20:51:12.992223+00:00",
+  "instrumentation_source": "ca9b2eb05c936c880bda0b3d3884f92f7d6b49ce",
+  "previous_evidence_head": "6b0162b08e99a0dbcaf467c72523dd9f69531cf7",
+  "application_source": "d5732582aaf737a303ec7f39605b0ef27f0eace4",
+  "cases": [
+    {
+      "label": "F16",
+      "passed": true,
+      "context": 8192,
+      "effective_K": "f16",
+      "effective_V": "f16",
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "native_pid": 3695,
+      "workers": 3,
+      "verified_native_niceness": 5,
+      "prompt_tokens_tokenizer": 6469,
+      "prompt_tokens_used": 6478,
+      "answer": "CEDAR-731,MAPLE-492,BIRCH-286",
+      "three_reference_codes_correct": true,
+      "short_answer": "Paris",
+      "peak_RSS_KiB": 2672004,
+      "peak_PSS_KiB": 2669120,
+      "request_milliseconds": 978816,
+      "memory_samples": 1869,
+      "native_cache_allocations": [
+        {
+          "cells": 8192,
+          "layers": 3,
+          "K": "f16",
+          "V": "f16",
+          "combined_MiB_rounded": 48.0,
+          "K_MiB_rounded": 24.0,
+          "V_MiB_rounded": 24.0
+        },
+        {
+          "cells": 768,
+          "layers": 12,
+          "K": "f16",
+          "V": "f16",
+          "combined_MiB_rounded": 9.0,
+          "K_MiB_rounded": 4.5,
+          "V_MiB_rounded": 4.5
+        }
+      ],
+      "KV_allocation_MiB_rounded": 57.0,
+      "stopped": true,
+      "system_before": {
+        "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+        "system_server_pid": 693,
+        "system_server_start_ticks": "1648"
+      },
+      "system_after": {
+        "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+        "system_server_pid": 693,
+        "system_server_start_ticks": "1648"
+      },
+      "host_peak_CPU_percent": 48.13194210703466,
+      "source": "ca9b2eb05c936c880bda0b3d3884f92f7d6b49ce",
+      "installed_app_sha256": "0cecf60272157aca1e8bf038828f734790d16f9d82869a8773db768a66c16005",
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+      "explicit_symmetric_diagnostic": false,
+      "production_default_unchanged": true,
+      "watchdog_policy_unchanged": true
+    },
+    {
+      "label": "Turbo3",
+      "passed": true,
+      "context": 8192,
+      "effective_K": "turbo3",
+      "effective_V": "turbo3",
+      "probe_id": "cooperative-76154f494e124c52a536e23c731a8adf",
+      "native_pid": 4758,
+      "workers": 3,
+      "verified_native_niceness": 5,
+      "prompt_tokens_tokenizer": 6469,
+      "prompt_tokens_used": 6478,
+      "answer": "ALPHA: CEDAR-731\nBETA: MAPLE-492\nGAMMA: BIRCH-286",
+      "three_reference_codes_correct": true,
+      "short_answer": "Paris",
+      "peak_RSS_KiB": 2614212,
+      "peak_PSS_KiB": 2611281,
+      "request_milliseconds": 1903900,
+      "memory_samples": 3258,
+      "native_cache_allocations": [
+        {
+          "cells": 8192,
+          "layers": 3,
+          "K": "turbo3",
+          "V": "turbo3",
+          "combined_MiB_rounded": 9.38,
+          "K_MiB_rounded": 4.69,
+          "V_MiB_rounded": 4.69
+        },
+        {
+          "cells": 768,
+          "layers": 12,
+          "K": "turbo3",
+          "V": "turbo3",
+          "combined_MiB_rounded": 1.76,
+          "K_MiB_rounded": 0.88,
+          "V_MiB_rounded": 0.88
+        }
+      ],
+      "KV_allocation_MiB_rounded": 11.14,
+      "stopped": true,
+      "system_before": {
+        "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+        "system_server_pid": 693,
+        "system_server_start_ticks": "1648"
+      },
+      "system_after": {
+        "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+        "system_server_pid": 693,
+        "system_server_start_ticks": "1648"
+      },
+      "host_peak_CPU_percent": 41.733282578353005,
+      "source": "ca9b2eb05c936c880bda0b3d3884f92f7d6b49ce",
+      "installed_app_sha256": "0cecf60272157aca1e8bf038828f734790d16f9d82869a8773db768a66c16005",
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+      "explicit_symmetric_diagnostic": true,
+      "production_default_unchanged": true,
+      "watchdog_policy_unchanged": true
+    }
+  ],
+  "same_boot_pair": true,
+  "performance_benchmark": false,
+  "scope": "Two independently accepted single-run functional checks with the same APK/model/engine and actual worker/priority settings. The original job logs and final records show the same boot and system-server identity before, within and after both accepted runs; an earlier narrative claiming a between-run restart was incorrect. Host load was not exclusive.",
+  "observed_RSS_difference_MiB": 56.4375,
+  "observed_RSS_difference_percent": 2.1628710136661473,
+  "KV_allocation_difference_MiB_rounded": 45.86,
+  "turbo3_storage_block": {
+    "values": 128,
+    "bytes": 50,
+    "bits_per_value": 3.125,
+    "F16_to_Turbo3_tensor_storage_ratio": 5.12,
+    "source": "https://github.com/TheTom/llama-cpp-turboquant/blob/e30664a710b62aaf13c6b12e39e74500e6ce21ef/ggml/src/ggml-common.h"
+  },
+  "production_context_or_quality_guard_changed": false,
+  "sixteen_K_tested": false,
+  "physical_ARM_validation": false,
+  "new_execution_environments": 0,
+  "release_published": false
+}

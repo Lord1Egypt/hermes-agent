@@ -206,6 +206,8 @@ object HermesLinuxSandboxBridge {
             .put("preferred_guest_architecture", preferredGuestArch)
             .put("python_available", hasPackage(state, "python"))
             .put("app_private_storage_root", context?.let { appPrivateStorageRoot(it).absolutePath }.orEmpty())
+            .put("guest_workspace_path", "/workspace")
+            .put("workspace_policy", "The app-owned workspace is bound to /workspace for run commands. Granted content URIs are not mounts; copy shared folders in Device > Files first. Copies do not sync back.")
             .put("agent_control_file", context?.let { agentControlFile(it).absolutePath }.orEmpty())
             .put("agent_shell_enabled", agentShellEnabled)
             .put("active_sandbox_name", control.optString("active_sandbox_name"))
@@ -726,6 +728,7 @@ object HermesLinuxSandboxBridge {
             sandboxName = sandboxName,
             command = command,
             qemuPath = qemuUserPath,
+            workspacePath = DeviceStateWriter.workspaceDir(context).absolutePath,
         )
         val qemuResult = runProotDistroCommand(
             context = context,
@@ -1310,17 +1313,27 @@ object HermesLinuxSandboxBridge {
         }
     }
 
-    internal fun runCommandFor(prefixPath: String, sandboxName: String, command: String, qemuPath: String = ""): String {
+    internal fun runCommandFor(
+        prefixPath: String, sandboxName: String, command: String, qemuPath: String = "", workspacePath: String = "",
+    ): String {
         val normalizedPrefixPath = prefixPath.trimEnd('/')
         val rootfsPath = "$normalizedPrefixPath/var/lib/proot-distro/containers/$sandboxName/rootfs"
         val emulatorArg = qemuPath.trim().takeIf { it.isNotBlank() }
             ?.let { " --emulator ${HermesLinuxSubsystemBridge.shellQuote(it)}" }
             .orEmpty()
+        // Only the app-owned workspace copy is exposed, never a guessed path for a SAF URI.
+        // proot's userspace bind needs no root/FUSE mount and preserves existing sandbox consent.
+        require(workspacePath.isEmpty() || (workspacePath.startsWith("/") && ':' !in workspacePath && '\u0000' !in workspacePath)) {
+            "Workspace must be an absolute filesystem path"
+        }
+        val workspaceBind = workspacePath.takeIf { it.isNotEmpty() }
+            ?.let { " --bind ${HermesLinuxSubsystemBridge.shellQuote("$it:/workspace")}" }.orEmpty()
+        val workspaceEnvironment = if (workspacePath.isEmpty()) "" else "HERMES_WORKSPACE=/workspace; export HERMES_WORKSPACE; "
         val guestCommand =
-            "PATH=${HermesLinuxSubsystemBridge.shellQuote(GUEST_COMMAND_PATH)}; export PATH; $command"
+            "PATH=${HermesLinuxSubsystemBridge.shellQuote(GUEST_COMMAND_PATH)}; export PATH; $workspaceEnvironment$command"
         return "HERMES_SANDBOX_ROOTFS=${HermesLinuxSubsystemBridge.shellQuote(rootfsPath)}; " +
             "export HERMES_SANDBOX_ROOTFS; " +
-            "proot-distro run ${HermesLinuxSubsystemBridge.shellQuote(sandboxName)}$emulatorArg -- " +
+            "proot-distro run ${HermesLinuxSubsystemBridge.shellQuote(sandboxName)}$workspaceBind$emulatorArg -- " +
             "/bin/sh -lc ${HermesLinuxSubsystemBridge.shellQuote(guestCommand)}"
     }
 

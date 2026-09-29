@@ -1,0 +1,164 @@
+from pathlib import Path
+from datetime import datetime, timezone
+import ctypes, hashlib, json, os, re, subprocess, time, uuid
+
+repo=Path(__file__).resolve().parents[3]
+out=Path(__file__).resolve().parent
+source='ca9b2eb05c936c880bda0b3d3884f92f7d6b49ce'
+container='e6f5ea71d179e6ae99f987eb571f4cb6c1691a8d231bc0000def042ad5198836'
+build='/home/vagrant/build/com.mobilefork.hermesagent'
+adb='D:/Android/Sdk/platform-tools/adb.exe'
+serial='emulator-5592';package='com.mobilefork.hermesagent'
+env=os.environ.copy();env.update(ADB_SERVER_SOCKET='tcp:localhost:5044',ANDROID_ADB_SERVER_PORT='5044')
+
+def run(args,timeout=60,check=True):
+    p=subprocess.run([str(a) for a in args],env=env,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=timeout)
+    if check and p.returncode:raise RuntimeError(f'{args}: {p.returncode}\n{p.stdout[-1200:]}\n{p.stderr[-1200:]}')
+    return p
+
+def android(*args,timeout=30,check=True):return run([adb,'-P','5044','-s',serial,*args],timeout,check)
+
+def save(path,data):
+    temp=path.with_suffix('.partial')
+    temp.write_text(json.dumps(data,indent=2)+'\n',encoding='utf-8',newline='\n')
+    temp.replace(path)
+
+def host_ticks():
+    idle,kernel,user=(ctypes.c_ulonglong() for _ in range(3))
+    assert ctypes.windll.kernel32.GetSystemTimes(ctypes.byref(idle),ctypes.byref(kernel),ctypes.byref(user))
+    return idle.value,kernel.value+user.value
+
+def read_system():
+    boot=android('shell','cat','/proc/sys/kernel/random/boot_id').stdout.strip()
+    pid=android('shell','pidof','system_server').stdout.strip()
+    assert pid.isdigit()
+    stat=android('shell','cat','/proc/'+pid+'/stat').stdout.strip()
+    return {'boot_id':boot,'system_server_pid':int(pid),'system_server_start_ticks':stat[stat.rfind(')')+2:].split()[19]}
+
+assert android('emu','avd','name').stdout.splitlines()[0]=='Agent_API37_Issue24_20260927'
+assert android('shell','getprop','ro.build.version.sdk').stdout.strip()=='37'
+assert android('shell','getprop','sys.boot_completed').stdout.strip()=='1'
+assert run(['docker','exec','-u','vagrant',container,'git','-C',build,'rev-parse','HEAD']).stdout.strip()==source
+assert not run(['docker','exec','-u','vagrant',container,'git','-C',build,'status','--porcelain']).stdout.strip()
+quiet_deadline=time.monotonic()+600
+quiet_samples=[]
+while True:
+    a=host_ticks();time.sleep(5);b=host_ticks();load=100*(1-(b[0]-a[0])/(b[1]-a[1]))
+    quiet_samples.append({'at':datetime.now(timezone.utc).isoformat(),'cpu_percent':load})
+    save(out/'quiet-admission.json',quiet_samples)
+    if load<40:break
+    if time.monotonic()>=quiet_deadline:raise RuntimeError('Host stayed above unchanged 40% admission threshold for ten minutes; no inference launched')
+    time.sleep(10)
+fixtures=json.loads((repo/'.artifacts/android17-app-scope/device-model.json').read_text())
+assert fixtures['sha256']=='086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085'
+apks=[]
+for remote,local,filename in [('debug','app','app-debug.apk'),('androidTest/debug','test','app-debug-androidTest.apk')]:
+    if not (out/local).exists():
+        run(['docker','cp',f'{container}:{build}/android/app/build/outputs/apk/{remote}',out/local],timeout=120)
+    path=out/local/filename
+    apks.append({'kind':local,'sha256':hashlib.file_digest(path.open('rb'),'sha256').hexdigest(),'bytes':path.stat().st_size})
+equivalence=json.loads((out/'payload-equivalence.json').read_text())
+assert equivalence['entries_sha256_equal']==4906
+assert equivalence['rebuilt_apk_sha256']==apks[0]['sha256']
+installed_app_sha='0cecf60272157aca1e8bf038828f734790d16f9d82869a8773db768a66c16005'
+assert equivalence['old_apk_sha256']==installed_app_sha
+installed_path=android('shell','pm','path',package).stdout.strip().removeprefix('package:')
+assert installed_path.startswith('/data/app/') and installed_path.endswith('/base.apk')
+assert android('shell','sha256sum',installed_path,timeout=240).stdout.split()[0]==installed_app_sha
+print(android('install','-r',out/'test/app-debug-androidTest.apk',timeout=120).stdout,flush=True)
+assert android('shell','run-as',package,'sha256sum',fixtures['device_path'],timeout=300).stdout.split()[0]==fixtures['sha256']
+android('shell','input','keyevent','KEYCODE_WAKEUP');android('shell','wm','dismiss-keyguard')
+android('shell','am','start','-W','-n',package+'/.MainActivity',timeout=45)
+boot=read_system()
+inputs={'source':source,'installed_app_apk_sha256':installed_app_sha,'app_apk_unchanged':True,'rebuilt_app_payload_equivalence':equivalence,'compiled_apks':apks,'fixture':fixtures,'host_initial_cpu_percent':load,
+        'device':boot,'guest_memory':android('shell','cat','/proc/meminfo').stdout,
+        'memory_limiter':android('shell','am','memory-limiter','status',check=False).stdout,
+        'workers':3,'niceness_adjustment':13,'expected_native_niceness':5,'OS_limits_changed':False,'default_app_policy_changed':False,
+        'started':datetime.now(timezone.utc).isoformat()}
+save(out/'standalone-turbo3-inputs.json',inputs)
+reference=json.loads((out/'f16-8192-priority13/accepted_from_retained_evidence.json').read_text())
+assert reference['passed'] and reference['stopped'] and reference['native_threads_confirmed']
+same_boot_reference=reference['system_after']==boot
+inputs['same_boot_as_F16_reference']=same_boot_reference
+inputs['comparison_scope']='Separate functional runs; no same-boot timing or causal whole-memory claim if boot identities differ'
+save(out/'standalone-turbo3-inputs.json',inputs)
+results=[reference]
+for cache,strict in [('turbo3',True)]:
+    folder=out/(cache+'-8192-independent');folder.mkdir(exist_ok=False)
+    probe_id='cooperative-'+uuid.uuid4().hex
+    device_folder=f'/sdcard/Android/data/{package}/files/gemma-kv-investigation/{probe_id}'
+    case_name=cache+'-8192'+('-symmetric' if strict else '')
+    before=read_system();assert before==boot,'System restarted between cases'
+    args=[adb,'-P','5044','-s',serial,'shell','am','instrument','-w','-r','-e','class',
+          'com.mobilefork.hermesagent.GemmaKvCacheInvestigationTest',
+          '-e','agentModelPath',fixtures['device_path'],'-e','agentModelSha256',fixtures['sha256'],
+          '-e','agentProbeId',probe_id,'-e','agentKvCache',cache,'-e','agentKvContext','8192',
+          '-e','agentKvRequireSymmetric',str(strict).lower(),'-e','agentKvWorkers','3','-e','agentKvNiceness','13',
+          package+'.test/androidx.test.runner.AndroidJUnitRunner']
+    started=datetime.now(timezone.utc).isoformat();deadline=time.monotonic()+2700
+    observations=[];exception=None;last=host_ticks()
+    with (folder/'instrumentation.log').open('w',encoding='utf-8',newline='\n') as log:
+        process=subprocess.Popen(args,env=env,stdout=log,stderr=subprocess.STDOUT,text=True,encoding='utf-8')
+        save(folder/'owner.json',{'probe_id':probe_id,'host_pid':process.pid,'argv':args,'started':started,'device':before})
+        while process.poll() is None:
+            try:
+                process.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                pass
+            now=host_ticks();cpu=100*(1-(now[0]-last[0])/max(1,now[1]-last[1]));last=now
+            observation={'at':datetime.now(timezone.utc).isoformat(),'host_cpu_percent':cpu}
+            try:
+                p=android('shell','cat',device_folder+'/progress.json',timeout=10,check=False)
+                if p.returncode==0:
+                    progress=json.loads(p.stdout);assert progress['probe_id']==probe_id
+                    observation['progress']=progress
+                    native_pid=progress.get('native_pid',0)
+                    if native_pid and 'native_process' not in inputs:
+                        stat=android('shell','cat',f'/proc/{native_pid}/stat',check=False).stdout.strip()
+                        if ')' in stat:
+                            fields=stat[stat.rfind(')')+2:].split()
+                            observation['native_niceness']=int(fields[16]);assert int(fields[16])==5, f'Expected native nice=5; actual={fields[16]}'
+                else:observation['progress_unavailable']=p.stderr.strip()[:200]
+            except (ValueError,subprocess.TimeoutExpired) as error:
+                observation['observation_error']=str(error)[:240]
+            except Exception as error:
+                exception='probe_observation_failed: '+str(error)[:240]
+                observation['observation_error']=exception
+            observations.append(observation);save(folder/'observations.json',observations)
+            if exception or time.monotonic()>deadline:
+                exception=exception or 'host_case_deadline'
+                break
+        if exception:
+            # Scope is this exact test-owned emulator and package, never a physical device.
+            android('shell','am','force-stop',package,check=False)
+            try:process.wait(timeout=20)
+            except subprocess.TimeoutExpired:process.terminate();process.wait(timeout=10)
+    pulled=android('pull',device_folder,folder/'device',timeout=60,check=False)
+    record_path=folder/'device'/(case_name+'.json')
+    record=json.loads(record_path.read_text()) if record_path.exists() else {}
+    text=(folder/'instrumentation.log').read_text(encoding='utf-8')
+    after=read_system()
+    startup_path=folder/'device'/(case_name+'-engine.log')
+    startup=startup_path.read_text() if startup_path.exists() else ''
+    threads=re.search(r'n_threads = (\d+) \(n_threads_batch = (\d+)\)',startup)
+    confirmed_threads=bool(threads and threads.groups()==('3','3') and startup.startswith('AGENT_PROBE_PID='+str(record.get('native_pid'))+'\n'))
+    confirmed_priority=any(x.get('native_niceness')==5 for x in observations)
+    success=(not exception and process.returncode==0 and 'OK (1 test)' in text and 'FAILURES!!!' not in text
+             and record.get('schema')=='agent-gemma-kv-comparison-v2' and record.get('probe_id')==probe_id
+             and record.get('passed') is True and record.get('stopped') is True and before==after and confirmed_threads and confirmed_priority
+             and record.get('effective_context_slots')==[8192]
+             and record.get('effective_cache_k')==cache and record.get('effective_cache_v')==cache
+             and record.get('peak_native_rss_kib',0)>0 and record.get('peak_native_pss_kib',0)>0)
+    result={'same_boot_as_F16_reference':same_boot_reference,'independent_run':True,'source':source,'probe_id':probe_id,'requested_cache':cache,'symmetric':strict,
+            'workers':3,'niceness_adjustment':13,'expected_native_niceness':5,'native_threads_confirmed':confirmed_threads,'native_priority_confirmed':confirmed_priority,'context':8192,'started':started,'finished':datetime.now(timezone.utc).isoformat(),
+            'passed':success,'host_exception':exception,'shell_exit':process.returncode,'artifact_pull_exit':pulled.returncode,
+            'effective_k':record.get('effective_cache_k'),'effective_v':record.get('effective_cache_v'),
+            'samples':record.get('samples',[]),'short_answer':record.get('short_answer'),'stopped':record.get('stopped'),
+            'peak_rss_kib':record.get('peak_native_rss_kib'),'peak_pss_kib':record.get('peak_native_pss_kib'),
+            'system_before':before,'system_after':after,'host_peak_cpu_percent':max(x['host_cpu_percent'] for x in observations)}
+    save(folder/'result.json',result);results.append(result);save(out/'separate-boot-results.json',results)
+    print(json.dumps(result),flush=True)
+    if not success:
+        print(text[-5000:],flush=True)
+        raise SystemExit(1)
+print('INDEPENDENT_TURBO3_8K_PASSED',flush=True)

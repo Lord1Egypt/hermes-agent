@@ -1,0 +1,38 @@
+{
+  "device": {
+    "ro.build.version.release": "17",
+    "ro.build.version.sdk": "37",
+    "ro.product.cpu.abi": "x86_64",
+    "ro.build.fingerprint": "google/sdk_gphone64_x86_64/emu64xa:17/CE2A.260420.019/15611780:userdebug/dev-keys",
+    "ro.kernel.qemu": "1"
+  },
+  "avd": "Agent_API37_Issue24_20260927",
+  "serial": "emulator-5592",
+  "adb_port": 5044,
+  "configured_ram_mib": 8192,
+  "actual_memtotal": "MemTotal:        8131136 kB",
+  "page_size": "4096",
+  "hardware_acceleration": "WHPX confirmed in actual emulator log",
+  "GPU": "host requested; emulator log retained",
+  "boot_id": "a6ba2a70-43e0-4776-a457-06f602b68cbe",
+  "memory_limiter_status": "Memory limiter\n  disabled",
+  "new_AVDs": 1,
+  "new_Docker_containers": 0,
+  "checked_at": "2026-09-27T14:28:09.317162+00:00",
+  "memory_limiter_configuration_changed": false,
+  "image_default_memory_limiter": "disabled according to am memory-limiter status",
+  "hardware_log_excerpt": [
+    "INFO         | emuglConfig_get_vulkan_hardware_gpu_support_info: Found physical GPU 'NVIDIA GeForce RTX 4090', type: VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU, apiVersion: 1.4.341, driverVersion: 610.74",
+    "INFO         | emuglConfig_get_vulkan_hardware_gpu_support_info: Found physical GPU 'AMD Radeon(TM) Graphics', type: VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU, apiVersion: 1.4.315, driverVersion: 2.0.353",
+    "  Model: NVIDIA GeForce RTX 4090",
+    "INFO         | Selecting Vulkan device: NVIDIA GeForce RTX 4090, Version: 1.4.341",
+    "INFO         | Graphics Adapter Vendor Google (NVIDIA Corporation)",
+    "INFO         | Graphics Adapter Android Emulator OpenGL ES Translator (NVIDIA GeForce RTX 4090/PCIe/SSE2)",
+    "INFO         | Graphics API Version OpenGL ES 3.0 (4.5.0 NVIDIA 610.74)",
+    "WHPX on Windows 10.0.26200 detected.",
+    "Windows Hypervisor Platform accelerator is operational",
+    "INFO         | GPU Vendor=[Google (NVIDIA Corporation)]",
+    "INFO         | GPU Renderer=[Android Emulator OpenGL ES Translator (NVIDIA GeForce RTX 4090/PCIe/SSE2)]",
+    "INFO         | GPU Version=[OpenGL ES 3.0 (4.5.0 NVIDIA 610.74)]"
+  ]
+}

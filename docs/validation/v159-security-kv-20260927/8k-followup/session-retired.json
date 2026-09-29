@@ -1,0 +1,13 @@
+{
+  "at": "2026-09-27T20:50:31.8622056Z",
+  "shared_adb_untouched": true,
+  "avd": "Agent_API37_Issue24_20260927",
+  "restored_arguments": "-NoProfile -File \"C:\\Users\\adyba\\agent-v158-final-source-20260926\\.artifacts\\android17-app-scope\\run_android17.ps1\"",
+  "status": "retired_and_original_task_restored",
+  "pid": 45992,
+  "physical_devices_used": false,
+  "docker_environments_retained": true,
+  "created": "2026-09-27T19:38:41.2012740Z",
+  "private_adb_stop_requested": true,
+  "model_and_AVD_retained": true
+}

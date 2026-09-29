@@ -1,0 +1,20 @@
+{
+  "source": "42fcd2d33a7db739265a8d39520f66966c6d1fd6",
+  "status": "passed",
+  "actual_workflow_python_extraction": [
+    {
+      "tag": "v0.13.159",
+      "expected_owned_archive": "agent-termux-packages-v159.zip",
+      "result": "agent-termux-packages-v159.zip"
+    },
+    {
+      "tag": "v0.13.160",
+      "expected_owned_archive": "",
+      "result": ""
+    }
+  ],
+  "both_commands_supply_required_output_dir": true,
+  "archive_build_and_hash_verification_executed_separately_in_Linux": true,
+  "GitHub_workflow_dispatched": false,
+  "release_uploaded": false
+}

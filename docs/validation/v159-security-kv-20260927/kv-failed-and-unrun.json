@@ -1,0 +1,25 @@
+{
+  "default_guarded_8192": {
+    "outcome": "read deadline expired during 97% prompt prefill",
+    "tokens_requested": 6469,
+    "tokens_observed": 6272,
+    "quality_pass": false,
+    "OOM_proven": false
+  },
+  "explicit_symmetric_8192": {
+    "outcome": "Android system_server watchdog aborted instrumentation",
+    "effective_k": "turbo3",
+    "effective_v": "turbo3",
+    "quality_pass": false,
+    "F16_8192_reference_run": false,
+    "watchdog_cpu_pressure_high": true,
+    "watchdog_memory_pressure_snapshot_zero": true,
+    "cause_proven": false,
+    "whole_guest_kernel_reboot_claimed": false,
+    "native_process_absent_after_restart": true
+  },
+  "context_16384_tested": false,
+  "app_default_context_changed": false,
+  "app_native_quality_guard_changed": false,
+  "scope": "No 8K/16K compatibility certification. CPU pressure is observed, not a proof of causation or memory safety."
+}

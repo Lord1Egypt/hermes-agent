@@ -14,6 +14,10 @@ import hashlib
 import json
 import re
 import sys
+import stat
+import subprocess
+import tempfile
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -117,6 +121,99 @@ def create_source(root: Path, tag: str, trace_root: Path) -> dict[str, Any]:
         raise Error("New release traces must not be tracked in Git")
     archive._write_json(metadata_path(root, tag, "source.json"), source)
     return source
+
+
+
+def validate_transport_metadata(source: dict[str, Any], release: dict[str, Any],
+                                asset_id: int, expected_sha256: str,
+                                expected_commit: str) -> dict[str, Any]:
+    """A private draft is transport only, never release or trace-acceptance authority."""
+    _positive_id(asset_id, "Transport asset ID")
+    if not archive.HEX_64_RE.fullmatch(expected_sha256) or not archive.HEX_40_RE.fullmatch(expected_commit):
+        raise Error("Transport digest or commit is invalid")
+    prefix = "agent-traces-" + source["tag"] + "-"
+    if (release.get("draft") is not True or release.get("published_at") is not None
+            or release.get("target_commitish") != expected_commit
+            or not re.fullmatch(re.escape(prefix) + r"[0-9a-f]{32}", release.get("tag_name", ""))):
+        raise Error("Trace transport must be an unpublished, source-bound draft")
+    assets = release.get("assets", [])
+    if len(assets) != 1 or assets[0].get("id") != asset_id:
+        raise Error("Draft transport must contain exactly the requested trace asset")
+    asset = assets[0]
+    if (asset.get("name") != source["artifact_name"] + ".zip" or asset.get("state") != "uploaded"
+            or asset.get("digest") != "sha256:" + expected_sha256
+            or type(asset.get("size")) is not int
+            or not 0 < asset["size"] <= min(1024**3, source["trace_bytes"] + 1024**2)):
+        raise Error("Trace transport asset identity, digest or size is invalid")
+    return asset
+
+
+def extract_transport(source: dict[str, Any], archive_path: Path, expected_sha256: str,
+                      trace_root: Path) -> None:
+    """Closed ZIP inventory and individual trace hashes precede final publication."""
+    if archive_path.is_symlink() or trace_root.exists():
+        raise Error("Transport paths are linked or the destination already exists")
+    if not archive.HEX_64_RE.fullmatch(expected_sha256) or archive._sha256_file(archive_path) != expected_sha256:
+        raise Error("Transport archive hash differs")
+    expected = {record["path"]: record for record in source["traces"]}
+    with zipfile.ZipFile(archive_path) as compressed:
+        entries = compressed.infolist()
+        if len(entries) != len(expected) or {entry.filename for entry in entries} != set(expected):
+            raise Error("Transport archive has missing, duplicate or extra paths")
+        for entry in entries:
+            mode = entry.external_attr >> 16
+            record = expected[entry.filename]
+            if (entry.is_dir() or entry.flag_bits & 1
+                    or stat.S_IFMT(mode) not in (0, stat.S_IFREG)
+                    or entry.file_size != record["bytes"]):
+                raise Error("Transport entry type or size differs from the measured trace")
+        trace_root.parent.mkdir(parents=True, exist_ok=True)
+        # Publish the output only after every entry validates, so failed downloads
+        # cannot leave a directory that a later step mistakes for accepted input.
+        with tempfile.TemporaryDirectory(prefix="trace-transport-", dir=trace_root.parent) as temporary:
+            staging = Path(temporary) / "verified"
+            staging.mkdir()
+            for entry in entries:
+                destination = staging / entry.filename
+                if destination.resolve().parent.parent != staging.resolve():
+                    raise Error("Transport entry escapes the two-profile directory layout")
+                destination.parent.mkdir(exist_ok=True)
+                with compressed.open(entry) as incoming, destination.open("xb") as output:
+                    remaining = entry.file_size
+                    while remaining:
+                        block = incoming.read(min(1024**2, remaining))
+                        if not block:
+                            raise Error("Truncated transport entry")
+                        output.write(block)
+                        remaining -= len(block)
+                    if incoming.read(1):
+                        raise Error("Transport entry exceeds its declared size")
+            verify_traces(source, staging)
+            staging.rename(trace_root)
+
+
+def download_transport(root: Path, tag: str, release_id: int, asset_id: int,
+                       digest: str, expected_commit: str, trace_root: Path) -> dict[str, Any]:
+    source = verify_source(root, tag)
+    _positive_id(release_id, "Transport release ID")
+    release = archive._gh_json((f"repos/{source['repository']}/releases/{release_id}",), cwd=root)
+    if release.get("id") != release_id:
+        raise Error("GitHub returned a different transport release")
+    asset = validate_transport_metadata(source, release, asset_id, digest, expected_commit)
+    with tempfile.TemporaryDirectory(prefix="trace-download-") as temporary:
+        archive_path = Path(temporary) / "traces.zip"
+        # GitHub CLI handles authenticated draft downloads and redirects. The
+        # token stays in its inherited environment, never argv or persisted logs.
+        with archive_path.open("xb") as output:
+            subprocess.run(["gh", "api", f"repos/{source['repository']}/releases/assets/{asset_id}",
+                            "-H", "Accept: application/octet-stream"], cwd=root, stdout=output,
+                           stderr=subprocess.PIPE, timeout=300, check=True)
+        if archive_path.stat().st_size != asset["size"]:
+            raise Error("Downloaded transport size differs")
+        extract_transport(source, archive_path, digest, trace_root)
+    return {"status": "verified", "transport_release_id": release_id, "transport_asset_id": asset_id,
+            "archive_sha256": digest, "trace_count": source["trace_file_count"],
+            "release_published": False, "independent_artifact_verification_pending": True}
 
 
 def _positive_id(value: Any, context: str) -> int:
@@ -224,17 +321,27 @@ def verify_receipt(root: Path, tag: str) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("create-source", "verify-source", "verify-traces", "create-receipt", "verify-receipt"))
+    parser.add_argument("command", choices=("create-source", "verify-source", "verify-traces", "create-receipt", "verify-receipt", "download-transport"))
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--tag", required=True)
     parser.add_argument("--trace-root", type=Path)
     parser.add_argument("--expected-source-digest")
     parser.add_argument("--run-id", type=int)
     parser.add_argument("--artifact-id", type=int)
+    parser.add_argument("--transport-release-id", type=int)
+    parser.add_argument("--transport-asset-id", type=int)
+    parser.add_argument("--transport-sha256")
+    parser.add_argument("--expected-commit")
     args = parser.parse_args()
     root = args.repo_root.resolve()
     try:
-        if args.command == "create-source":
+        if args.command == "download-transport":
+            if not all((args.transport_release_id, args.transport_asset_id, args.transport_sha256,
+                        args.expected_commit, args.trace_root)):
+                parser.error("download-transport requires draft release/asset/hash, commit and output path")
+            result = download_transport(root, args.tag, args.transport_release_id, args.transport_asset_id,
+                                        args.transport_sha256, args.expected_commit, args.trace_root)
+        elif args.command == "create-source":
             if args.trace_root is None:
                 parser.error("create-source requires --trace-root")
             result = create_source(root, args.tag, args.trace_root)
@@ -250,7 +357,7 @@ def main() -> int:
             elif args.command == "verify-receipt":
                 result = verify_receipt(root, args.tag)
         print(json.dumps(result, sort_keys=True))
-    except (Error, OSError) as exc:
+    except (Error, OSError, subprocess.SubprocessError, zipfile.BadZipFile) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
     return 0

@@ -148,6 +148,7 @@ object LlamaCppServerController {
             memory = memory,
             preflight = preflight,
             runtimeLaunch = diagnosticsBreadcrumbFor(launchConfig),
+            ramBypassRequested = dangerouslySkipRamChecks,
         )
         if (!preflight.allowed) {
             LocalModelRuntimeDiagnostics.finishAttempt(

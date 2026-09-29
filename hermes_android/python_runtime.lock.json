@@ -144,9 +144,9 @@
       "sha256": "2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55"
     },
     {
-      "filename": "httpcore2-2.7.0-py3-none-any.whl",
-      "bytes": 81506,
-      "sha256": "1452f589fe23f55b44546cd884294c41a29330af902bc0b71a761fd52d18f92b"
+      "filename": "httpcore2-2.13.1-py3-none-any.whl",
+      "bytes": 83423,
+      "sha256": "e1e05d4f25f7d7d496bfb96748f6f4b67657b03da069b3a68c36069f3db73d0a"
     },
     {
       "filename": "httpx-0.28.1-py3-none-any.whl",
@@ -154,9 +154,9 @@
       "sha256": "d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad"
     },
     {
-      "filename": "httpx2-2.7.0-py3-none-any.whl",
-      "bytes": 90234,
-      "sha256": "ed2a2719c696789e09493bd8e2bec3d8bd925cc6e26b68389ec25ade132f7bf4"
+      "filename": "httpx2-2.13.1-py3-none-any.whl",
+      "bytes": 95597,
+      "sha256": "6dff50fabc270ee5fd25d845d0b078ed20564579744d6d962850975996d2f9a4"
     },
     {
       "filename": "httpx_sse-0.4.3-py3-none-any.whl",

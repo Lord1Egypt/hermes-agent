@@ -27,11 +27,19 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import com.mobilefork.hermesagent.device.SharedFolderWorkspaceCopy
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.atomic.AtomicLong
 
 data class WorkspaceFileUi(
     val name: String,
     val sizeLabel: String,
     val modifiedLabel: String,
+    val isDirectory: Boolean = false,
 )
 
 data class DeviceUiState(
@@ -39,6 +47,9 @@ data class DeviceUiState(
     val workspaceFiles: List<WorkspaceFileUi> = emptyList(),
     val sharedFolderLabel: String = "No shared folder granted yet",
     val sharedFolderUri: String = "",
+    val sharedFolderCopyInProgress: Boolean = false,
+    val sharedFolderCopyPath: String = "",
+    val sharedFolderCopyError: String = "",
     val linuxEnabled: Boolean = false,
     val linuxAndroidAbi: String = "",
     val linuxTermuxArch: String = "",
@@ -98,8 +109,6 @@ data class DeviceUiState(
     val diagnosticsLogCapturedAtLabel: String = "",
     val diagnosticsLogExceptionType: String = "",
     val diagnosticsLogPreviewLines: List<String> = emptyList(),
-    val diagnosticsLogExportFileName: String = "hermes-diagnostics-logs.txt",
-    val diagnosticsLogExportReady: Boolean = true,
     val lastCrashPresent: Boolean = false,
     val resizableWindowSupport: Boolean = true,
     val freeformWindowSupported: Boolean = false,
@@ -108,6 +117,12 @@ data class DeviceUiState(
 
 class DeviceViewModel(application: Application) : AndroidViewModel(application) {
     private val capabilityStore = DeviceCapabilityStore(application)
+    private val folderCopyGeneration = AtomicLong()
+    private val folderCopyMutex = Mutex()
+    private var folderCopyJob: Job? = null
+    private var folderCopyBusy = false
+    private var folderCopyPath = ""
+    private var folderCopyError = ""
 
     private val _uiState = MutableStateFlow(
         buildState(DeviceOperationStatus.LinuxSuiteProvisioning),
@@ -249,28 +264,79 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
 
     fun rememberSharedFolder(uri: Uri) {
         val context = getApplication<Application>()
-        runCatching {
-            context.contentResolver.takePersistableUriPermission(
-                uri,
-                android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
-            )
+        val read = android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+        val write = android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        try {
+            try {
+                context.contentResolver.takePersistableUriPermission(uri, read or write)
+            } catch (_: SecurityException) {
+                // Read-only providers still support an explicit workspace snapshot.
+                context.contentResolver.takePersistableUriPermission(uri, read)
+            }
+            check(context.contentResolver.persistedUriPermissions.any { it.uri == uri && it.isReadPermission }) {
+                "The provider did not retain read permission; select the folder again"
+            }
+            val label = DocumentFile.fromTreeUri(context, uri)?.name?.takeIf { it.isNotBlank() }
+                ?: "Granted folder"
+            capabilityStore.saveSharedFolder(uri.toString(), label)
+            copySharedFolderToWorkspace()
+        } catch (error: Exception) {
+            folderCopyError = deviceDiagnosticDetail(error)
+            refresh()
         }
-        val label = DocumentFile.fromTreeUri(context, uri)?.name?.takeIf { it.isNotBlank() }
-            ?: uri.lastPathSegment?.takeIf { it.isNotBlank() }
-            ?: "Granted folder"
-        capabilityStore.saveSharedFolder(uri.toString(), label)
-        refresh(DeviceOperationStatus.SharedFolderSaved(label))
+    }
+
+    fun copySharedFolderToWorkspace() {
+        val uri = capabilityStore.load().sharedFolderUri.takeIf { it.isNotBlank() } ?: return
+        folderCopyJob?.cancel()
+        val generation = folderCopyGeneration.incrementAndGet()
+        folderCopyBusy = true
+        folderCopyError = ""
+        folderCopyPath = ""
+        refresh()
+        folderCopyJob = viewModelScope.launch {
+            try {
+                val result = folderCopyMutex.withLock {
+                    runInterruptible(Dispatchers.IO) {
+                        SharedFolderWorkspaceCopy.copy(getApplication(), Uri.parse(uri)) {
+                            if (folderCopyGeneration.get() != generation) throw CancellationException("Folder selection changed")
+                        }
+                    }
+                }
+                if (folderCopyGeneration.get() == generation) folderCopyPath = result.directory.absolutePath
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                if (folderCopyGeneration.get() == generation) folderCopyError = deviceDiagnosticDetail(error)
+            } finally {
+                if (folderCopyGeneration.get() == generation) {
+                    folderCopyBusy = false
+                    refresh()
+                }
+            }
+        }
+    }
+
+    fun cancelSharedFolderCopy() {
+        folderCopyGeneration.incrementAndGet()
+        folderCopyJob?.cancel()
+        folderCopyBusy = false
+        refresh()
     }
 
     fun clearSharedFolder() {
+        cancelSharedFolderCopy()
         val context = getApplication<Application>()
         val stored = capabilityStore.load()
         if (stored.sharedFolderUri.isNotBlank()) {
             runCatching {
-                context.contentResolver.releasePersistableUriPermission(
-                    Uri.parse(stored.sharedFolderUri),
-                    android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
-                )
+                val uri = Uri.parse(stored.sharedFolderUri)
+                context.contentResolver.persistedUriPermissions.firstOrNull { it.uri == uri }?.let { permission ->
+                    var flags = 0
+                    if (permission.isReadPermission) flags = flags or android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    if (permission.isWritePermission) flags = flags or android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    context.contentResolver.releasePersistableUriPermission(uri, flags)
+                }
             }
         }
         capabilityStore.clearSharedFolder()
@@ -293,21 +359,6 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
                 refresh(DeviceOperationStatus.WorkspaceFileExported(fileName))
             }.getOrElse { error ->
                 refresh(DeviceOperationStatus.WorkspaceExportFailed(deviceDiagnosticDetail(error)))
-            }
-        }
-    }
-
-    fun exportDiagnosticsLogs(destinationUri: Uri) {
-        viewModelScope.launch {
-            runCatching {
-                val context = getApplication<Application>()
-                val exportText = HermesCrashLogStore.exportLogsText(context)
-                context.contentResolver.openOutputStream(destinationUri)?.use { output ->
-                    output.write(exportText.toByteArray(Charsets.UTF_8))
-                } ?: throw IOException("Unable to open diagnostics log export destination")
-                refresh(DeviceOperationStatus.DiagnosticsExported)
-            }.getOrElse { error ->
-                refresh(DeviceOperationStatus.DiagnosticsExportFailed(deviceDiagnosticDetail(error)))
             }
         }
     }
@@ -376,12 +427,13 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
         val workspaceFiles = workspace
             .listFiles()
             .orEmpty()
-            .filter { it.isFile }
+            .filter { it.isFile || (it.isDirectory && it.name.startsWith("shared-")) }
             .sortedByDescending { it.lastModified() }
             .take(12)
             .map { file ->
                 WorkspaceFileUi(
                     name = file.name,
+                    isDirectory = file.isDirectory,
                     sizeLabel = Formatter.formatShortFileSize(context, file.length()),
                     modifiedLabel = DateFormat.format("yyyy-MM-dd HH:mm", file.lastModified()).toString(),
                 )
@@ -392,6 +444,9 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
             workspaceFiles = workspaceFiles,
             sharedFolderLabel = sharedFolder.sharedFolderLabel.ifBlank { "No shared folder granted yet" },
             sharedFolderUri = sharedFolder.sharedFolderUri,
+            sharedFolderCopyInProgress = folderCopyBusy,
+            sharedFolderCopyPath = folderCopyPath,
+            sharedFolderCopyError = folderCopyError,
             linuxEnabled = linuxState?.optBoolean("enabled") == true,
             linuxAndroidAbi = linuxState?.optString("android_abi").orEmpty(),
             linuxTermuxArch = linuxState?.optString("termux_arch").orEmpty(),
@@ -456,8 +511,6 @@ class DeviceViewModel(application: Application) : AndroidViewModel(application) 
             diagnosticsLogCapturedAtLabel = crashLogStatus.capturedAtLabel,
             diagnosticsLogExceptionType = crashLogStatus.exceptionType,
             diagnosticsLogPreviewLines = crashLogStatus.previewLines,
-            diagnosticsLogExportFileName = crashLogStatus.exportFileName,
-            diagnosticsLogExportReady = crashLogStatus.hasLastCrash || crashLogStatus.logBytes > 0,
             lastCrashPresent = crashLogStatus.hasLastCrash,
             resizableWindowSupport = systemStatus.resizableWindowSupport,
             freeformWindowSupported = systemStatus.freeformWindowSupported,

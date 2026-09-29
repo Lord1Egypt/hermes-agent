@@ -1,0 +1,100 @@
+{
+  "schema": "agent-apk-optional-js-surface-v1",
+  "checked_at": "2026-09-27T17:51:10.930580+00:00",
+  "apk_sha256": "a4a6a9147757be1c2c4a55620621d561fcccdf898cd1913cd003d754c5003fa6",
+  "apk_bytes": 371213666,
+  "node_modules_found": [],
+  "retained_script_or_template_assets": [
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "optional-skills/creative/concept-diagrams/templates/template.html"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "optional-skills/creative/pretext/templates/donut-orbit.html"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "optional-skills/creative/pretext/templates/hello-orb-flow.html"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "optional-skills/creative/tldraw-offline/scripts/counter.js"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "optional-skills/creative/tldraw-offline/scripts/main.js"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "optional-skills/creative/tldraw-offline/scripts/validate_shapes.mjs"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "optional-skills/research/gitnexus-explorer/scripts/proxy.mjs"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "skills/autonomous-ai-agents/hermes-agent/templates/clock.mjs"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "skills/autonomous-ai-agents/hermes-agent/templates/plugin.js"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "skills/creative/architecture-diagram/templates/template.html"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "skills/creative/p5js/scripts/export-frames.js"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "skills/creative/p5js/templates/viewer.html"
+    },
+    {
+      "archive": "assets/chaquopy/requirements-common.imy",
+      "path": "urllib3/contrib/emscripten/emscripten_fetch_worker.js"
+    },
+    {
+      "archive": "apk",
+      "path": "assets/hermes-linux/arm64-v8a/prefix/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib/emscripten/emscripten_fetch_worker.js"
+    },
+    {
+      "archive": "apk",
+      "path": "assets/hermes-linux/arm64-v8a/prefix/share/gitweb/static/gitweb.js"
+    },
+    {
+      "archive": "apk",
+      "path": "assets/hermes-linux/x86_64/prefix/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib/emscripten/emscripten_fetch_worker.js"
+    },
+    {
+      "archive": "apk",
+      "path": "assets/hermes-linux/x86_64/prefix/share/gitweb/static/gitweb.js"
+    }
+  ],
+  "scanner_packages_not_present_as_same_python_distribution": [
+    "@vitest/mocker",
+    "@xmldom/xmldom",
+    "baseline-browser-mapping",
+    "browserslist",
+    "chromadb",
+    "colord",
+    "electron",
+    "extract-zip",
+    "fast-uri",
+    "h2",
+    "hpack",
+    "joi",
+    "js-yaml",
+    "nanoid",
+    "qs",
+    "sharp",
+    "svgo",
+    "tornado",
+    "vitest"
+  ],
+  "interpretation": "The scanned root/website/desktop/WhatsApp npm installations are not shipped as installed Node trees in this APK. The listed skill templates, gitweb assets and Python-vendored workers are distinct assets, not proof that every JavaScript file is absent.",
+  "scope_limit": "Optional tools installed after launch and host CI/website dependencies remain separately actionable. No vulnerability ignore is introduced, and this is not a JavaScript source audit or a full native dependency scan."
+}

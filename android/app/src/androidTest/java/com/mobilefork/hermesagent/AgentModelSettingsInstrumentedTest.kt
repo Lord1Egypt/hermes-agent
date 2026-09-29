@@ -74,6 +74,11 @@ class AgentModelSettingsInstrumentedTest {
             compose.onNodeWithText(modelSettingsText(language, "choose")).assertIsDisplayed()
             capture("models-${language.tag}")
             compose.onNodeWithTag("HermesSettingsContentList")
+                .performScrollToNode(hasTestTag("ExportDiagnosticLog"))
+            compose.onNodeWithTag("ExportDiagnosticLog").assertIsDisplayed().assertIsEnabled()
+                .assertTextEquals(com.mobilefork.hermesagent.ui.i18n.diagnosticsExportText(language, "export"))
+            capture("diagnostic-export-${language.tag}")
+            compose.onNodeWithTag("HermesSettingsContentList")
                 .performScrollToNode(hasTestTag("ModelSettings-generation"))
             compose.onNodeWithTag("HermesSettingsPage_Models").performClick()
             compose.onNodeWithTag("HermesImportModelButton").assertIsDisplayed()
@@ -98,8 +103,17 @@ class AgentModelSettingsInstrumentedTest {
         }
         assertTrue("The system file picker must open while Agent is offline", pickerVisible)
         capture("system-file-picker")
-        assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
-        compose.waitForIdle()
+        // The picker may reopen in a nested folder last chosen by another SAF flow.
+        // Back navigation inside DocumentsUI is not yet a cancelled activity result.
+        repeat(8) {
+            if (automation.rootInActiveWindow?.packageName?.toString()?.contains("documentsui", true) == true) {
+                assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
+                SystemClock.sleep(350)
+            }
+        }
+        compose.waitUntil(15_000) {
+            runCatching { compose.onNodeWithTag("HermesImportModelButton").isDisplayed() }.getOrDefault(false)
+        }
         compose.onNodeWithTag("HermesImportModelButton").assertIsDisplayed().assertIsEnabled()
         assertEquals("none", AppSettingsStore(app).load().onDeviceBackend)
     }

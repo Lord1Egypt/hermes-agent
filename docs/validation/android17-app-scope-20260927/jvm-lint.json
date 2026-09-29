@@ -1,0 +1,31 @@
+{
+  "source": "29f67301cb4ce9e1d3d32d994d939d2d340df7da",
+  "junit": {
+    "Full": {
+      "tests": 1055,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 118
+    },
+    "Play": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 9
+    }
+  },
+  "lint": {
+    "Full": {
+      "errors": 0,
+      "warnings": 58
+    },
+    "Play": {
+      "errors": 0,
+      "warnings": 61
+    }
+  },
+  "reason": "F-Droid clean removed live unit XML; regenerate exact-source reports without repeating device or F-Droid tests",
+  "new_execution_environments": 0
+}

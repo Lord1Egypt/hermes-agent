@@ -1,0 +1,62 @@
+{
+  "artifact_name": "hermes-android-perfetto-v0.13.159-28f08ed64fea27dbfdf233f3600272ebafed842fa5bc47e58284f149a546d2ce",
+  "evidence_run_id": "v0.13.159-28f08ed64fea27db-20260928",
+  "repository": "adybag14-cyber/hermes-agent",
+  "schema": "hermes-android-perfetto-release-source-v1",
+  "source_digest": "28f08ed64fea27dbfdf233f3600272ebafed842fa5bc47e58284f149a546d2ce",
+  "tag": "v0.13.159",
+  "trace_bytes": 174395965,
+  "trace_file_count": 10,
+  "traces": [
+    {
+      "bytes": 22039077,
+      "path": "phone-compact.traces/iteration-001.perfetto-trace",
+      "sha256": "eb531cd64d12526144cceaba5e851e8275b8b37362e6a600004b76cabf46a7c1"
+    },
+    {
+      "bytes": 15692805,
+      "path": "phone-compact.traces/iteration-002.perfetto-trace",
+      "sha256": "796d81750b1ba38ed0efea22f1cbf73bbcfe55a0cc022d0aa40fe9f81fe08e41"
+    },
+    {
+      "bytes": 17476596,
+      "path": "phone-compact.traces/iteration-003.perfetto-trace",
+      "sha256": "85f818512a609b29cd4a7dac873fcd1a3cd388f110cd18567f042198cba3d3ff"
+    },
+    {
+      "bytes": 24744909,
+      "path": "phone-compact.traces/iteration-004.perfetto-trace",
+      "sha256": "6b2ca6696432048698dac903373aa3ca58c04613728a8c138b20223bf0c5b4ae"
+    },
+    {
+      "bytes": 16127001,
+      "path": "phone-compact.traces/iteration-005.perfetto-trace",
+      "sha256": "58fd9662be7e33f9afeb6ef955ea1a49a29999ece4cfe67368bedee097257ec7"
+    },
+    {
+      "bytes": 16215460,
+      "path": "tablet.traces/iteration-001.perfetto-trace",
+      "sha256": "2eab6be96a5519ae40a122c9bf4c321c4a4b04080b7f114d01fe94964122aba8"
+    },
+    {
+      "bytes": 15832473,
+      "path": "tablet.traces/iteration-002.perfetto-trace",
+      "sha256": "a38f8ab75a4eb0b3f1d911d0661369d93497695134893b04cf602bc3dde2356c"
+    },
+    {
+      "bytes": 15319264,
+      "path": "tablet.traces/iteration-003.perfetto-trace",
+      "sha256": "921e63503813832302777b63ddba1f04deec0146cafd60b535b88ebde0973496"
+    },
+    {
+      "bytes": 15459082,
+      "path": "tablet.traces/iteration-004.perfetto-trace",
+      "sha256": "7d4437b8d14648bbc9f10730d299b3d80b9515bc59d46345722a1ccd767637bd"
+    },
+    {
+      "bytes": 15489298,
+      "path": "tablet.traces/iteration-005.perfetto-trace",
+      "sha256": "aeca1bb599e6feefff243825818a3bb5d05453d68cd2348b4051e7c7f99ff959"
+    }
+  ]
+}

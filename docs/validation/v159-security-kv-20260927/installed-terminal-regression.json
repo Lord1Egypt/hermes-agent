@@ -1,0 +1,32 @@
+{
+  "source": "d5732582aaf737a303ec7f39605b0ef27f0eace4",
+  "finished_at": "2026-09-27T18:53:05.947150+00:00",
+  "existing_AVD": "Agent_API37_Issue24_20260927",
+  "api": 37,
+  "new_environment": false,
+  "old_native_pip": {
+    "pip": "26.1.2",
+    "pip_module": "/data/user/0/com.mobilefork.hermesagent/files/hermes-home/linux/x86_64/prefix/lib/python3.14/site-packages/pip/__init__.py",
+    "idna": "3.11",
+    "urllib3": "2.6.3",
+    "derived_filename": "a/b.whl",
+    "single_component": false,
+    "network_requests": 0,
+    "file_writes": 0
+  },
+  "new_native_pip": {
+    "pip": "26.2.1",
+    "pip_module": "/data/data/com.mobilefork.hermesagent/files/hermes-home/linux/x86_64/prefix/lib/python3.14/site-packages/pip/__init__.py",
+    "idna": "3.18",
+    "urllib3": "2.7.0",
+    "derived_filename": "a%2Fb.whl",
+    "single_component": true,
+    "network_requests": 0,
+    "file_writes": 0
+  },
+  "old_url_behavior_reproduced": true,
+  "new_url_component_regression_passed": true,
+  "installed_tests_passed": 4,
+  "app_data_preserved": true,
+  "scope": "Real APK upgrade in the owned debug AVD; no malicious network server, file overwrite, or public signed-update claim."
+}

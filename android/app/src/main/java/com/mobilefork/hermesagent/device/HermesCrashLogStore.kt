@@ -73,7 +73,7 @@ object HermesCrashLogStore {
             capturedAtLabel = capturedAtLabel,
             exceptionType = exceptionType,
             previewLines = previewLines,
-            exportFileName = "hermes-diagnostics-logs.txt",
+            exportFileName = "agent-diagnostics-logs.txt",
             logBytes = if (logFile.isFile) logFile.length() else 0L,
             lastCrashBytes = if (crashFile.isFile) crashFile.length() else 0L,
             captureInstalled = installed,
@@ -104,7 +104,7 @@ object HermesCrashLogStore {
         return JSONObject()
             .put("success", true)
             .put("action", "diagnostics_log_export")
-            .put("suggested_file_name", "hermes-diagnostics-logs.txt")
+            .put("suggested_file_name", "agent-diagnostics-logs.txt")
             .put("mime_type", "text/plain")
             .put("content", exportText)
             .put("content_bytes", exportText.toByteArray(Charsets.UTF_8).size)
@@ -118,9 +118,15 @@ object HermesCrashLogStore {
             .appendLine("Agent diagnostics logs")
             .appendLine("Generated: ${formatTimestamp(System.currentTimeMillis())}")
             .appendLine("Crash capture installed: ${snapshot.captureInstalled}")
-            .appendLine("PII filter: emails, bearer/API tokens, phone-like numbers, and obvious user paths are redacted.")
+            .appendLine("Report schema: agent-diagnostic-report-v1")
+            .appendLine("Scope: app/device identity, current memory, last model start, saved crash and diagnostic events.")
+            .appendLine("No chat history, provider settings, device-unique IDs or system-wide logcat are collected.")
+            .appendLine("Known secret patterns are redacted. Model filenames and error details may remain; review before sharing.")
             .appendLine()
-            .appendLine("Status: ${snapshot.statusLabel}")
+            .appendLine("Status: ${redactForDiagnostics(snapshot.statusLabel).text}")
+            .appendLine()
+            .appendLine("Native model memory diagnostics (available before model startup)")
+            .appendLine(LocalModelRuntimeDiagnostics.exportSupportSnapshot(appContext))
 
         readLastCrashJson(appContext)?.let { crash ->
             builder
@@ -129,22 +135,28 @@ object HermesCrashLogStore {
                 .appendLine(crash.toString(2))
         }
 
-        LocalModelRuntimeDiagnostics.readSnapshot(appContext)?.let { runtime ->
-            builder
-                .appendLine()
-                .appendLine("Last local-model runtime attempt")
-                .appendLine(runtime.toString(2))
-        }
-
         val logFile = diagnosticsLogFile(appContext)
         if (logFile.isFile) {
             builder
                 .appendLine()
                 .appendLine("Recent diagnostic events")
-                .appendLine(logFile.readText().takeLast(MAX_EXPORT_LOG_CHARS))
+                .appendLine(readDiagnosticTail(logFile).lineSequence().joinToString("\n") { line ->
+                    runCatching { redactJsonForDiagnostics(JSONObject(line)).toString() }
+                        .getOrElse { redactForDiagnostics(line).text }
+                })
         }
 
-        return redactForDiagnostics(builder.toString()).text
+        return builder.appendLine().appendLine("End of Agent diagnostics").toString()
+    }
+
+    private fun readDiagnosticTail(file: File): String = java.io.RandomAccessFile(file, "r").use { input ->
+        val offset = (input.length() - MAX_EXPORT_LOG_CHARS).coerceAtLeast(0L)
+        input.seek(offset)
+        val bytes = ByteArray((input.length() - offset).toInt())
+        input.readFully(bytes)
+        val text = bytes.toString(Charsets.UTF_8)
+        // Do not export a sliced first event whose beginning/redaction context is missing.
+        if (offset > 0L) "[Earlier diagnostic events omitted]\n" + text.substringAfter('\n', "") else text
     }
 
     fun clearLastCrash(context: Context) {
@@ -328,7 +340,7 @@ object HermesCrashLogStore {
                 .put("level", level)
                 .put("message", redactForDiagnostics(message).text)
             if (payload != null) {
-                event.put("payload", JSONObject(redactForDiagnostics(payload.toString()).text))
+                event.put("payload", redactJsonForDiagnostics(payload))
             }
 
             val logFile = diagnosticsLogFile(context)
@@ -343,7 +355,11 @@ object HermesCrashLogStore {
         val file = lastCrashFile(context.applicationContext)
         if (!file.isFile) return null
         return runCatching {
-            JSONObject(redactForDiagnostics(file.readText(Charsets.UTF_8)).text)
+            if (file.length() > 128 * 1024) {
+                JSONObject().put("message", "Saved crash record exceeds 128 KiB; not included")
+            } else {
+                redactJsonForDiagnostics(JSONObject(file.readText(Charsets.UTF_8)))
+            }
         }.getOrNull()
     }
 
@@ -374,6 +390,26 @@ object HermesCrashLogStore {
                     .put("phone_like_number")
                     .put("obvious_user_path"),
             )
+    }
+
+    /** Redact string values, not JSON syntax or numeric RAM counters mistaken for phone numbers. */
+    internal fun redactJsonForDiagnostics(value: JSONObject): JSONObject = redactJsonValue(value, 0) as JSONObject
+
+    private fun redactJsonValue(value: Any?, depth: Int): Any? {
+        if (depth > 16) return "[Diagnostic nesting truncated]"
+        return when (value) {
+            is JSONObject -> JSONObject().also { output ->
+                value.keys().forEach { key ->
+                    output.put(key, if (DIAGNOSTIC_SECRET_FIELD.matches(key)) "[REDACTED_SECRET]"
+                        else redactJsonValue(value.opt(key), depth + 1))
+                }
+            }
+            is JSONArray -> JSONArray().also { output ->
+                for (index in 0 until value.length()) output.put(redactJsonValue(value.opt(index), depth + 1))
+            }
+            is String -> redactForDiagnostics(value).text
+            else -> value
+        }
     }
 
     internal fun redactForDiagnostics(value: String): RedactionResult {
@@ -481,6 +517,10 @@ object HermesCrashLogStore {
     private const val MAX_EXIT_TRACE_CHARS = 32_000
     private const val PROCESS_EXIT_PREFS = "hermes_android_process_exit_diagnostics"
     private const val KEY_LAST_EXIT_TIMESTAMP = "last_exit_timestamp"
+
+    private val DIAGNOSTIC_SECRET_FIELD = Regex(
+        "(?i)(?:api[_-]?key|(?:access|refresh|session|auth|bearer)[_-]?token|token|secret|password|authorization|client[_-]?secret|.*_API_KEY|.*_TOKEN)",
+    )
 
     private val EMAIL_REGEX = Regex("""(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b""")
     private val AUTHORIZATION_BEARER_REGEX = Regex("""(?i)\b(authorization\s*[:=]\s*bearer\s+)([^\s"',;\\]+)""")

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "installed-tests.log",
+    "raw_sha256": "8d498da0f201c851279d44454da66832047eb10cbedd079d1bc26d4bfc8dd226",
+    "review_sha256": "380d6f5cee2d2824bb8d7c2d691199fa53b1f0303d4e08733e68bac7cbf21508"
+  },
+  {
+    "name": "fdroid-source-digest.log",
+    "raw_sha256": "972f14463e2d81b8d37472d89205ea88310a8e65cd9e309ef04af67d0b904e69",
+    "review_sha256": "4307bf082f3ca29da3bf608f0e11c8b9bfa5271fd4acb32292afeb3198729dc2"
+  },
+  {
+    "name": "fdroid-build-milestones.log",
+    "raw_bytes": 367430,
+    "raw_sha256": "d3c30c6cf04265aa7d51ca2d5ff4e89672ae03c29568408a51c5f007d5d7339e"
+  },
+  {
+    "name": "python-milestones.log",
+    "raw_bytes": 9221,
+    "raw_sha256": "be1b33ba4bab04337825acf1da6c5dc4df48f8de70c34036fbfa859246336528"
+  }
+]

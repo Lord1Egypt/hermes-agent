@@ -23,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import com.mobilefork.hermesagent.ui.i18n.sharedFolderCopyText
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -84,11 +86,6 @@ fun DeviceScreen(
         }
         pendingExportFile = null
     }
-    val diagnosticsLogExportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-        if (uri != null) {
-            viewModel.exportDiagnosticsLogs(uri)
-        }
-    }
     val notificationPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         viewModel.refresh(
             DeviceOperationStatus.PermissionResult(DevicePermission.Notifications, granted),
@@ -111,7 +108,7 @@ fun DeviceScreen(
                 ),
                 ShellActionItem(
                     label = strings.deviceGrantSharedFolderLabel(),
-                    description = strings.deviceGrantSharedFolderDescription(),
+                    description = sharedFolderCopyText(strings.language, "help"),
                     iconRes = R.drawable.ic_nav_device,
                     onClick = { sharedFolderLauncher.launch(null) },
                 ),
@@ -236,7 +233,6 @@ fun DeviceScreen(
                 )
                     DiagnosticsLogCard(
                     uiState = uiState,
-                    onExport = { diagnosticsLogExportLauncher.launch(uiState.diagnosticsLogExportFileName) },
                     onClearLastCrash = viewModel::clearLastCrashDiagnostics,
                 )
                     AccessibilityCard(
@@ -251,6 +247,8 @@ fun DeviceScreen(
                     onImportFile = { importLauncher.launch(arrayOf("*/*")) },
                     onGrantFolder = { sharedFolderLauncher.launch(null) },
                     onClearFolder = viewModel::clearSharedFolder,
+                    onCopyFolder = viewModel::copySharedFolderToWorkspace,
+                    onCancelCopy = viewModel::cancelSharedFolderCopy,
                     onRefresh = viewModel::refresh,
                     onExport = { fileName ->
                         pendingExportFile = fileName
@@ -372,7 +370,6 @@ private fun DeviceStatusPill(text: String, active: Boolean) {
 @Composable
 private fun DiagnosticsLogCard(
     uiState: DeviceUiState,
-    onExport: () -> Unit,
     onClearLastCrash: () -> Unit,
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
@@ -411,9 +408,7 @@ private fun DiagnosticsLogCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Button(onClick = onExport, enabled = uiState.diagnosticsLogExportReady) {
-                    Text(strings.diagnosticsExportLogsLabel())
-                }
+                com.mobilefork.hermesagent.ui.diagnostics.DiagnosticsExportControls()
                 Button(onClick = onClearLastCrash, enabled = uiState.lastCrashPresent) {
                     Text(strings.diagnosticsClearLastCrashLabel())
                 }
@@ -943,6 +938,8 @@ private fun WorkspaceAccessCard(
     onImportFile: () -> Unit,
     onGrantFolder: () -> Unit,
     onClearFolder: () -> Unit,
+    onCopyFolder: () -> Unit,
+    onCancelCopy: () -> Unit,
     onRefresh: () -> Unit,
     onExport: (String) -> Unit,
 ) {
@@ -955,7 +952,30 @@ private fun WorkspaceAccessCard(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Text(strings.deviceWorkspaceAccessTitle(), style = MaterialTheme.typography.titleMedium)
-            Text(strings.deviceWorkspaceAccessDescription())
+            Text(sharedFolderCopyText(strings.language, "help"))
+            Text(sharedFolderCopyText(strings.language, "limits"), style = MaterialTheme.typography.bodySmall)
+            SelectionContainer { Text(uiState.workspacePath + "\nproot: /workspace", style = MaterialTheme.typography.bodySmall) }
+            if (uiState.sharedFolderCopyPath.isNotBlank()) {
+                SelectionContainer {
+                    Text(sharedFolderCopyText(strings.language, "done") + ": " + uiState.sharedFolderCopyPath +
+                        "\nproot: /workspace/" + java.io.File(uiState.sharedFolderCopyPath).name,
+                        modifier = Modifier.testTag("SharedFolderWorkspacePath"))
+                }
+            }
+            if (uiState.sharedFolderCopyError.isNotBlank()) {
+                SelectionContainer {
+                    Text(sharedFolderCopyText(strings.language, "failed") + ": " + uiState.sharedFolderCopyError,
+                        color = MaterialTheme.colorScheme.error)
+                }
+            }
+            Button(
+                onClick = if (uiState.sharedFolderCopyInProgress) onCancelCopy else onCopyFolder,
+                enabled = uiState.sharedFolderUri.isNotBlank(),
+                modifier = Modifier.testTag("SharedFolderWorkspaceCopyButton"),
+            ) {
+                Text(sharedFolderCopyText(strings.language, if (uiState.sharedFolderCopyInProgress) "cancel" else "copy"))
+            }
+            if (uiState.sharedFolderCopyInProgress) Text(sharedFolderCopyText(strings.language, "busy"))
             Text(strings.deviceSharedFolderLabel(uiState.sharedFolderLabel), style = MaterialTheme.typography.bodySmall)
             if (uiState.sharedFolderUri.isNotBlank()) {
                 Text(uiState.sharedFolderUri, style = MaterialTheme.typography.bodySmall)
@@ -968,7 +988,7 @@ private fun WorkspaceAccessCard(
                 Button(onClick = onImportFile, modifier = Modifier.widthIn(min = 144.dp)) {
                     Text(strings.deviceImportFileLabel())
                 }
-                Button(onClick = onGrantFolder, modifier = Modifier.widthIn(min = 144.dp)) {
+                Button(onClick = onGrantFolder, modifier = Modifier.widthIn(min = 144.dp).testTag("GrantSharedFolderButton")) {
                     Text(strings.deviceGrantFolderLabel())
                 }
             }
@@ -1008,7 +1028,7 @@ private fun WorkspaceAccessCard(
                                 strings.deviceWorkspaceFileUpdated(file.sizeLabel, file.modifiedLabel),
                                 style = MaterialTheme.typography.bodySmall,
                             )
-                            Button(onClick = { onExport(file.name) }) {
+                            if (!file.isDirectory) Button(onClick = { onExport(file.name) }) {
                                 Text(strings.deviceExportLabel())
                             }
                         }

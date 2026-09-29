@@ -1,0 +1,10 @@
+{
+  "host_path": "D:\\HermesModels\\issue24\\gemma-4-E2B-it-Q3_K_M.gguf",
+  "repository": "unsloth/gemma-4-E2B-it-GGUF",
+  "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+  "file": "gemma-4-E2B-it-Q3_K_M.gguf",
+  "bytes": 2536786016,
+  "sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+  "exact_reporter_variant_confirmed": false,
+  "checked_at": "2026-09-27T14:23:43.275141+00:00"
+}

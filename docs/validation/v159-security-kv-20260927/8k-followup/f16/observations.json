@@ -1,0 +1,1057 @@
+[
+  {
+    "at": "2026-09-27T19:46:17.150916+00:00",
+    "host_cpu_percent": 13.56571502893933,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 10460,
+      "native_pid": 3695,
+      "memory_samples": 20,
+      "peak_native_rss_kib": 2655668,
+      "peak_native_pss_kib": 2652783,
+      "last_native_progress": "0.04.966.429 I slot print_timing: id  0 | task 0 |        eval time =     162.57 ms /     2 tokens (   81.28 ms per token,    12.30 tokens per second)",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:46:32.236985+00:00",
+    "host_cpu_percent": 15.416504728591784,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 20942,
+      "native_pid": 3695,
+      "memory_samples": 40,
+      "peak_native_rss_kib": 2656204,
+      "peak_native_pss_kib": 2653319,
+      "last_native_progress": "0.13.284.638 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =     64, progress = 0.01, t =   8.22 s / 7.78 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:46:47.374032+00:00",
+    "host_cpu_percent": 23.719850380497874,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 42972,
+      "native_pid": 3695,
+      "memory_samples": 80,
+      "peak_native_rss_kib": 2656204,
+      "peak_native_pss_kib": 2653319,
+      "last_native_progress": "0.37.037.184 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =    256, progress = 0.04, t =  31.97 s / 8.01 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:47:05.024683+00:00",
+    "host_cpu_percent": 33.46515486725664,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 58568,
+      "native_pid": 3695,
+      "memory_samples": 109,
+      "peak_native_rss_kib": 2656216,
+      "peak_native_pss_kib": 2653331,
+      "last_native_progress": "0.54.381.475 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =    384, progress = 0.06, t =  49.32 s / 7.79 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:47:20.194714+00:00",
+    "host_cpu_percent": 37.51609165808445,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 68998,
+      "native_pid": 3695,
+      "memory_samples": 129,
+      "peak_native_rss_kib": 2656224,
+      "peak_native_pss_kib": 2653339,
+      "last_native_progress": "1.02.736.572 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =    448, progress = 0.07, t =  57.67 s / 7.77 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:47:35.313648+00:00",
+    "host_cpu_percent": 24.201783867631853,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 84830,
+      "native_pid": 3695,
+      "memory_samples": 159,
+      "peak_native_rss_kib": 2656244,
+      "peak_native_pss_kib": 2653359,
+      "last_native_progress": "1.20.177.308 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =    576, progress = 0.09, t =  75.11 s / 7.67 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:47:50.401344+00:00",
+    "host_cpu_percent": 30.586827122153203,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 100602,
+      "native_pid": 3695,
+      "memory_samples": 189,
+      "peak_native_rss_kib": 2656256,
+      "peak_native_pss_kib": 2653372,
+      "last_native_progress": "1.37.509.542 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =    704, progress = 0.11, t =  92.45 s / 7.62 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:48:05.503045+00:00",
+    "host_cpu_percent": 25.443193581780545,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 116323,
+      "native_pid": 3695,
+      "memory_samples": 219,
+      "peak_native_rss_kib": 2656264,
+      "peak_native_pss_kib": 2653380,
+      "last_native_progress": "1.55.175.647 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =    832, progress = 0.13, t = 110.11 s / 7.56 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:48:20.601331+00:00",
+    "host_cpu_percent": 35.36065149948294,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 132225,
+      "native_pid": 3695,
+      "memory_samples": 249,
+      "peak_native_rss_kib": 2656268,
+      "peak_native_pss_kib": 2653384,
+      "last_native_progress": "2.04.169.361 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =    896, progress = 0.14, t = 119.11 s / 7.52 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:48:35.689212+00:00",
+    "host_cpu_percent": 43.26101036269429,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 148046,
+      "native_pid": 3695,
+      "memory_samples": 279,
+      "peak_native_rss_kib": 2656280,
+      "peak_native_pss_kib": 2653396,
+      "last_native_progress": "2.22.570.700 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1024, progress = 0.16, t = 137.51 s / 7.45 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:48:53.478212+00:00",
+    "host_cpu_percent": 43.51130377524144,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 164042,
+      "native_pid": 3695,
+      "memory_samples": 309,
+      "peak_native_rss_kib": 2656284,
+      "peak_native_pss_kib": 2653400,
+      "last_native_progress": "2.41.082.530 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1152, progress = 0.18, t = 156.02 s / 7.38 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:49:08.590270+00:00",
+    "host_cpu_percent": 25.339322647362984,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 179799,
+      "native_pid": 3695,
+      "memory_samples": 339,
+      "peak_native_rss_kib": 2656296,
+      "peak_native_pss_kib": 2653412,
+      "last_native_progress": "2.58.708.048 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1280, progress = 0.20, t = 173.65 s / 7.37 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:49:23.695355+00:00",
+    "host_cpu_percent": 28.38999482936918,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 195561,
+      "native_pid": 3695,
+      "memory_samples": 369,
+      "peak_native_rss_kib": 2656300,
+      "peak_native_pss_kib": 2653416,
+      "last_native_progress": "3.07.631.023 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1344, progress = 0.21, t = 182.57 s / 7.36 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:49:38.859583+00:00",
+    "host_cpu_percent": 27.951030927835053,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 211297,
+      "native_pid": 3695,
+      "memory_samples": 399,
+      "peak_native_rss_kib": 2656304,
+      "peak_native_pss_kib": 2653420,
+      "last_native_progress": "3.25.962.315 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1472, progress = 0.23, t = 200.90 s / 7.33 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:49:53.967032+00:00",
+    "host_cpu_percent": 31.91248707342296,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 227137,
+      "native_pid": 3695,
+      "memory_samples": 429,
+      "peak_native_rss_kib": 2656316,
+      "peak_native_pss_kib": 2653432,
+      "last_native_progress": "3.44.078.794 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1600, progress = 0.25, t = 219.02 s / 7.31 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:50:09.106976+00:00",
+    "host_cpu_percent": 43.714525283797734,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 237739,
+      "native_pid": 3695,
+      "memory_samples": 449,
+      "peak_native_rss_kib": 2656316,
+      "peak_native_pss_kib": 2653432,
+      "last_native_progress": "3.53.562.437 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1664, progress = 0.26, t = 228.50 s / 7.28 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:50:24.221230+00:00",
+    "host_cpu_percent": 40.033609100310244,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 253601,
+      "native_pid": 3695,
+      "memory_samples": 479,
+      "peak_native_rss_kib": 2656324,
+      "peak_native_pss_kib": 2653440,
+      "last_native_progress": "4.12.178.643 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1792, progress = 0.28, t = 247.12 s / 7.25 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:50:39.329524+00:00",
+    "host_cpu_percent": 40.05299896587383,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 269354,
+      "native_pid": 3695,
+      "memory_samples": 509,
+      "peak_native_rss_kib": 2656332,
+      "peak_native_pss_kib": 2653448,
+      "last_native_progress": "4.21.496.464 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1856, progress = 0.29, t = 256.43 s / 7.24 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:50:54.446019+00:00",
+    "host_cpu_percent": 26.563357546408394,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 285103,
+      "native_pid": 3695,
+      "memory_samples": 539,
+      "peak_native_rss_kib": 2656336,
+      "peak_native_pss_kib": 2653452,
+      "last_native_progress": "4.40.000.989 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   1984, progress = 0.31, t = 274.94 s / 7.22 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:51:09.549387+00:00",
+    "host_cpu_percent": 20.253614983987323,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 300891,
+      "native_pid": 3695,
+      "memory_samples": 569,
+      "peak_native_rss_kib": 2656344,
+      "peak_native_pss_kib": 2653460,
+      "last_native_progress": "4.58.151.097 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2112, progress = 0.33, t = 293.09 s / 7.21 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:51:24.632894+00:00",
+    "host_cpu_percent": 25.670473294296524,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 316650,
+      "native_pid": 3695,
+      "memory_samples": 599,
+      "peak_native_rss_kib": 2656352,
+      "peak_native_pss_kib": 2653468,
+      "last_native_progress": "5.16.403.485 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2240, progress = 0.35, t = 311.34 s / 7.19 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:51:39.738866+00:00",
+    "host_cpu_percent": 25.42943098372853,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 332432,
+      "native_pid": 3695,
+      "memory_samples": 629,
+      "peak_native_rss_kib": 2656356,
+      "peak_native_pss_kib": 2653472,
+      "last_native_progress": "5.25.520.696 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2304, progress = 0.36, t = 320.46 s / 7.19 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:51:54.834695+00:00",
+    "host_cpu_percent": 19.05500614052097,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 348209,
+      "native_pid": 3695,
+      "memory_samples": 659,
+      "peak_native_rss_kib": 2656368,
+      "peak_native_pss_kib": 2653484,
+      "last_native_progress": "5.44.202.364 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2432, progress = 0.38, t = 339.14 s / 7.17 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:52:09.934860+00:00",
+    "host_cpu_percent": 17.710422462314813,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 358644,
+      "native_pid": 3695,
+      "memory_samples": 679,
+      "peak_native_rss_kib": 2656368,
+      "peak_native_pss_kib": 2653484,
+      "last_native_progress": "5.53.239.884 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2496, progress = 0.39, t = 348.18 s / 7.17 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:52:25.016086+00:00",
+    "host_cpu_percent": 20.809585492227978,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 374353,
+      "native_pid": 3695,
+      "memory_samples": 709,
+      "peak_native_rss_kib": 2656376,
+      "peak_native_pss_kib": 2653492,
+      "last_native_progress": "6.11.882.906 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2624, progress = 0.41, t = 366.82 s / 7.15 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:52:40.098638+00:00",
+    "host_cpu_percent": 21.382772020725394,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 390058,
+      "native_pid": 3695,
+      "memory_samples": 739,
+      "peak_native_rss_kib": 2656380,
+      "peak_native_pss_kib": 2653496,
+      "last_native_progress": "6.21.064.578 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2688, progress = 0.42, t = 376.00 s / 7.15 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:52:55.178224+00:00",
+    "host_cpu_percent": 25.51724137931034,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 405771,
+      "native_pid": 3695,
+      "memory_samples": 769,
+      "peak_native_rss_kib": 2656388,
+      "peak_native_pss_kib": 2653504,
+      "last_native_progress": "6.39.758.776 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2816, progress = 0.43, t = 394.70 s / 7.13 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:53:10.264668+00:00",
+    "host_cpu_percent": 42.7249490406704,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 421536,
+      "native_pid": 3695,
+      "memory_samples": 799,
+      "peak_native_rss_kib": 2656396,
+      "peak_native_pss_kib": 2653512,
+      "last_native_progress": "6.58.503.089 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   2944, progress = 0.45, t = 413.44 s / 7.12 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:53:25.399050+00:00",
+    "host_cpu_percent": 27.69285345717234,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 437309,
+      "native_pid": 3695,
+      "memory_samples": 829,
+      "peak_native_rss_kib": 2656404,
+      "peak_native_pss_kib": 2653520,
+      "last_native_progress": "7.08.261.862 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3008, progress = 0.46, t = 423.20 s / 7.11 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:53:40.487655+00:00",
+    "host_cpu_percent": 16.700129533678755,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 452941,
+      "native_pid": 3695,
+      "memory_samples": 859,
+      "peak_native_rss_kib": 2656408,
+      "peak_native_pss_kib": 2653524,
+      "last_native_progress": "7.27.047.201 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3136, progress = 0.48, t = 441.98 s / 7.10 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:53:55.587164+00:00",
+    "host_cpu_percent": 18.236168562564636,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 468696,
+      "native_pid": 3695,
+      "memory_samples": 889,
+      "peak_native_rss_kib": 2656416,
+      "peak_native_pss_kib": 2653532,
+      "last_native_progress": "7.46.150.838 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3264, progress = 0.50, t = 461.09 s / 7.08 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:54:10.675616+00:00",
+    "host_cpu_percent": 17.419041450777208,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 484396,
+      "native_pid": 3695,
+      "memory_samples": 919,
+      "peak_native_rss_kib": 2656420,
+      "peak_native_pss_kib": 2653536,
+      "last_native_progress": "7.55.394.642 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3328, progress = 0.51, t = 470.33 s / 7.08 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:54:25.784549+00:00",
+    "host_cpu_percent": 21.393485005170632,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 494823,
+      "native_pid": 3695,
+      "memory_samples": 939,
+      "peak_native_rss_kib": 2656424,
+      "peak_native_pss_kib": 2653540,
+      "last_native_progress": "8.04.828.576 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3392, progress = 0.52, t = 479.77 s / 7.07 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:54:40.879014+00:00",
+    "host_cpu_percent": 23.498964803312628,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 510580,
+      "native_pid": 3695,
+      "memory_samples": 969,
+      "peak_native_rss_kib": 2656436,
+      "peak_native_pss_kib": 2653552,
+      "last_native_progress": "8.24.540.118 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3520, progress = 0.54, t = 499.48 s / 7.05 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:54:55.960858+00:00",
+    "host_cpu_percent": 20.060170807453414,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 526349,
+      "native_pid": 3695,
+      "memory_samples": 999,
+      "peak_native_rss_kib": 2656440,
+      "peak_native_pss_kib": 2653556,
+      "last_native_progress": "8.43.833.947 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3648, progress = 0.56, t = 518.77 s / 7.03 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:55:11.048381+00:00",
+    "host_cpu_percent": 18.589286870911327,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 542006,
+      "native_pid": 3695,
+      "memory_samples": 1029,
+      "peak_native_rss_kib": 2656444,
+      "peak_native_pss_kib": 2653560,
+      "last_native_progress": "8.53.216.057 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3712, progress = 0.57, t = 528.15 s / 7.03 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:55:26.138460+00:00",
+    "host_cpu_percent": 18.145056935817806,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 557726,
+      "native_pid": 3695,
+      "memory_samples": 1059,
+      "peak_native_rss_kib": 2656452,
+      "peak_native_pss_kib": 2653568,
+      "last_native_progress": "9.12.880.780 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3840, progress = 0.59, t = 547.82 s / 7.01 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:55:41.226021+00:00",
+    "host_cpu_percent": 18.146493102778315,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 573409,
+      "native_pid": 3695,
+      "memory_samples": 1089,
+      "peak_native_rss_kib": 2656460,
+      "peak_native_pss_kib": 2653576,
+      "last_native_progress": "9.32.147.316 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   3968, progress = 0.61, t = 567.08 s / 7.00 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:55:56.313813+00:00",
+    "host_cpu_percent": 27.37124741200828,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 589143,
+      "native_pid": 3695,
+      "memory_samples": 1119,
+      "peak_native_rss_kib": 2656464,
+      "peak_native_pss_kib": 2653580,
+      "last_native_progress": "9.42.270.242 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4032, progress = 0.62, t = 577.21 s / 6.99 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:56:11.428141+00:00",
+    "host_cpu_percent": 25.11957083764219,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 604851,
+      "native_pid": 3695,
+      "memory_samples": 1149,
+      "peak_native_rss_kib": 2656472,
+      "peak_native_pss_kib": 2653588,
+      "last_native_progress": "10.01.989.259 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4160, progress = 0.64, t = 596.93 s / 6.97 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:56:26.511911+00:00",
+    "host_cpu_percent": 18.757683597541252,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 615281,
+      "native_pid": 3695,
+      "memory_samples": 1169,
+      "peak_native_rss_kib": 2656476,
+      "peak_native_pss_kib": 2653592,
+      "last_native_progress": "10.12.156.785 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4224, progress = 0.65, t = 607.09 s / 6.96 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:56:41.593001+00:00",
+    "host_cpu_percent": 32.462275759342006,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 631067,
+      "native_pid": 3695,
+      "memory_samples": 1199,
+      "peak_native_rss_kib": 2656480,
+      "peak_native_pss_kib": 2653596,
+      "last_native_progress": "10.21.865.100 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4288, progress = 0.66, t = 616.80 s / 6.95 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:56:56.716535+00:00",
+    "host_cpu_percent": 36.708206883192354,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 646935,
+      "native_pid": 3695,
+      "memory_samples": 1229,
+      "peak_native_rss_kib": 2656488,
+      "peak_native_pss_kib": 2653604,
+      "last_native_progress": "10.40.895.457 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4416, progress = 0.68, t = 635.83 s / 6.95 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:57:11.894128+00:00",
+    "host_cpu_percent": 26.901168216779837,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 662660,
+      "native_pid": 3695,
+      "memory_samples": 1259,
+      "peak_native_rss_kib": 2656496,
+      "peak_native_pss_kib": 2653612,
+      "last_native_progress": "10.59.709.570 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4544, progress = 0.70, t = 654.65 s / 6.94 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:57:26.985041+00:00",
+    "host_cpu_percent": 32.301371635610764,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 678430,
+      "native_pid": 3695,
+      "memory_samples": 1289,
+      "peak_native_rss_kib": 2656504,
+      "peak_native_pss_kib": 2653620,
+      "last_native_progress": "11.09.356.520 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4608, progress = 0.71, t = 664.29 s / 6.94 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:57:42.119204+00:00",
+    "host_cpu_percent": 33.04524492889161,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 694116,
+      "native_pid": 3695,
+      "memory_samples": 1319,
+      "peak_native_rss_kib": 2656508,
+      "peak_native_pss_kib": 2653624,
+      "last_native_progress": "11.28.617.316 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4736, progress = 0.73, t = 683.55 s / 6.93 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:57:57.248330+00:00",
+    "host_cpu_percent": 28.790030991735538,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 709818,
+      "native_pid": 3695,
+      "memory_samples": 1349,
+      "peak_native_rss_kib": 2656520,
+      "peak_native_pss_kib": 2653636,
+      "last_native_progress": "11.47.966.055 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4864, progress = 0.75, t = 702.90 s / 6.92 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:58:12.435329+00:00",
+    "host_cpu_percent": 35.64171810699589,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 725575,
+      "native_pid": 3695,
+      "memory_samples": 1379,
+      "peak_native_rss_kib": 2656520,
+      "peak_native_pss_kib": 2653636,
+      "last_native_progress": "11.57.750.058 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   4928, progress = 0.76, t = 712.69 s / 6.91 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:58:27.577109+00:00",
+    "host_cpu_percent": 26.02231682146543,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 741292,
+      "native_pid": 3695,
+      "memory_samples": 1409,
+      "peak_native_rss_kib": 2656528,
+      "peak_native_pss_kib": 2653644,
+      "last_native_progress": "12.17.139.987 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5056, progress = 0.78, t = 732.08 s / 6.91 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:58:42.669541+00:00",
+    "host_cpu_percent": 39.14337474120083,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 751823,
+      "native_pid": 3695,
+      "memory_samples": 1429,
+      "peak_native_rss_kib": 2656532,
+      "peak_native_pss_kib": 2653648,
+      "last_native_progress": "12.27.037.531 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5120, progress = 0.79, t = 741.97 s / 6.90 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:58:57.797887+00:00",
+    "host_cpu_percent": 35.83742252066116,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 767568,
+      "native_pid": 3695,
+      "memory_samples": 1459,
+      "peak_native_rss_kib": 2656540,
+      "peak_native_pss_kib": 2653656,
+      "last_native_progress": "12.47.161.062 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5248, progress = 0.81, t = 762.10 s / 6.89 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:59:12.933344+00:00",
+    "host_cpu_percent": 19.424019607843135,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 783433,
+      "native_pid": 3695,
+      "memory_samples": 1489,
+      "peak_native_rss_kib": 2656544,
+      "peak_native_pss_kib": 2653660,
+      "last_native_progress": "12.57.408.526 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5312, progress = 0.82, t = 772.35 s / 6.88 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:59:28.020540+00:00",
+    "host_cpu_percent": 19.2940414507772,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 799131,
+      "native_pid": 3695,
+      "memory_samples": 1519,
+      "peak_native_rss_kib": 2656556,
+      "peak_native_pss_kib": 2653672,
+      "last_native_progress": "13.17.127.797 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5440, progress = 0.84, t = 792.06 s / 6.87 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:59:43.140632+00:00",
+    "host_cpu_percent": 20.35255375476206,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 814823,
+      "native_pid": 3695,
+      "memory_samples": 1549,
+      "peak_native_rss_kib": 2656556,
+      "peak_native_pss_kib": 2653672,
+      "last_native_progress": "13.27.701.993 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5504, progress = 0.85, t = 802.64 s / 6.86 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T19:59:58.234346+00:00",
+    "host_cpu_percent": 19.893899204244036,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 830639,
+      "native_pid": 3695,
+      "memory_samples": 1579,
+      "peak_native_rss_kib": 2656564,
+      "peak_native_pss_kib": 2653680,
+      "last_native_progress": "13.47.693.167 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5632, progress = 0.87, t = 822.63 s / 6.85 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:00:13.358859+00:00",
+    "host_cpu_percent": 23.385847107438018,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 846454,
+      "native_pid": 3695,
+      "memory_samples": 1609,
+      "peak_native_rss_kib": 2656572,
+      "peak_native_pss_kib": 2653688,
+      "last_native_progress": "13.58.451.061 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5696, progress = 0.88, t = 833.39 s / 6.83 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:00:28.460450+00:00",
+    "host_cpu_percent": 31.251010966969684,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 862130,
+      "native_pid": 3695,
+      "memory_samples": 1639,
+      "peak_native_rss_kib": 2656576,
+      "peak_native_pss_kib": 2653692,
+      "last_native_progress": "14.19.166.399 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5824, progress = 0.90, t = 854.10 s / 6.82 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:00:43.559698+00:00",
+    "host_cpu_percent": 27.20956535789304,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 872742,
+      "native_pid": 3695,
+      "memory_samples": 1659,
+      "peak_native_rss_kib": 2656580,
+      "peak_native_pss_kib": 2653696,
+      "last_native_progress": "14.29.818.043 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5888, progress = 0.91, t = 864.76 s / 6.81 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:00:58.670706+00:00",
+    "host_cpu_percent": 32.222724922440534,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 888535,
+      "native_pid": 3695,
+      "memory_samples": 1689,
+      "peak_native_rss_kib": 2656588,
+      "peak_native_pss_kib": 2653704,
+      "last_native_progress": "14.40.069.912 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   5952, progress = 0.92, t = 875.01 s / 6.80 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:01:13.831763+00:00",
+    "host_cpu_percent": 36.298324742268036,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 904343,
+      "native_pid": 3695,
+      "memory_samples": 1719,
+      "peak_native_rss_kib": 2656592,
+      "peak_native_pss_kib": 2653708,
+      "last_native_progress": "15.01.287.058 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   6080, progress = 0.94, t = 896.22 s / 6.78 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:01:28.971626+00:00",
+    "host_cpu_percent": 34.15035314606379,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 920199,
+      "native_pid": 3695,
+      "memory_samples": 1749,
+      "peak_native_rss_kib": 2656596,
+      "peak_native_pss_kib": 2653712,
+      "last_native_progress": "15.11.511.922 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   6144, progress = 0.95, t = 906.45 s / 6.78 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:01:44.081502+00:00",
+    "host_cpu_percent": 42.88576506705445,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 936106,
+      "native_pid": 3695,
+      "memory_samples": 1779,
+      "peak_native_rss_kib": 2656608,
+      "peak_native_pss_kib": 2653724,
+      "last_native_progress": "15.32.806.271 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   6272, progress = 0.97, t = 927.74 s / 6.76 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:01:59.200808+00:00",
+    "host_cpu_percent": 37.14165805785123,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 951919,
+      "native_pid": 3695,
+      "memory_samples": 1809,
+      "peak_native_rss_kib": 2656608,
+      "peak_native_pss_kib": 2653724,
+      "last_native_progress": "15.43.546.799 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   6336, progress = 0.98, t = 938.48 s / 6.75 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:02:14.324491+00:00",
+    "host_cpu_percent": 46.67140182088203,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 967674,
+      "native_pid": 3695,
+      "memory_samples": 1839,
+      "peak_native_rss_kib": 2662772,
+      "peak_native_pss_kib": 2659888,
+      "last_native_progress": "15.58.111.703 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   6413, progress = 0.99, t = 953.05 s / 6.73 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:02:29.437129+00:00",
+    "host_cpu_percent": 42.00866024688167,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "long_completion",
+      "elapsed_ms": 978199,
+      "native_pid": 3695,
+      "memory_samples": 1859,
+      "peak_native_rss_kib": 2672004,
+      "peak_native_pss_kib": 2669120,
+      "last_native_progress": "16.14.543.331 I slot print_timing: id  0 | task 5 | prompt processing, n_tokens =   6473, progress = 1.00, t = 969.48 s / 6.68 tokens per second",
+      "low_headroom_abort": false
+    },
+    "native_niceness": 5
+  },
+  {
+    "at": "2026-09-27T20:02:32.342651+00:00",
+    "host_cpu_percent": 48.13194210703466,
+    "progress": {
+      "probe_id": "cooperative-5e34eb25421546f3b179cdf3a684e34b",
+      "stage": "completed",
+      "elapsed_ms": 985690,
+      "native_pid": 3695,
+      "memory_samples": 1869,
+      "peak_native_rss_kib": 2672004,
+      "peak_native_pss_kib": 2669120,
+      "last_native_progress": "16.23.767.656 I slot print_timing: id  0 | task 5 |        eval time =    6990.81 ms /    21 tokens (  332.90 ms per token,     3.00 tokens per second)",
+      "low_headroom_abort": false
+    }
+  }
+]

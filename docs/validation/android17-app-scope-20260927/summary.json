@@ -1,0 +1,188 @@
+{
+  "schema": "agent-android17-app-scope-validation-v1",
+  "tested_source": "29f67301cb4ce9e1d3d32d994d939d2d340df7da",
+  "recorded_at": "2026-09-27T15:25:47.073332+00:00",
+  "PR": 25,
+  "base_scope_commit": "654c213847f758ae3239081b028f631f6dc82c0e",
+  "model_cases": [
+    {
+      "configured_ram_mib": 8192,
+      "mode": "normal",
+      "tests_passed": 2,
+      "current_system_total_bytes": 8326283264,
+      "usable_system_ram_bytes": 6230020096,
+      "managed_heap_class_bytes": 201326592,
+      "model_bytes": 2536786016,
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "context_tokens": 2048,
+      "preflight_level": "ok",
+      "ram_override_requested": false,
+      "canary_passed": true,
+      "answer": "Paris",
+      "stop_passed": true,
+      "CPU_inference": true,
+      "OS_memory_limiter_changed": false,
+      "memory_limiter_status": "Memory limiter\n  disabled",
+      "historical_MemoryLimiter_AnonSwap_exit_records": 0,
+      "started_at": "2026-09-27T14:50:35.080164+00:00",
+      "finished_at": "2026-09-27T14:51:49.668035+00:00"
+    },
+    {
+      "configured_ram_mib": 8192,
+      "mode": "bypass",
+      "tests_passed": 1,
+      "current_system_total_bytes": 8326283264,
+      "usable_system_ram_bytes": 6070951936,
+      "managed_heap_class_bytes": 201326592,
+      "model_bytes": 2536786016,
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "context_tokens": 2048,
+      "preflight_level": "ok",
+      "ram_override_requested": true,
+      "canary_passed": true,
+      "answer": "Paris",
+      "stop_passed": true,
+      "CPU_inference": true,
+      "OS_memory_limiter_changed": false,
+      "memory_limiter_status": "Memory limiter\n  disabled",
+      "historical_MemoryLimiter_AnonSwap_exit_records": 0,
+      "started_at": "2026-09-27T14:52:11.647571+00:00",
+      "finished_at": "2026-09-27T14:52:30.868250+00:00"
+    },
+    {
+      "configured_ram_mib": 6144,
+      "mode": "normal",
+      "tests_passed": 2,
+      "current_system_total_bytes": 6212349952,
+      "usable_system_ram_bytes": 4286836736,
+      "managed_heap_class_bytes": 201326592,
+      "model_bytes": 2536786016,
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "context_tokens": 2048,
+      "preflight_level": "ok",
+      "ram_override_requested": false,
+      "canary_passed": true,
+      "answer": "Paris",
+      "stop_passed": true,
+      "CPU_inference": true,
+      "OS_memory_limiter_changed": false,
+      "memory_limiter_status": "Memory limiter\n  disabled",
+      "historical_MemoryLimiter_AnonSwap_exit_records": 0,
+      "started_at": "2026-09-27T15:06:15.457804+00:00",
+      "finished_at": "2026-09-27T15:06:48.773083+00:00"
+    },
+    {
+      "configured_ram_mib": 6144,
+      "mode": "bypass",
+      "tests_passed": 1,
+      "current_system_total_bytes": 6212349952,
+      "usable_system_ram_bytes": 4279640064,
+      "managed_heap_class_bytes": 201326592,
+      "model_bytes": 2536786016,
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "context_tokens": 2048,
+      "preflight_level": "ok",
+      "ram_override_requested": true,
+      "canary_passed": true,
+      "answer": "Paris",
+      "stop_passed": true,
+      "CPU_inference": true,
+      "OS_memory_limiter_changed": false,
+      "memory_limiter_status": "Memory limiter\n  disabled",
+      "historical_MemoryLimiter_AnonSwap_exit_records": 0,
+      "started_at": "2026-09-27T15:07:02.663417+00:00",
+      "finished_at": "2026-09-27T15:07:20.389692+00:00"
+    }
+  ],
+  "real_model_cases": 4,
+  "instrumentation_tests_total": 6,
+  "exact_reporter_model_quantization_confirmed": false,
+  "exact_reporter_0_3GB_override_failure_reproduced": false,
+  "OS_limiter_enforcement_tested": false,
+  "physical_phone_tested": false,
+  "largeHeap_added": false,
+  "scope_removal": {
+    "workflow_files": 10,
+    "dedicated_test_files": 29,
+    "original_Git_blobs_verified": 39,
+    "branch_protection_modified": false,
+    "retained_app_runtime_security_and_release_tests": true
+  },
+  "jvm": {
+    "Full": {
+      "tests": 1055,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 118
+    },
+    "Play": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 9
+    }
+  },
+  "lint": {
+    "Full": {
+      "errors": 0,
+      "warnings": 58
+    },
+    "Play": {
+      "errors": 0,
+      "warnings": 61
+    }
+  },
+  "lint_baseline_modified": false,
+  "python": {
+    "files": 72,
+    "passed": 1104,
+    "failed": 0,
+    "skipped": 6
+  },
+  "full_debug_app_and_test_pair": {
+    "source": "29f67301cb4ce9e1d3d32d994d939d2d340df7da",
+    "files": [
+      {
+        "path": ".artifacts\\android17-app-scope\\apks-final\\app\\app-debug.apk",
+        "bytes": 371178782,
+        "sha256": "2318b1041787ffdba7bff581085da8d92e797d8e986c150e483b419fb0c3ae33"
+      },
+      {
+        "path": ".artifacts\\android17-app-scope\\apks-final\\test\\app-debug-androidTest.apk",
+        "bytes": 1765449,
+        "sha256": "98a7922df3ef4ac8fd9b8f937ebac134a39597233e564de1613e719a901d4885"
+      }
+    ]
+  },
+  "fdroid_candidate": {
+    "passed": true,
+    "source": "29f67301cb4ce9e1d3d32d994d939d2d340df7da",
+    "source_digest": "cb295c5ab79f38b19b2ae90ac0a1fccefecdced4802d553ddd17b9ac7ad97cea",
+    "unsigned_apk_bytes": 349497203,
+    "unsigned_apk_sha256": "759b6de88ee040a346bc780aae02d23cf9dbc82c64d8dddb8a39c8cc79ed500e",
+    "gradle_tasks_executed": 63,
+    "source_scan_enabled": true,
+    "source_binding_verified": true,
+    "genuine_runtime_verified": true,
+    "public_signed_binary_comparison": false,
+    "private_version_inherited": "0.13.158 / 145890",
+    "release_published": false
+  },
+  "reuse": {
+    "new_containers": 0,
+    "new_volumes": 0,
+    "new_virtualenvs": 0,
+    "new_AVDs": 1,
+    "AVD_name": "Agent_API37_Issue24_20260927",
+    "AVD_retained": true,
+    "AVD_stopped": true,
+    "private_ADB_retired": true,
+    "builder": "e6f5ea71d179e6ae99f987eb571f4cb6c1691a8d231bc0000def042ad5198836"
+  },
+  "development_debug_version": "0.13.146 / 144690",
+  "no_release_or_merge": true,
+  "published_v158_unchanged": true,
+  "interpretation": "No0.3GBcap reproduced. Every tested case already passed normal RAM admission, so the bypass-requested runs prove flag forwarding and real execution, not pressure-block bypass. Limiter defaultdisabled unchanged; noPhone/ARM/OEM claim."
+}

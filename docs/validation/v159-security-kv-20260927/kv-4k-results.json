@@ -1,0 +1,103 @@
+{
+  "source_before_terminal_update": "86c17dcea1ecc3245ac8f4c0a931dc43f4d51962",
+  "engine_identical_in_final_Full_apk": true,
+  "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+  "cases": [
+    {
+      "mode": "native default",
+      "requested_k": "f16",
+      "requested_v": "f16",
+      "effective_k": "f16",
+      "effective_v": "f16",
+      "context": 4096,
+      "model_name": "issue24-gemma-Q3_K_M.gguf",
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "model_bytes": 2536786016,
+      "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+      "inference_device": "cpu",
+      "short_answer": "Paris",
+      "samples": [
+        {
+          "prompt_tokens_tokenizer": 3189,
+          "prompt_tokens_used": 3198,
+          "answer": "CEDAR-731,MAPLE-492,BIRCH-286",
+          "milliseconds": 387698,
+          "checks": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "peak_native_rss_kib": 2646976,
+      "peak_native_pss_kib": 2644030,
+      "stopped": true,
+      "raw_record_sha256": "ca149313487288dcdbb7a45495a6a7407eefb422b0b7625a8add9a7044751004",
+      "native_cache_allocation_excerpt": ""
+    },
+    {
+      "mode": "native default promotion",
+      "requested_k": "turbo3",
+      "requested_v": "turbo3",
+      "effective_k": "q8_0",
+      "effective_v": "turbo3",
+      "context": 4096,
+      "model_name": "issue24-gemma-Q3_K_M.gguf",
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "model_bytes": 2536786016,
+      "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+      "inference_device": "cpu",
+      "short_answer": "Paris",
+      "samples": [
+        {
+          "prompt_tokens_tokenizer": 3189,
+          "prompt_tokens_used": 3198,
+          "answer": "ALPHA: CEDAR-731\nBETA: MAPLE-492\nGAMMA: BIRCH-286",
+          "milliseconds": 446783,
+          "checks": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "peak_native_rss_kib": 2614664,
+      "peak_native_pss_kib": 2611699,
+      "stopped": true,
+      "raw_record_sha256": "e6b5e58e76e0bacb331221477623a88621c12b368a9f0739a73ad188183b52e5",
+      "native_cache_allocation_excerpt": ""
+    },
+    {
+      "mode": "explicit symmetric diagnostic",
+      "requested_k": "turbo3",
+      "requested_v": "turbo3",
+      "effective_k": "turbo3",
+      "effective_v": "turbo3",
+      "context": 4096,
+      "model_name": "issue24-gemma-Q3_K_M.gguf",
+      "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+      "model_bytes": 2536786016,
+      "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+      "inference_device": "cpu",
+      "short_answer": "Paris",
+      "samples": [
+        {
+          "prompt_tokens_tokenizer": 3189,
+          "prompt_tokens_used": 3198,
+          "answer": "ALPHA: CEDAR-731\nBETA: MAPLE-492\nGAMMA: BIRCH-286",
+          "milliseconds": 596942,
+          "checks": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "peak_native_rss_kib": 2608576,
+      "peak_native_pss_kib": 2605714,
+      "stopped": true,
+      "raw_record_sha256": "914b73122f7d4174f4ed639f1f12f00fbf38a8da9f6a489e56a446278ba84624",
+      "native_cache_allocation_excerpt": "0.01.205.453 I llama_kv_cache_iswa: creating non-SWA KV cache, size = 4096 cells\n0.01.205.607 D llama_kv_cache: layer   0: filtered\n0.01.205.619 D llama_kv_cache: layer   1: filtered\n0.01.205.627 D llama_kv_cache: layer   2: filtered\n0.01.205.635 D llama_kv_cache: layer   3: filtered\n0.01.205.643 D llama_kv_cache: layer   4: dev = CPU\n0.01.205.659 D llama_kv_cache: layer   5: filtered\n0.01.205.667 D llama_kv_cache: layer   6: filtered\n0.01.205.677 D llama_kv_cache: layer   7: filtered\n0.01.205.688 D llama_kv_cache: layer   8: filtered\n0.01.205.697 D llama_kv_cache: layer   9: dev = CPU\n0.01.205.710 D llama_kv_cache: layer  10: filtered\n0.01.205.721 D llama_kv_cache: layer  11: filtered\n0.01.205.731 D llama_kv_cache: layer  12: filtered\n0.01.205.741 D llama_kv_cache: layer  13: filtered\n0.01.205.752 D llama_kv_cache: layer  14: dev = CPU\n0.01.205.771 D llama_kv_cache: layer  15: does not have KV cache\n0.01.205.782 D llama_kv_cache: layer  16: does not have KV cache\n0.01.205.793 D llama_kv_cache: layer  17: does not have KV cache\n0.01.205.805 D llama_kv_cache: layer  18: does not have KV cache\n0.01.205.816 D llama_kv_cache: layer  19: does not have KV cache\n0.01.205.827 D llama_kv_cache: layer  20: does not have KV cache\n0.01.205.837 D llama_kv_cache: layer  21: does not have KV cache\n0.01.205.847 D llama_kv_cache: layer  22: does not have KV cache\n0.01.205.857 D llama_kv_cache: layer  23: does not have KV cache\n0.01.205.868 D llama_kv_cache: layer  24: does not have KV cache\n0.01.205.878 D llama_kv_cache: layer  25: does not have KV cache\n0.01.205.889 D llama_kv_cache: layer  26: does not have KV cache\n0.01.205.899 D llama_kv_cache: layer  27: does not have KV cache\n0.01.205.909 D llama_kv_cache: layer  28: does not have KV cache\n0.01.205.920 D llama_kv_cache: layer  29: does not have KV cache\n0.01.205.931 D llama_kv_cache: layer  30: does not have KV cache\n0.01.205.941 D llama_kv_cache: layer  31: does not have KV cache\n0.01.205.951 D llama_kv_cache: layer  32: does not have KV cache\n0.01.205.961 D llama_kv_cache: layer  33: does not have KV cache\n0.01.205.971 D llama_kv_cache: layer  34: does not have KV cache\n0.01.205.981 D llama_kv_cache: reusing layers:\n0.01.205.991 D llama_kv_cache: - layer   0: no reuse\n0.01.206.002 D llama_kv_cache: - layer   1: no reuse\n0.01.206.012 D llama_kv_cache: - layer   2: no reuse\n0.01.206.022 D llama_kv_cache: - layer   3: no reuse\n0.01.206.032 D llama_kv_cache: - layer   4: no reuse\n0.01.206.042 D llama_kv_cache: - layer   5: no reuse\n0.01.206.053 D llama_kv_cache: - layer   6: no reuse\n0.01.206.064 D llama_kv_cache: - layer   7: no reuse\n0.01.206.075 D llama_kv_cache: - layer   8: no reuse\n0.01.206.086 D llama_kv_cache: - layer   9: no reuse\n0.01.206.093 D llama_kv_cache: - layer  10: no reuse\n0.01.206.100 D llama_kv_cache: - layer  11: no reuse\n0.01.206.108 D llama_kv_cache: - layer  12: no reuse\n0.01.206.115 D llama_kv_cache: - layer  13: no reuse\n0.01.206.122 D llama_kv_cache: - layer  14: no reuse\n0.01.206.130 D llama_kv_cache: - layer  15: filtered\n0.01.206.141 D llama_kv_cache: - layer  16: filtered\n0.01.206.152 D llama_kv_cache: - layer  17: filtered\n0.01.206.163 D llama_kv_cache: - layer  18: filtered\n0.01.206.174 D llama_kv_cache: - layer  19: reuse layer 14, is_swa = 0\n0.01.206.184 D llama_kv_cache: - layer  20: filtered\n0.01.206.194 D llama_kv_cache: - layer  21: filtered\n0.01.206.205 D llama_kv_cache: - layer  22: filtered\n0.01.206.215 D llama_kv_cache: - layer  23: filtered\n0.01.206.226 D llama_kv_cache: - layer  24: reuse layer 14, is_swa = 0\n0.01.206.237 D llama_kv_cache: - layer  25: filtered\n0.01.206.249 D llama_kv_cache: - layer  26: filtered\n0.01.206.260 D llama_kv_cache: - layer  27: filtered\n0.01.206.270 D llama_kv_cache: - layer  28: filtered\n0.01.206.281 D llama_kv_cache: - layer  29: reuse layer 14, is_swa = 0\n0.01.206.291 D llama_kv_cache: - layer  30: filtered\n0.01.206.302 D llama_kv_cache: - layer  31: filtered\n0.01.206.313 D llama_kv_cache: - layer  32: filtered\n0.01.206.323 D llama_kv_cache: - layer  33: filtered\n0.01.206.334 D llama_kv_cache: - layer  34: reuse layer 14, is_swa = 0\n0.01.206.345 I llama_kv_cache:        CPU KV buffer size =     0.00 MiB\n0.01.206.357 I llama_kv_cache: size =    4.69 MiB (  4096 cells,   3 layers,  1/1 seqs), K (turbo3):    2.34 MiB, V (turbo3):    2.34 MiB\n0.01.206.369 I llama_kv_cache: attn_rot_k = 0, n_embd_head_k_all = 512\n0.01.206.380 I llama_kv_cache: attn_rot_v = 0, n_embd_head_k_all = 512\n0.01.206.391 I llama_kv_cache_iswa: creating     SWA KV cache, size = 768 cells\n0.01.206.421 D llama_kv_cache: layer   0: dev = CPU\n0.01.206.440 D llama_kv_cache: layer   1: dev = CPU\n0.01.206.451 D llama_kv_cache: layer   2: dev = CPU\n0.01.206.465 D llama_kv_cache: layer   3: dev = CPU\n0.01.206.476 D llama_kv_cache: layer   4: filtered\n0.01.206.487 D llama_kv_cache: layer   5: dev = CPU\n0.01.206.518 D llama_kv_cache: layer   6: dev = CPU\n0.01.206.534 D llama_kv_cache: layer   7: dev = CPU\n0.01.206.546 D llama_kv_cache: layer   8: dev = CPU\n0.01.206.556 D llama_kv_cache: layer   9: filtered\n0.01.206.563 D llama_kv_cache: layer  10: dev = CPU\n0.01.206.572 D llama_kv_cache: layer  11: dev = CPU\n0.01.206.580 D llama_kv_cache: layer  12: dev = CPU\n0.01.206.589 D llama_kv_cache: layer  13: dev = CPU\n0.01.206.597 D llama_kv_cache: layer  14: filtered\n0.01.206.604 D llama_kv_cache: layer  15: does not have KV cache\n0.01.206.612 D llama_kv_cache: layer  16: does not have KV cache\n0.01.206.619 D llama_kv_cache: layer  17: does not have KV cache\n0.01.206.627 D llama_kv_cache: layer  18: does not have KV cache\n0.01.206.638 D llama_kv_cache: layer  19: does not have KV cache\n0.01.206.648 D llama_kv_cache: layer  20: does not have KV cache\n0.01.206.656 D llama_kv_cache: layer  21: does not have KV cache\n0.01.206.664 D llama_kv_cache: layer  22: does not have KV cache"
+    }
+  ]
+}

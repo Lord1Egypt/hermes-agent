@@ -1,0 +1,9 @@
+{
+  "source": "3fa1ff7a487c7ddb85feb92d1c0a3354a9e23b24",
+  "expected_tests": 6,
+  "passed": true,
+  "class": "com.mobilefork.hermesagent.AgentModelSettingsInstrumentedTest,com.mobilefork.hermesagent.AgentSettingsRecoveryInstrumentedTest",
+  "APK_sha256": "98a8cb7e400bd2e2f9900621b4ca41678bed43df27632c4891ae0ba17b974efc",
+  "finished_at": "2026-09-28T10:05:16.284348+00:00",
+  "physical_Pixel8": false
+}

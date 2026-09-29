@@ -7,8 +7,16 @@ on:
         description: Release tag whose measured source manifest is committed on this ref
         required: true
         type: string
-      runner_label:
-        description: Unique hermes-traces- plus 32 lowercase hex characters for an approved one-job container
+      transport_release_id:
+        description: Exact private draft release ID for hosted trace transport
+        required: true
+        type: string
+      transport_asset_id:
+        description: Exact closed trace ZIP asset ID in that draft
+        required: true
+        type: string
+      transport_sha256:
+        description: SHA-256 of the closed trace ZIP, verified again before upload
         required: true
         type: string
 
@@ -28,14 +36,19 @@ jobs:
       artifact_name: ${{ steps.source.outputs.artifact_name }}
     steps:
       - name: Validate dispatch inputs
+        id: dispatch
         env:
           TAG: ${{ inputs.tag }}
-          RUNNER_LABEL: ${{ inputs.runner_label }}
+          TRANSPORT_RELEASE_ID: ${{ inputs.transport_release_id }}
+          TRANSPORT_ASSET_ID: ${{ inputs.transport_asset_id }}
+          TRANSPORT_SHA256: ${{ inputs.transport_sha256 }}
         run: |
           set -euo pipefail
           [[ "$TAG" =~ ^v0\.[0-9]+\.[0-9]+$ ]]
-          [[ "$RUNNER_LABEL" =~ ^hermes-traces-[0-9a-f]{32}$ ]]
           test "$GITHUB_REPOSITORY" = adybag14-cyber/hermes-agent
+          [[ "$TRANSPORT_RELEASE_ID" =~ ^[1-9][0-9]*$ ]]
+          [[ "$TRANSPORT_ASSET_ID" =~ ^[1-9][0-9]*$ ]]
+          [[ "$TRANSPORT_SHA256" =~ ^[0-9a-f]{64}$ ]]
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ github.sha }}
@@ -53,9 +66,13 @@ jobs:
 
   upload:
     needs: preflight
-    # Register only an approved isolated --ephemeral runner, with no default
-    # labels, for this exact unpredictable one-job label. No host mounts/socket.
-    runs-on: ['${{ inputs.runner_label }}']
+    # GitHub returns403 for private draft assets with contents:read. This
+    # permission exists ONLY on the fixed GitHub-hosted upload job. No caller
+    # supplied runner label, self-hosted execution or checkout credential remains.
+    permissions:
+      actions: read
+      contents: write
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     outputs:
       artifact_id: ${{ steps.upload.outputs.artifact-id }}
@@ -71,16 +88,30 @@ jobs:
             /scripts/android_perfetto_release_artifact.py
             /android/release-evidence/perfetto-artifacts/${{ inputs.tag }}/source.json
             /android/release-evidence/${{ inputs.tag }}/performance/*.json
+      - name: Download and verify private draft transport on GitHub hosting
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          TRANSPORT_RELEASE_ID: ${{ inputs.transport_release_id }}
+          TRANSPORT_ASSET_ID: ${{ inputs.transport_asset_id }}
+          TRANSPORT_SHA256: ${{ inputs.transport_sha256 }}
+        run: |
+          python3 scripts/android_perfetto_release_artifact.py download-transport \
+            --tag "$TAG" --transport-release-id "$TRANSPORT_RELEASE_ID" \
+            --transport-asset-id "$TRANSPORT_ASSET_ID" --transport-sha256 "$TRANSPORT_SHA256" \
+            --expected-commit "$GITHUB_SHA" --trace-root "$RUNNER_TEMP/trace-input"
+
       - name: Hash the closed trace-only input before upload
         env:
           TAG: ${{ inputs.tag }}
-        run: python3 scripts/android_perfetto_release_artifact.py verify-traces --tag "$TAG" --trace-root /trace-input
+          TRACE_ROOT: ${{ runner.temp }}/trace-input
+        run: python3 scripts/android_perfetto_release_artifact.py verify-traces --tag "$TAG" --trace-root "$TRACE_ROOT"
       - name: Upload measured trace bytes
         id: upload
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ needs.preflight.outputs.artifact_name }}
-          path: /trace-input/
+          path: ${{ runner.temp }}/trace-input/
           if-no-files-found: error
           retention-days: 90
           compression-level: 6

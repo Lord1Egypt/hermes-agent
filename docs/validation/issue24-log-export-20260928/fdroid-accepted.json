@@ -1,0 +1,25 @@
+{
+  "source": "3fa1ff7a487c7ddb85feb92d1c0a3354a9e23b24",
+  "metadata_sha256": "5b2dde527e879da0d2a00b25ab4d11cb76151ca77b8426ac61e307afcd866751",
+  "version": "0.13.159",
+  "version_code": 145990,
+  "candidate_only": true,
+  "published": false,
+  "public_signed_reference": false,
+  "reused_container_and_caches": true,
+  "new_environments": 0,
+  "prior_unit_and_device_evidence_preserved": true,
+  "accepted": true,
+  "source_digest": "90a6fb109d036fe58ce8087e44cb98593839847c62b0758dbb25b9e7c8632123",
+  "apk_sha256": "479a3fa8cb90d273de52757d437fe9d21410551e2655b4e76818d17a535a735b",
+  "apk_bytes": 349507028,
+  "source_scanning_enabled": true,
+  "artifact_digest_verified": true,
+  "genuine_runtime_verified": true,
+  "build_log_sha256": "132847b160a373a326936533708258c8376b0eaef93414fb032d3ff8730fe272",
+  "build_summary": [
+    "BUILD SUCCESSFUL in 3m 26s",
+    "63 actionable tasks: 63 executed",
+    "2026-09-28 10:12:49,893 INFO: 1 build succeeded"
+  ]
+}

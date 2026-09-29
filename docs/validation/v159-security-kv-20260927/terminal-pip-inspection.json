@@ -1,0 +1,13 @@
+{
+  "official_termux_deb_sha256": "92a9cb4b3c99dd20086f90fedc95c604eefc5bd0f88d1862690884474f82de44",
+  "vendor_versions": "CacheControl==0.14.4\ndistlib==0.4.2\ndistro==1.9.0\nmsgpack==1.1.2\npackaging==26.2\nplatformdirs==4.10.0\npyproject-hooks==1.2.0\nrequests==2.34.2\n    certifi==2026.6.17\n    idna==3.18\n    urllib3==2.7.0\nrich==14.2.0\n    pygments==2.20.0\nresolvelib==1.2.1\nsetuptools==70.3.0\ntomli==2.4.1\ntomli-w==1.2.0\ntruststore==0.10.4\n",
+  "absent_advisory_specific_modules": {
+    "msgpack_native_extension": [],
+    "setuptools_package_index": [],
+    "setuptools_filelist": [],
+    "pygments_archetype": []
+  },
+  "msgpack_init": "# ruff: noqa: F401\nimport os\n\nfrom .exceptions import *  # noqa: F403\nfrom .ext import ExtType, Timestamp\n\nversion = (1, 1, 2)\n__version__ = \"1.1.2\"\n\n\nif os.environ.get(\"MSGPACK_PUREPYTHON\"):\n    from .fallback import Packer, Unpacker, unpackb\nelse:\n    try:\n        from ._cmsgpack import Packer, Unpacker, unpackb\n    except ImportError:\n        from .fallback import Packer, Unpacker, unpackb\n\n\ndef pack(o, stream, **kwargs):\n    \"\"\"\n    Pack object `o` and write it to `stream`\n\n    See :class:`Packer` for options.\n    \"\"\"\n    packer = Packer(**kwargs)\n    stream.write(packer.pack(o))\n\n\ndef packb(o, **kwargs):\n    \"\"\"\n    Pack object `o` and return packed bytes\n\n    See :class:`Packer` for options.\n    \"\"\"\n    return Packer(**kwargs).pack(o)\n\n\ndef unpack(stream, **kwargs):\n    \"\"\"\n    Unpack an object from `stream`.\n\n    Raises `ExtraData` when `stream` contains extra bytes.\n    See :class:`Unpacker` for options.\n    \"\"\"\n    data = stream.read()\n    return unpackb(data, **kwargs)\n\n\n# alias for compatibility to simplejson/marshal/pickle.\nload = unpack\nloads = unpackb\n\ndump = pack\ndumps = packb\n",
+  "members": 605,
+  "limit": "Absence is specific to the named advisory modules, not a claim that every vendored function is secure."
+}

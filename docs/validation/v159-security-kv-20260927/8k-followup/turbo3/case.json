@@ -1,0 +1,60 @@
+{
+  "label": "Turbo3",
+  "passed": true,
+  "context": 8192,
+  "effective_K": "turbo3",
+  "effective_V": "turbo3",
+  "probe_id": "cooperative-76154f494e124c52a536e23c731a8adf",
+  "native_pid": 4758,
+  "workers": 3,
+  "verified_native_niceness": 5,
+  "prompt_tokens_tokenizer": 6469,
+  "prompt_tokens_used": 6478,
+  "answer": "ALPHA: CEDAR-731\nBETA: MAPLE-492\nGAMMA: BIRCH-286",
+  "three_reference_codes_correct": true,
+  "short_answer": "Paris",
+  "peak_RSS_KiB": 2614212,
+  "peak_PSS_KiB": 2611281,
+  "request_milliseconds": 1903900,
+  "memory_samples": 3258,
+  "native_cache_allocations": [
+    {
+      "cells": 8192,
+      "layers": 3,
+      "K": "turbo3",
+      "V": "turbo3",
+      "combined_MiB_rounded": 9.38,
+      "K_MiB_rounded": 4.69,
+      "V_MiB_rounded": 4.69
+    },
+    {
+      "cells": 768,
+      "layers": 12,
+      "K": "turbo3",
+      "V": "turbo3",
+      "combined_MiB_rounded": 1.76,
+      "K_MiB_rounded": 0.88,
+      "V_MiB_rounded": 0.88
+    }
+  ],
+  "KV_allocation_MiB_rounded": 11.14,
+  "stopped": true,
+  "system_before": {
+    "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+    "system_server_pid": 693,
+    "system_server_start_ticks": "1648"
+  },
+  "system_after": {
+    "boot_id": "3c2ff861-c842-4295-8b7e-bad4321f5ce5",
+    "system_server_pid": 693,
+    "system_server_start_ticks": "1648"
+  },
+  "host_peak_CPU_percent": 41.733282578353005,
+  "source": "ca9b2eb05c936c880bda0b3d3884f92f7d6b49ce",
+  "installed_app_sha256": "0cecf60272157aca1e8bf038828f734790d16f9d82869a8773db768a66c16005",
+  "model_sha256": "086e2f5ba85057f8f19712e3160a644728f74f323c9feeac4cd73fab11b43085",
+  "engine_sha256": "52abba7fdf2b100653c9f79e4fd61cc5018000b6e46954ff0b818eed441678c8",
+  "explicit_symmetric_diagnostic": true,
+  "production_default_unchanged": true,
+  "watchdog_policy_unchanged": true
+}

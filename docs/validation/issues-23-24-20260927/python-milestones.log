@@ -1,0 +1,5 @@
+# Selected milestones; full private transcript SHA-256 in input-hashes.json.
+ReusedCheckout=/home/tdamre/agent-pr22-verifier-validation-20260925
+ReusedPython=/home/tdamre/hermes-v156-validation-20260908/.venv/bin/python
+SourceCommit=022eb5ce5dfba67be09ae25e39c91ba5839aac88
+=== Summary: 60 files, 900 tests passed, 0 failed, 1 skipped (100% complete) in 89.9s (12 workers) ===
