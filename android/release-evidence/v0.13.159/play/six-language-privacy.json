@@ -1,0 +1,79 @@
+{
+  "schema": "hermes-play-release-v1",
+  "case": "six-language-privacy",
+  "result": "passed",
+  "edition": "play",
+  "source_digest": "28f08ed64fea27dbfdf233f3600272ebafed842fa5bc47e58284f149a546d2ce",
+  "candidate_apk_sha256": "2fd6d525d7aec23e0f6dab0f4f111a4f8a1eae0577cb4165c12dbe759cc00945",
+  "instrumentation_apk_sha256": "d5e601c98981ca2a159ff37e927d77f96d9d88c5ae6c816fe3582390a704bf31",
+  "evidence_run_id": "v0.13.159-28f08ed64fea27db-20260928",
+  "package": "com.mobilefork.hermesagent",
+  "version_name": "0.13.159",
+  "version_code": 145990,
+  "build_variant": "playDebug",
+  "avd_name": "Agent_Release_158_Play16K_20260926_Readme_16G",
+  "device_serial": "emulator-5580",
+  "device_boot_id": "942770f5-c827-441b-9f4c-05016094f760",
+  "android_sdk": 36,
+  "build_fingerprint": "google\/sdk_gphone16k_x86_64\/emu64xa16k:16\/BE2A.250530.026.F3\/13894323:userdebug\/dev-keys",
+  "page_size": 16384,
+  "recorded_at_epoch_ms": 1790677245002,
+  "details": {
+    "languages": [
+      "en",
+      "zh",
+      "es",
+      "de",
+      "pt",
+      "fr"
+    ],
+    "screenshots": [
+      {
+        "file": "privacy-en.png",
+        "sha256": "75265d05e457766f814b7ac95c38a73b7f5ff9407df73595ce18b02abb7089dc",
+        "bytes": 226762,
+        "width": 1080,
+        "height": 2400
+      },
+      {
+        "file": "privacy-zh.png",
+        "sha256": "c97e35770d3517c280a5b5c77038b6b5ce322847c2e4cf79c9ea87b0bebc5033",
+        "bytes": 343048,
+        "width": 1080,
+        "height": 2400
+      },
+      {
+        "file": "privacy-es.png",
+        "sha256": "e12d2a11f779f20c8ce24f8a9880421ad5a4d71aba1e7cf3ebf7fc642a801148",
+        "bytes": 228402,
+        "width": 1080,
+        "height": 2400
+      },
+      {
+        "file": "privacy-de.png",
+        "sha256": "f1254cab713acc6a27b4087f8fd2d9224b32e7b3027fc63991eee22fefd4b70d",
+        "bytes": 219828,
+        "width": 1080,
+        "height": 2400
+      },
+      {
+        "file": "privacy-pt.png",
+        "sha256": "4fcb4b17ea89f0f146590bdcddf46f2cd0e304575ea7248b59feaf3bc62a97ab",
+        "bytes": 232994,
+        "width": 1080,
+        "height": 2400
+      },
+      {
+        "file": "privacy-fr.png",
+        "sha256": "e5a2517a617f6d7b89c3020f32cb911bd146f44f73a52f47ecd93efde8bce267",
+        "bytes": 229568,
+        "width": 1080,
+        "height": 2400
+      }
+    ],
+    "persisted_language_matches_ui": true,
+    "local_deletion_cancelled": true,
+    "privacy_controls_visible": true
+  },
+  "evidence_file": "\/data\/user\/0\/com.mobilefork.hermesagent\/files\/hermes-play-evidence\/v0.13.159-28f08ed64fea27db-20260928\/six-language-privacy.json"
+}
