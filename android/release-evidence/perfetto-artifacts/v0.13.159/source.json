@@ -5,7 +5,7 @@
   "schema": "hermes-android-perfetto-release-source-v1",
   "source_digest": "28f08ed64fea27dbfdf233f3600272ebafed842fa5bc47e58284f149a546d2ce",
   "tag": "v0.13.159",
-  "trace_bytes": 179871524,
+  "trace_bytes": 174395965,
   "trace_file_count": 10,
   "traces": [
     {
@@ -34,29 +34,29 @@
       "sha256": "58fd9662be7e33f9afeb6ef955ea1a49a29999ece4cfe67368bedee097257ec7"
     },
     {
-      "bytes": 16189262,
+      "bytes": 16215460,
       "path": "tablet.traces/iteration-001.perfetto-trace",
-      "sha256": "45daed76cb41a3a457b789d339ade178637d40281644395b480c23d1fb44d954"
+      "sha256": "2eab6be96a5519ae40a122c9bf4c321c4a4b04080b7f114d01fe94964122aba8"
     },
     {
-      "bytes": 17347545,
+      "bytes": 15832473,
       "path": "tablet.traces/iteration-002.perfetto-trace",
-      "sha256": "b31d00a69e82789a4b02b438631c6fc0628072dbdfa687b1712894624ddaa841"
+      "sha256": "a38f8ab75a4eb0b3f1d911d0661369d93497695134893b04cf602bc3dde2356c"
     },
     {
-      "bytes": 15081535,
+      "bytes": 15319264,
       "path": "tablet.traces/iteration-003.perfetto-trace",
-      "sha256": "2b87315a42dcc3cf500e071e41c0ebc7139a0853ae7d79a53921e4f51abea9d4"
+      "sha256": "921e63503813832302777b63ddba1f04deec0146cafd60b535b88ebde0973496"
     },
     {
-      "bytes": 20636860,
+      "bytes": 15459082,
       "path": "tablet.traces/iteration-004.perfetto-trace",
-      "sha256": "a2b5afc177acdd2d811a421cefe973e0971302e18f53f1e9712bf46d887eca84"
+      "sha256": "7d4437b8d14648bbc9f10730d299b3d80b9515bc59d46345722a1ccd767637bd"
     },
     {
-      "bytes": 14535934,
+      "bytes": 15489298,
       "path": "tablet.traces/iteration-005.perfetto-trace",
-      "sha256": "7ab66ca02b1c7968dfc044a5994edd69b10622deb35a61235810ff7c003a9c32"
+      "sha256": "aeca1bb599e6feefff243825818a3bb5d05453d68cd2348b4051e7c7f99ff959"
     }
   ]
 }
