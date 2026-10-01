@@ -30,6 +30,7 @@ object LocalModelRuntimeDiagnostics {
         val memoryClassBytes: Long,
         val largeMemoryClassBytes: Long,
         val nativeHeapAllocatedBytes: Long,
+        val processImportance: Int = 0,
     ) {
         val usableAvailableBytes: Long
             get() = (availableBytes - thresholdBytes).coerceAtLeast(0L)
@@ -43,6 +44,7 @@ object LocalModelRuntimeDiagnostics {
             .put("memory_class_bytes", memoryClassBytes)
             .put("large_memory_class_bytes", largeMemoryClassBytes)
             .put("native_heap_allocated_bytes", nativeHeapAllocatedBytes)
+            .put("process_importance", processImportance)
     }
 
     internal data class PreflightDecision(
@@ -73,6 +75,8 @@ object LocalModelRuntimeDiagnostics {
     internal fun captureMemory(context: Context): MemorySnapshot {
         val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
         val info = ActivityManager.MemoryInfo()
+        val processInfo = ActivityManager.RunningAppProcessInfo()
+        runCatching { ActivityManager.getMyMemoryState(processInfo) }
         if (manager != null) {
             runCatching { manager.getMemoryInfo(info) }
         }
@@ -85,6 +89,7 @@ object LocalModelRuntimeDiagnostics {
             memoryClassBytes = (manager?.memoryClass?.toLong() ?: 0L).coerceAtLeast(0L) * mib,
             largeMemoryClassBytes = (manager?.largeMemoryClass?.toLong() ?: 0L).coerceAtLeast(0L) * mib,
             nativeHeapAllocatedBytes = runCatching { Debug.getNativeHeapAllocatedSize() }.getOrDefault(0L),
+            processImportance = processInfo.importance,
         )
     }
 
@@ -257,6 +262,8 @@ object LocalModelRuntimeDiagnostics {
         val payload = JSONObject()
             .put("attempt_id", attemptId)
             .put("process_id", Process.myPid())
+            .put("background_runtime_enabled", com.mobilefork.hermesagent.data.DeviceCapabilityStore(context).load().backgroundPersistenceEnabled)
+            .put("background_runtime_running", com.mobilefork.hermesagent.backend.HermesRuntimeService.isRunning())
             .put("app_version", com.mobilefork.hermesagent.BuildConfig.VERSION_NAME)
             .put("source_digest", com.mobilefork.hermesagent.BuildConfig.HERMES_SOURCE_DIGEST)
             .put("process_state_summary_recorded", recordProcessExitMarker(context, attemptId))
@@ -288,6 +295,7 @@ object LocalModelRuntimeDiagnostics {
             payload.put("previous_incomplete_attempt", previous)
         }
         writeSnapshot(context, payload)
+        HermesCrashLogStore.appendDiagnosticEvent(context, "info", "local_model_start_attempt", payload)
         return attemptId
     }
 
@@ -332,6 +340,7 @@ object LocalModelRuntimeDiagnostics {
             .put("completion_verified", completionVerified)
             .put("completion_latency_ms", completionLatencyMs.coerceAtLeast(0L))
         writeSnapshot(context, current)
+        HermesCrashLogStore.appendDiagnosticEvent(context, "info", "local_model_start_result", current)
     }
 
     /** Available without starting a model or invoking the chat agent. No provider credentials. */

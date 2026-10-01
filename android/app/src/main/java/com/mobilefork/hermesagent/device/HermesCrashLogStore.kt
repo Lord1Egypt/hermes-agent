@@ -292,6 +292,9 @@ object HermesCrashLogStore {
             .put("reason_label", reasonLabel)
             .put("status", exit.status)
             .put("importance", exit.importance)
+            .put("process_priority_explanation", if (exit.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED)
+                "Agent was a cached background process. Android can reclaim it under memory pressure before foreground apps and foreground services."
+                else JSONObject.NULL)
             .put("pss_kb", exit.pss)
             .put("rss_kb", exit.rss)
             .put("memory_sample_note", "PSS/RSS are Android's last sample, not exact memory at process death; zero can mean no sample.")
@@ -363,7 +366,8 @@ object HermesCrashLogStore {
         return if (description.isBlank()) explanation else "$explanation ${description.take(400)}"
     }
 
-    private fun appendDiagnosticEvent(
+    @Synchronized
+    internal fun appendDiagnosticEvent(
         context: Context,
         level: String,
         message: String,

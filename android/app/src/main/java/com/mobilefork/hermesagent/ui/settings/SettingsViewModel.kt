@@ -25,6 +25,7 @@ import com.mobilefork.hermesagent.data.ProviderPresets
 import com.mobilefork.hermesagent.data.ProviderSetupTarget
 import com.mobilefork.hermesagent.data.SecureSecretsStore
 import com.mobilefork.hermesagent.device.HermesProviderSetupWebActivity
+import com.mobilefork.hermesagent.device.HermesCrashLogStore
 import com.mobilefork.hermesagent.models.LocalModelRuntimeSelectionAuthority
 import com.mobilefork.hermesagent.models.PythonRuntimeWriteAuthority
 import com.mobilefork.hermesagent.models.RuntimeSelectionSupersededException
@@ -634,6 +635,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
      * a process restart or enter an exported settings bundle.
      */
     fun tryLlamaCppDespiteRamWarning() {
+        HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_confirmed")
         val generation = settingsSaveGeneration.invalidate()
         val expectedDraft = captureLlamaCppAdvancedDraft()
         val snapshot = _uiState.value
@@ -701,7 +703,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 status = llamaCppAdvancedText(language, "danger_starting"),
             )
         }
-        if (!publishedStart) return
+        if (!publishedStart) {
+            HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_superseded_before_start")
+            return
+        }
         val runtimeExpectedDraft = captureLlamaCppAdvancedDraft()
         viewModelScope.launch {
             runCatching {
@@ -720,6 +725,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     }
                 }
             }.onSuccess { (runtimeState, backendStatus, authoritativeSettings) ->
+                HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_result",
+                    JSONObject().put("started", runtimeState.started).put("detail", runtimeState.error ?: backendStatus.statusMessage))
                 val localPublished = runtimeState.started &&
                     backendStatus.started &&
                     backendStatus.backendKind == BackendKind.LLAMA_CPP &&
@@ -744,6 +751,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     )
                 }
             }.onFailure { error ->
+                HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_failure",
+                    JSONObject().put("detail", error.message.orEmpty()).put("type", error.javaClass.simpleName))
                 if (error is RuntimeSelectionSupersededException) return@onFailure
                 settingsSaveGeneration.runIfCurrent(generation) {
                     _uiState.update {

@@ -39,7 +39,7 @@ class HistoricalModelExitRegressionTest {
 
     private fun recordExit(summary: String?): JSONObject {
         val exit = ApplicationExitInfoBuilder.newBuilder()
-            .setPid(1234).setTimestamp(exitTime).setProcessName(context.packageName)
+            .setPid(1234).setTimestamp(exitTime).setProcessName(context.packageName).setImportance(400)
             .setReason(ApplicationExitInfo.REASON_LOW_MEMORY).setRss(176_560)
             .setProcessStateSummary(summary?.toByteArray(Charsets.UTF_8)).build()
         HermesCrashLogStore.recordHistoricalProcessExit(context, exit)
@@ -60,6 +60,7 @@ class HistoricalModelExitRegressionTest {
         assertTrue(correlation.getBoolean("matched"))
         assertTrue(correlation.getString("detail").contains("blocked before native allocation"))
         assertEquals(1234, matched.getInt("process_id"))
+        assertTrue(matched.getString("process_priority_explanation").contains("cached background process"))
 
         // The same PID or marker must not promote a snapshot written after this death.
         saveAttempt(exitTime + 1)
