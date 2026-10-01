@@ -4,6 +4,25 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ModelMemoryAdmissionRegressionTest {
+    @Test fun pixel8ReportBlocksWithoutConsentAndRetainsTheExplicitBypass() {
+        val memory = LocalModelRuntimeDiagnostics.MemorySnapshot(
+            totalBytes = 7_679_975_424L, availableBytes = 1_259_180_032L,
+            thresholdBytes = 226_492_416L, lowMemory = false,
+            memoryClassBytes = 268_435_456L, largeMemoryClassBytes = 536_870_912L,
+            nativeHeapAllocatedBytes = 17_878_144L,
+        )
+        val blocked = LocalModelRuntimeDiagnostics.evaluatePreflight("llama.cpp", 2_372_993_120L, 2048, memory)
+        assertFalse(blocked.allowed)
+        assertEquals(1_032_687_616L, memory.usableAvailableBytes)
+        assertTrue(blocked.estimatedAdditionalBytes > memory.usableAvailableBytes)
+        val confirmed = LocalModelRuntimeDiagnostics.evaluatePreflight(
+            "llama.cpp", 2_372_993_120L, 2048, memory, dangerouslySkipRamChecks = true,
+        )
+        assertTrue(confirmed.allowed)
+        assertEquals("dangerous_bypass", confirmed.level)
+        assertEquals(blocked.estimatedAdditionalBytes, confirmed.estimatedAdditionalBytes)
+    }
+
     private fun snapshot(available: Long, low: Boolean = false) = LocalModelRuntimeDiagnostics.MemorySnapshot(
         totalBytes = 6_000_000_000L,
         availableBytes = available,

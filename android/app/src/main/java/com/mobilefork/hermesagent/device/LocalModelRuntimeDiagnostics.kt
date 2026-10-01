@@ -2,7 +2,9 @@ package com.mobilefork.hermesagent.device
 
 import android.app.ActivityManager
 import android.content.Context
+import android.os.Build
 import android.os.Debug
+import android.os.Process
 import org.json.JSONObject
 import java.io.File
 import java.util.Locale
@@ -254,6 +256,10 @@ object LocalModelRuntimeDiagnostics {
             ?.takeIf { it.optString("status") == "initializing" }
         val payload = JSONObject()
             .put("attempt_id", attemptId)
+            .put("process_id", Process.myPid())
+            .put("app_version", com.mobilefork.hermesagent.BuildConfig.VERSION_NAME)
+            .put("source_digest", com.mobilefork.hermesagent.BuildConfig.HERMES_SOURCE_DIGEST)
+            .put("process_state_summary_recorded", recordProcessExitMarker(context, attemptId))
             .put("status", "initializing")
             .put("stage", "native_runtime_start")
             .put("started_at_ms", System.currentTimeMillis())
@@ -283,6 +289,24 @@ object LocalModelRuntimeDiagnostics {
         }
         writeSnapshot(context, payload)
         return attemptId
+    }
+
+    /** Android retains this non-secret, 51-byte marker on the calling process's exit record. */
+    internal fun processExitMarker(attemptId: String): ByteArray? {
+        if (!Regex("[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}").matches(attemptId)) return null
+        return "agent-model-v1:$attemptId".toByteArray(Charsets.UTF_8)
+    }
+
+    private fun recordProcessExitMarker(context: Context, attemptId: String): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return false
+        val marker = processExitMarker(attemptId) ?: return false
+        // The platform can throttle this diagnostic API. Its failure is never RAM admission.
+        return runCatching {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+                ?: return@runCatching false
+            manager.setProcessStateSummary(marker)
+            true
+        }.getOrDefault(false)
     }
 
     internal fun finishAttempt(

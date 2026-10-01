@@ -1,0 +1,1 @@
+Improve local-model diagnostics: verify the model attempt associated with an Android process exit, distinguish a blocked load from a native failure, and preserve memory counters while redacting known secrets. Memory safety checks and explicit per-attempt RAM bypass remain available.
