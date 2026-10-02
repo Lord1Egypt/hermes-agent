@@ -76,12 +76,13 @@ class LlamaCppModelMatrixInstrumentedTest {
             )
             LlamaCppRuntimeLane.STABLE -> LlamaCppLaunchConfig(lane = requiredLane)
         }
+        val requestedContext = InstrumentationRegistry.getArguments().getString("context_tokens", "0").toInt()
         val status = LlamaCppServerController.ensureRunning(
             context = context,
             modelPath = modelFile.absolutePath,
             requestedModelName = artifact.modelId,
             port = OnDeviceBackendManager.LLAMA_CPP_PORT,
-            launchConfig = launchConfig,
+            launchConfig = launchConfig.copy(contextTokens = requestedContext),
         )
         assertTrue(status.statusMessage, status.started)
         assertTrue(status.statusMessage, status.completionVerified)

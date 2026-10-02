@@ -131,10 +131,10 @@
             "libc++",
             "libcurl"
           ],
-          "filename": "pool/main/l/llama-cpp/llama-cpp_0.0.0-b9784-0_aarch64.deb",
+          "filename": "pool/main/l/llama-cpp/llama-cpp_0.5.0_aarch64.deb",
           "name": "llama-cpp",
-          "sha256": "dd041c85e1f60dc705c39e973ede2980a6ada248952bc1c0486b738f436db705",
-          "version": "0.0.0-b9784-0"
+          "sha256": "bcfaaa14ad4956be18e31773560882b88c349a18d5aea3dfc7c668fc00d65af5",
+          "version": "0.5.0"
         },
         {
           "depends": [
@@ -817,10 +817,10 @@
             "libc++",
             "libcurl"
           ],
-          "filename": "pool/main/l/llama-cpp/llama-cpp_0.0.0-b9784-0_x86_64.deb",
+          "filename": "pool/main/l/llama-cpp/llama-cpp_0.5.0_x86_64.deb",
           "name": "llama-cpp",
-          "sha256": "34118d79d4d534bbcfbe1051cc7eb04e5204b2637d7f962bccce88fd3cb4e9b1",
-          "version": "0.0.0-b9784-0"
+          "sha256": "3ef405195e5f71d1aebbf006c5d2ec948247015cc01fef9c021d8610df1cace2",
+          "version": "0.5.0"
         },
         {
           "depends": [
@@ -1375,11 +1375,11 @@
   },
   "package_archive": {
     "fallback": {
-      "sha256": "cb61a40fddf294bd2f246b9077e6ffa2fc9cc54febac4f3e936223320e93a681",
-      "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.141/hermes-termux-packages-v1.zip"
+      "sha256": "a0e59dbbeeafb6e74574a8744a4f76f9daee8cad60fe93c1c6529361ef4cedfb",
+      "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.159/agent-termux-packages-v159.zip"
     },
-    "sha256": "a0e59dbbeeafb6e74574a8744a4f76f9daee8cad60fe93c1c6529361ef4cedfb",
-    "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.159/agent-termux-packages-v159.zip"
+    "sha256": "7d02dff0186ff8aba9ac2861301b79a92332f6857852a3e193e7d895078e000b",
+    "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.160/agent-termux-packages-v160.zip"
   },
   "root_packages": [
     "bash",

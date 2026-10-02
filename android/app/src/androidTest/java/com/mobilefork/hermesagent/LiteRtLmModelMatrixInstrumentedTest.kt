@@ -83,6 +83,7 @@ class LiteRtLmModelMatrixInstrumentedTest {
         val expectedSha256 = args.getString("model_sha256", matrixArtifact?.sha256.orEmpty())
         val requireModel = args.getString("require_model", "false").toBoolean()
         val exerciseBackendManager = args.getString("exercise_backend_manager", "false").toBoolean()
+        val requestedContext = args.getString("context_tokens", "0").toInt().also { require(it in 0..65_536) }
         val publisherRepository = args.getString("model_repo", matrixArtifact?.repoId.orEmpty())
         val publisherRevision = args.getString("model_revision", matrixArtifact?.revision.orEmpty())
         val preferredAccelerator = args.getString("preferred_accelerator", "auto")
@@ -127,6 +128,7 @@ class LiteRtLmModelMatrixInstrumentedTest {
                 publisherRevision = publisherRevision,
                 preferredAccelerator = preferredAccelerator,
                 speculativeDecodingMode = speculativeDecodingMode,
+                contextTokens = requestedContext,
             )
             OnDeviceBackendManager.ensureConfigured(
                 context = context,
@@ -141,6 +143,8 @@ class LiteRtLmModelMatrixInstrumentedTest {
                 inferenceConfig = LiteRtLmOpenAiProxy.InferenceConfig(
                     preferredAccelerator = preferredAccelerator,
                     speculativeDecodingMode = speculativeDecodingMode,
+                    maxContextLength = requestedContext.takeIf { it > 0 } ?: -1,
+                    contextOverrideRequested = requestedContext > 0,
                 ),
             )
         }
@@ -157,6 +161,7 @@ class LiteRtLmModelMatrixInstrumentedTest {
         )
         assertEquals(health.toString(), "ok", health.optString("status"))
         assertEquals(health.toString(), "litert-lm", health.optString("backend"))
+        if (requestedContext > 0) assertEquals(health.toString(), requestedContext, health.getInt("max_num_tokens"))
         assertTrue(health.toString(), health.optString("accelerator") in setOf("cpu", "gpu"))
         assertTrue(health.toString(), (health.optJSONArray("accelerator_attempts")?.length() ?: 0) > 0)
         assertTrue(health.toString(), health.optBoolean("completion_verified", false))
@@ -219,6 +224,8 @@ class LiteRtLmModelMatrixInstrumentedTest {
                 accelerator = health.optString("accelerator"),
                 statusMessage = status.statusMessage,
                 details = JSONObject()
+                    .put("requested_context_tokens", requestedContext)
+                    .put("engine_context_tokens", health.optInt("max_num_tokens"))
                     .put("health_backend", health.optString("backend"))
                     .put(
                         "runtime_entrypoint",
@@ -402,6 +409,7 @@ class LiteRtLmModelMatrixInstrumentedTest {
         publisherRevision: String,
         preferredAccelerator: String,
         speculativeDecodingMode: LiteRtLmOpenAiProxy.SpeculativeDecodingMode,
+        contextTokens: Int = 0,
     ) {
         val store = LocalModelDownloadStore(context)
         originalSettings = AppSettingsStore(context).load()
@@ -439,6 +447,7 @@ class LiteRtLmModelMatrixInstrumentedTest {
                 model = modelId,
                 onDeviceBackend = BackendKind.LITERT_LM.persistedValue,
                 localModelAccelerator = preferredAccelerator,
+                localModelContextTokens = contextTokens,
                 liteRtLmSpeculativeDecodingMode = speculativeDecodingMode.name.lowercase(Locale.US),
             ),
         )

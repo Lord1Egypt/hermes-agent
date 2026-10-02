@@ -15,17 +15,18 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LOCK_FILE = REPO_ROOT / "hermes_android" / "termux_linux_assets.lock.json"
 LLAMA_POOL_PATH = "pool/main/l/llama-cpp/"
 LLAMA_VERSION_PATTERN = re.compile(r"0\.0\.0-b(?P<build>\d+)-(?P<revision>\d+)")
-LLAMA_FILENAME_PATTERN = re.compile(
-    r"llama-cpp_(0\.0\.0-b\d+-\d+)_([0-9A-Za-z_+-]+)\.deb"
-)
+LLAMA_FILENAME_PATTERN = re.compile(r"llama-cpp_((?:0\.0\.0-b\d+-\d+|\d+\.\d+\.\d+(?:-\d+)?))_([0-9A-Za-z_+-]+)\.deb")
 SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
 
 
-def _llama_version_key(version: str) -> tuple[int, int]:
+def _llama_version_key(version: str) -> tuple[int, ...]:
     match = LLAMA_VERSION_PATTERN.fullmatch(version)
     if match is None:
-        raise ValueError(f"Unsupported Termux llama-cpp version format: {version!r}")
-    return int(match.group("build")), int(match.group("revision"))
+        stable = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)(?:-(\d+))?", version)
+        if stable is None:
+            raise ValueError(f"Unsupported Termux llama-cpp version format: {version!r}")
+        return (1, *(int(value or 0) for value in stable.groups()))
+    return 0, int(match.group("build")), int(match.group("revision"))
 
 
 def locked_llama_packages(lock: dict[str, Any]) -> tuple[str, dict[str, dict[str, str]]]:

@@ -36,6 +36,8 @@ internal data class LlamaCppLaunchConfig(
     val cacheTypeV: String = DEFAULT_VALUE,
     val flashAttention: String = DEFAULT_VALUE,
     val additionalArguments: List<String> = emptyList(),
+    val contextTokens: Int = 0,
+    val cpuThreads: Int = 0,
 ) {
     private val normalizedCacheTypeK: String
         get() = cacheTypeK.trim().lowercase(Locale.US)
@@ -47,6 +49,7 @@ internal data class LlamaCppLaunchConfig(
         get() = flashAttention.trim().lowercase(Locale.US)
 
     fun validate(): LlamaCppLaunchValidation {
+        if (contextTokens !in 0..65_536 || cpuThreads !in 0..12) return invalid("Context or CPU thread count is outside the supported range")
         val allowedCacheTypes = when (lane) {
             LlamaCppRuntimeLane.STABLE -> STABLE_CACHE_TYPES
             LlamaCppRuntimeLane.TURBOQUANT -> TURBOQUANT_CACHE_TYPES
@@ -189,6 +192,8 @@ internal data class LlamaCppLaunchConfig(
             add(normalizedCacheTypeK)
             add(normalizedCacheTypeV)
             add(normalizedFlashAttention)
+            add(contextTokens.toString())
+            add(cpuThreads.toString())
             addAll(additionalArguments)
         }.joinToString(separator = "\u0000") { value -> "${value.length}:$value" }
         return MessageDigest.getInstance("SHA-256")

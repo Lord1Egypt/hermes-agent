@@ -13,6 +13,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
@@ -75,7 +76,7 @@ fun HermesTheme(
     val surfaceContent = readableOn(surface)
     val variantContent = readableOn(surfaceVariant)
     val outline = lerp(surfaceVariant, variantContent, if (lightCanvas) 0.42f else 0.50f).opaque()
-    val outlineVariant = lerp(surfaceVariant, variantContent, if (lightCanvas) 0.22f else 0.28f).opaque()
+    val outlineVariant = lerp(surfaceVariant, variantContent, if (lightCanvas) 0.36f else 0.42f).opaque()
     val primaryContainer = lerp(surface, primary, if (lightCanvas) 0.18f else 0.24f).opaque()
     val secondaryContainer = lerp(surface, secondary, if (lightCanvas) 0.16f else 0.22f).opaque()
     val tertiary = lerp(primary, secondary, 0.48f).opaque()
@@ -120,7 +121,7 @@ fun HermesTheme(
         surfaceContainerHigh = lerp(surface, surfaceVariant, 0.48f).copy(alpha = 0.80f),
         surfaceContainerHighest = surfaceVariant.copy(alpha = 0.86f),
     )
-    val glassTokens = hermesGlassTokens(
+    val glassTokens = remember(primary, secondary, background, surface, surfaceVariant, surfaceContent, lightCanvas) { hermesGlassTokens(
         primary = primary,
         secondary = secondary,
         background = background,
@@ -128,7 +129,7 @@ fun HermesTheme(
         surfaceVariant = surfaceVariant,
         onSurface = surfaceContent,
         lightCanvas = lightCanvas,
-    )
+    ) }
     val view = LocalView.current
     SideEffect {
         view.context.findActivity()?.window?.let { window ->

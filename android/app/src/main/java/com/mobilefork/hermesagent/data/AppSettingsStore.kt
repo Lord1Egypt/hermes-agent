@@ -20,6 +20,8 @@ data class AppSettings(
     val llamaCppCacheTypeV: String = DEFAULT_LLAMA_CPP_CACHE_TYPE,
     val llamaCppFlashAttention: String = DEFAULT_LLAMA_CPP_FLASH_ATTENTION,
     val llamaCppAdditionalArguments: List<String> = emptyList(),
+    val localModelContextTokens: Int = 0,
+    val localModelCpuThreads: Int = 0,
     val localModelMaxTokens: Int = DEFAULT_LOCAL_MODEL_MAX_TOKENS,
     val localModelTopK: Int = DEFAULT_LOCAL_MODEL_TOP_K,
     val localModelTopP: Float = DEFAULT_LOCAL_MODEL_TOP_P,
@@ -58,6 +60,8 @@ data class AppSettings(
                 "llama_cpp_additional_arguments",
                 JSONArray(normalizeLlamaCppAdditionalArguments(llamaCppAdditionalArguments)),
             )
+            .put("local_model_context_tokens", normalizeLocalModelContextTokens(localModelContextTokens))
+            .put("local_model_cpu_threads", normalizeLocalModelCpuThreads(localModelCpuThreads))
             .put("local_model_max_tokens", normalizeLocalModelMaxTokens(localModelMaxTokens))
             .put("local_model_top_k", normalizeLocalModelTopK(localModelTopK))
             .put("local_model_top_p", normalizeLocalModelTopP(localModelTopP).toDouble())
@@ -151,6 +155,8 @@ data class AppSettings(
                 llamaCppAdditionalArguments = normalizeLlamaCppAdditionalArguments(
                     optStringList(json, "llama_cpp_additional_arguments", fallback.llamaCppAdditionalArguments),
                 ),
+                localModelContextTokens = normalizeLocalModelContextTokens(json.optInt("local_model_context_tokens", fallback.localModelContextTokens)),
+                localModelCpuThreads = normalizeLocalModelCpuThreads(json.optInt("local_model_cpu_threads", fallback.localModelCpuThreads)),
                 localModelMaxTokens = normalizeLocalModelMaxTokens(
                     json.optInt("local_model_max_tokens", fallback.localModelMaxTokens),
                 ),
@@ -268,6 +274,9 @@ data class AppSettings(
             }
         }
 
+        fun normalizeLocalModelContextTokens(value: Int): Int = if (value <= 0) 0 else value.coerceIn(512, 65_536)
+        fun normalizeLocalModelCpuThreads(value: Int): Int = value.coerceIn(0, 12)
+
         fun normalizeLocalModelAccelerator(value: String): String {
             val normalized = value.trim().lowercase()
             return when (normalized) {
@@ -367,6 +376,8 @@ class AppSettingsStore private constructor(
 
     private fun normalizeForPersistence(settings: AppSettings): AppSettings {
         return settings.copy(
+            localModelContextTokens = AppSettings.normalizeLocalModelContextTokens(settings.localModelContextTokens),
+            localModelCpuThreads = AppSettings.normalizeLocalModelCpuThreads(settings.localModelCpuThreads),
             localModelMaxTokens = AppSettings.normalizeLocalModelMaxTokens(settings.localModelMaxTokens),
             localModelTopK = AppSettings.normalizeLocalModelTopK(settings.localModelTopK),
             localModelTopP = AppSettings.normalizeLocalModelTopP(settings.localModelTopP),
@@ -401,6 +412,8 @@ class AppSettingsStore private constructor(
             .putString(KEY_LLAMA_CPP_CACHE_TYPE_V, settings.llamaCppCacheTypeV)
             .putString(KEY_LLAMA_CPP_FLASH_ATTENTION, settings.llamaCppFlashAttention)
             .putString(KEY_LLAMA_CPP_ADDITIONAL_ARGUMENTS, JSONArray(settings.llamaCppAdditionalArguments).toString())
+            .putInt("local_model_context_tokens", settings.localModelContextTokens)
+            .putInt("local_model_cpu_threads", settings.localModelCpuThreads)
             .putInt(KEY_LOCAL_MODEL_MAX_TOKENS, settings.localModelMaxTokens)
             .putInt(KEY_LOCAL_MODEL_TOP_K, settings.localModelTopK)
             .putFloat(KEY_LOCAL_MODEL_TOP_P, settings.localModelTopP)
@@ -529,6 +542,8 @@ class AppSettingsStore private constructor(
                     }
                 }.getOrDefault(emptyList()),
             ),
+            localModelContextTokens = AppSettings.normalizeLocalModelContextTokens(preferences.getInt("local_model_context_tokens", 0)),
+            localModelCpuThreads = AppSettings.normalizeLocalModelCpuThreads(preferences.getInt("local_model_cpu_threads", 0)),
             localModelMaxTokens = AppSettings.normalizeLocalModelMaxTokens(
                 preferences.getInt(KEY_LOCAL_MODEL_MAX_TOKENS, AppSettings.DEFAULT_LOCAL_MODEL_MAX_TOKENS),
             ),

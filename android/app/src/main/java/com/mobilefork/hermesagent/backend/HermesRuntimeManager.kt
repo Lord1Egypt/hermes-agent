@@ -251,10 +251,6 @@ object HermesRuntimeManager {
         }
 
         return try {
-            if (!com.mobilefork.hermesagent.BuildConfig.HERMES_PLAY_EDITION) {
-                HermesLinuxSubsystemBridge.ensureInstalled(appContext)
-                refreshPythonRuntimeEnvironment(appContext)
-            }
             val selectedBackendAtRouting = expectedLocalBackend?.let {
                 BackendKind.fromPersistedValue(
                     AppSettingsStore(appContext).load().onDeviceBackend,

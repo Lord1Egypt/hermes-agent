@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -24,7 +25,9 @@ data class HermesGlassTokens(
     val backdropTop: Color,
     val backdropMiddle: Color,
     val backdropBottom: Color,
-)
+) {
+    val rim: Brush = Brush.verticalGradient(listOf(highlight, border, border, accentGlow))
+}
 
 val LocalHermesGlassTokens = staticCompositionLocalOf {
     HermesGlassTokens(
@@ -50,10 +53,10 @@ internal fun hermesGlassTokens(
     lightCanvas: Boolean,
 ): HermesGlassTokens {
     return HermesGlassTokens(
-        panel = surface.copy(alpha = if (lightCanvas) 0.76f else 0.68f),
-        elevatedPanel = surfaceVariant.copy(alpha = if (lightCanvas) 0.86f else 0.80f),
-        border = lerp(surfaceVariant, onSurface, if (lightCanvas) 0.24f else 0.34f).copy(alpha = 0.72f),
-        highlight = onSurface.copy(alpha = if (lightCanvas) 0.18f else 0.12f),
+        panel = surface.copy(alpha = if (lightCanvas) 0.82f else 0.76f),
+        elevatedPanel = surfaceVariant.copy(alpha = if (lightCanvas) 0.92f else 0.88f),
+        border = lerp(surfaceVariant, onSurface, if (lightCanvas) 0.40f else 0.50f).copy(alpha = 0.92f),
+        highlight = Color.White.copy(alpha = if (lightCanvas) 0.34f else 0.20f),
         accentGlow = primary.copy(alpha = if (lightCanvas) 0.18f else 0.24f),
         secondaryGlow = secondary.copy(alpha = if (lightCanvas) 0.12f else 0.18f),
         backdropTop = lerp(background, primary, if (lightCanvas) 0.08f else 0.16f),
@@ -69,27 +72,17 @@ fun HermesBackdrop(
     content: @Composable BoxScope.() -> Unit,
 ) {
     val tokens = LocalHermesGlassTokens.current
+    val backdrop = remember(tokens) { Brush.verticalGradient(
+        0.0f to tokens.backdropTop, 0.44f to tokens.backdropMiddle, 1.0f to tokens.backdropBottom,
+    ) }
+    val glow = remember(tokens) { Brush.radialGradient(
+        0.0f to tokens.accentGlow, 0.56f to Color.Transparent, radius = 920f,
+    ) }
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colorStops = arrayOf(
-                        0.0f to tokens.backdropTop,
-                        0.44f to tokens.backdropMiddle,
-                        1.0f to tokens.backdropBottom,
-                    ),
-                ),
-            )
-            .background(
-                Brush.radialGradient(
-                    colorStops = arrayOf(
-                        0.0f to tokens.accentGlow,
-                        0.56f to Color.Transparent,
-                    ),
-                    radius = 920f,
-                ),
-            ),
+            .background(backdrop)
+            .background(glow),
         content = content,
     )
 }

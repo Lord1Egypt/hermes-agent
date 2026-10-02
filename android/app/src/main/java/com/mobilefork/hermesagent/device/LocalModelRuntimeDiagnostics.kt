@@ -107,6 +107,7 @@ object LocalModelRuntimeDiagnostics {
         requestedContextTokens: Int,
         memory: MemorySnapshot,
         dangerouslySkipRamChecks: Boolean = false,
+        allowExtendedContext: Boolean = false,
     ): PreflightDecision {
         if (modelBytes <= 0L) {
             return PreflightDecision(
@@ -119,7 +120,7 @@ object LocalModelRuntimeDiagnostics {
         }
 
         val normalizedBackend = backend.trim().lowercase(Locale.US)
-        val contextLimit = safeContextLimit(normalizedBackend, modelBytes, memory)
+        val contextLimit = if (allowExtendedContext && !memory.lowMemory) 65_536 else safeContextLimit(normalizedBackend, modelBytes, memory)
         val requested = requestedContextTokens.takeIf { it > 0 } ?: contextLimit
         var effectiveContext = min(requested, contextLimit).coerceAtLeast(MIN_CONTEXT_TOKENS)
         val modelWorkingSet = when {
@@ -141,7 +142,7 @@ object LocalModelRuntimeDiagnostics {
             // Retry only the estimate at a smaller supported context, before allocating.
             // Keep the existing model/reserve coefficients and all low-memory/total-RAM gates.
             // A context change is not RAM-bypass consent and cannot manufacture headroom.
-            for (candidate in listOf(4_096, 2_048, 1_024, MIN_CONTEXT_TOKENS)) {
+            for (candidate in listOf(32_768, 16_384, 8_192, 4_096, 2_048, 1_024, MIN_CONTEXT_TOKENS)) {
                 if (candidate >= effectiveContext) continue
                 val estimate = saturatingAdd(modelWorkingSet, contextReserveBytes(normalizedBackend, candidate))
                 if (estimate <= memory.usableAvailableBytes) {
@@ -262,6 +263,7 @@ object LocalModelRuntimeDiagnostics {
         val payload = JSONObject()
             .put("attempt_id", attemptId)
             .put("process_id", Process.myPid())
+            .put("startup_thread_priority", runCatching { Process.getThreadPriority(Process.myTid()) }.getOrDefault(0))
             .put("background_runtime_enabled", com.mobilefork.hermesagent.data.DeviceCapabilityStore(context).load().backgroundPersistenceEnabled)
             .put("background_runtime_running", com.mobilefork.hermesagent.backend.HermesRuntimeService.isRunning())
             .put("app_version", com.mobilefork.hermesagent.BuildConfig.VERSION_NAME)
@@ -419,7 +421,8 @@ object LocalModelRuntimeDiagnostics {
             contextTokens <= 4_096 -> 512_000_000L
             contextTokens <= 8_192 -> 900_000_000L
             contextTokens <= 16_384 -> 1_500_000_000L
-            else -> 2_500_000_000L
+            contextTokens <= 32_768 -> 2_500_000_000L
+            else -> 5_000_000_000L
         }
         return if (backend == "litert-lm") base else saturatingMultiply(base, 70L, 100L)
     }

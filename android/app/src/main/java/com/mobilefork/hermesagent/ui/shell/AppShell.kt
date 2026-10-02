@@ -1,5 +1,9 @@
 package com.mobilefork.hermesagent.ui.shell
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.graphicsLayer
+
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
@@ -133,6 +137,8 @@ fun AppShellScreen(
     var showActionSheet by rememberSaveable { mutableStateOf(false) }
     var showNavigationDrawer by rememberSaveable { mutableStateOf(false) }
     var sectionContentReady by rememberSaveable { mutableStateOf(true) }
+    val pageReveal = remember(currentSection) { Animatable(0f) }
+    LaunchedEffect(pageReveal) { pageReveal.animateTo(1f, tween(160)) }
 
     val context = LocalContext.current.applicationContext
     val appSettingsStore = remember(context) { AppSettingsStore(context) }
@@ -275,7 +281,11 @@ fun AppShellScreen(
                             Surface(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .fillMaxHeight(),
+                                    .fillMaxHeight()
+                                    .graphicsLayer {
+                                        alpha = pageReveal.value
+                                        translationY = (1f - pageReveal.value) * 8.dp.toPx()
+                                    },
                                 color = Color.Transparent,
                                 contentColor = MaterialTheme.colorScheme.onBackground,
                             ) {
@@ -423,7 +433,7 @@ private fun HermesTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .border(
-                BorderStroke(1.dp, glass.border),
+                BorderStroke(1.dp, glass.rim),
                 MaterialTheme.shapes.large,
             ),
         color = glass.elevatedPanel,
@@ -562,7 +572,7 @@ private fun ShellNavigationRail(
         modifier = Modifier
             .fillMaxHeight()
             .width(112.dp)
-            .border(BorderStroke(1.dp, glass.border), MaterialTheme.shapes.medium)
+            .border(BorderStroke(1.dp, glass.rim), MaterialTheme.shapes.medium)
             .testTag("HermesPersistentNavigation"),
         containerColor = glass.panel,
         contentColor = MaterialTheme.colorScheme.onSurface,
@@ -671,7 +681,7 @@ private fun ShellNavigationDrawerOverlay(
                 .testTag("HermesShellDrawerMenu"),
             color = glass.elevatedPanel,
             shape = MaterialTheme.shapes.medium,
-            border = BorderStroke(1.dp, glass.border),
+            border = BorderStroke(1.dp, glass.rim),
             tonalElevation = 8.dp,
             shadowElevation = 8.dp,
         ) {
