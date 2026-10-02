@@ -353,10 +353,10 @@
         },
         {
           "depends": [],
-          "filename": "pool/main/libc/libc++/libc++_29_aarch64.deb",
+          "filename": "pool/main/libc/libc++/libc++_30_aarch64.deb",
           "name": "libc++",
-          "sha256": "bb9f12113c137aa0e8513bb51cc49fe77a5ce3ca39ab9e92c57d228ecdf00222",
-          "version": "29"
+          "sha256": "53d0b84a7ba7459024257cb94d5b136fe13ef858567f65a8064b35950799f2ca",
+          "version": "30"
         },
         {
           "depends": [],
@@ -1039,10 +1039,10 @@
         },
         {
           "depends": [],
-          "filename": "pool/main/libc/libc++/libc++_29_x86_64.deb",
+          "filename": "pool/main/libc/libc++/libc++_30_x86_64.deb",
           "name": "libc++",
-          "sha256": "a4325afa2ecde73742499766e2a46202003e5cb3dcd2b7773ae25f386f3fecfa",
-          "version": "29"
+          "sha256": "c9bcd9a8067a19c9c0e4893a72d314a2e37d6b67ce8dd05c67b9bbacad044b4f",
+          "version": "30"
         },
         {
           "depends": [],
@@ -1378,7 +1378,7 @@
       "sha256": "a0e59dbbeeafb6e74574a8744a4f76f9daee8cad60fe93c1c6529361ef4cedfb",
       "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.159/agent-termux-packages-v159.zip"
     },
-    "sha256": "7d02dff0186ff8aba9ac2861301b79a92332f6857852a3e193e7d895078e000b",
+    "sha256": "37af60c558f53d59d5ac15113abb615843e581b67b4e6b67bc53dbba7b5acd00",
     "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.160/agent-termux-packages-v160.zip"
   },
   "root_packages": [
