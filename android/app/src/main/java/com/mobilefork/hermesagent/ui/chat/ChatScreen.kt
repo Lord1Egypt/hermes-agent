@@ -1,5 +1,8 @@
 package com.mobilefork.hermesagent.ui.chat
 
+import androidx.compose.foundation.BorderStroke
+import com.mobilefork.hermesagent.ui.theme.LocalHermesGlassTokens
+
 import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -752,6 +755,7 @@ private fun ChatHeaderCard(
     val displayTitle = title
     Surface(
         modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, LocalHermesGlassTokens.current.rim),
         color = MaterialTheme.colorScheme.surface,
         shape = MaterialTheme.shapes.medium,
         tonalElevation = 1.dp,
@@ -995,6 +999,7 @@ private fun StatusBanner(text: String, isError: Boolean = false) {
     val indicatorColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
     Surface(
         modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, LocalHermesGlassTokens.current.border),
         color = if (isError) MaterialTheme.colorScheme.error.copy(alpha = 0.14f) else MaterialTheme.colorScheme.secondaryContainer,
         shape = MaterialTheme.shapes.medium,
     ) {
@@ -1321,6 +1326,7 @@ private fun CompactChatTurn(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("HermesCompactChatTurn"),
+        border = BorderStroke(1.dp, LocalHermesGlassTokens.current.rim),
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = MaterialTheme.shapes.medium,
         tonalElevation = 1.dp,
@@ -2131,6 +2137,7 @@ private fun ChatComposer(
         modifier = modifier,
         color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(24.dp),
+        border = BorderStroke(1.dp, LocalHermesGlassTokens.current.rim),
         tonalElevation = 2.dp,
     ) {
         Column(
