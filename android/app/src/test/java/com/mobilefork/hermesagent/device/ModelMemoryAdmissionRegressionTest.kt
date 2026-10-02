@@ -49,6 +49,14 @@ class ModelMemoryAdmissionRegressionTest {
     }
 
     @Test fun lowHeadroomBypassRemainsExplicitAndCannotApproveAnEmptyModel() {
+        for ((total, available) in listOf(12_546_994_176L to 10_208_038_912L, 16_000_000_000L to 14_000_000_000L)) {
+            val memory = snapshot(available).copy(totalBytes = total, thresholdBytes = 226_492_416L)
+            val extended = LocalModelRuntimeDiagnostics.evaluatePreflight(
+                "litert-lm", 890_816_496L, 65_536, memory, allowExtendedContext = true,
+            )
+            assertFalse(extended.detail, extended.allowed)
+            assertTrue(extended.estimatedAdditionalBytes > memory.usableAvailableBytes)
+        }
         for (low in listOf(false, true)) {
             val memory = snapshot(600_000_000L, low)
             assertEquals(300_000_000L, memory.usableAvailableBytes)

@@ -15,3 +15,5 @@ The exact override failure on the physical phone remains unconfirmed.
 Development checks are recorded outside the repo. Final release certification
 still needs the current Agent app source, package, device and signing gates.
 [Android process priority](https://developer.android.com/guide/components/activities/process-lifecycle)
+
+The 64K Limite LiteRT CPU probe exhausted the 12 GB AVD plus swap while Agent had foreground importance (125, oom_score_adj=0); Android killed background apps before killing Agent. Extended 64K LiteRT admission now reserves 16 GB for native buffers and rejects insufficient headroom before initialization. The 64K Nanbeige Turbo3 GGUF probe passed.

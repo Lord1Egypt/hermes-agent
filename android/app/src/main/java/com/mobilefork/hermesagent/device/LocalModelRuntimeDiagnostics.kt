@@ -193,7 +193,7 @@ object LocalModelRuntimeDiagnostics {
             )
         }
         if (memory.availableBytes > 0L && memory.usableAvailableBytes < estimatedAdditional) {
-            val severe = modelBytes >= LARGE_MODEL_BYTES ||
+            val severe = (normalizedBackend == "litert-lm" && effectiveContext > 32_768) || modelBytes >= LARGE_MODEL_BYTES ||
                 memory.usableAvailableBytes < saturatingMultiply(estimatedAdditional, 65L, 100L)
             if (severe) {
                 return ramAdmissionDecision(
@@ -203,7 +203,7 @@ object LocalModelRuntimeDiagnostics {
                         effectiveContextTokens = effectiveContext,
                         estimatedAdditionalBytes = estimatedAdditional,
                         level = "blocked",
-                        detail = "Only ${formatGb(memory.usableAvailableBytes)} GB usable RAM is available; this $normalizedBackend start is estimated to need ${formatGb(estimatedAdditional)} GB in addition to Android's reserve.$contextNote Close memory-heavy apps or choose a smaller model.",
+                        detail = "Only ${formatGb(memory.usableAvailableBytes)} GB usable RAM is available; this $normalizedBackend start is estimated to need ${formatGb(estimatedAdditional)} GB in addition to Android's reserve.$contextNote Reduce context, close memory-heavy apps, or choose a smaller model.",
                     ),
                 )
             }
@@ -422,7 +422,8 @@ object LocalModelRuntimeDiagnostics {
             contextTokens <= 8_192 -> 900_000_000L
             contextTokens <= 16_384 -> 1_500_000_000L
             contextTokens <= 32_768 -> 2_500_000_000L
-            else -> 5_000_000_000L
+            // The 64K LiteRT capacity probe exhausted 12 GB plus swap during native initialization.
+            else -> if (backend == "litert-lm") 16_000_000_000L else 5_000_000_000L
         }
         return if (backend == "litert-lm") base else saturatingMultiply(base, 70L, 100L)
     }
