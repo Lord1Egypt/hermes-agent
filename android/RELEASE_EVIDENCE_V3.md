@@ -5,7 +5,8 @@ tags at or after `v0.13.148`. Earlier committed evidence, including
 `android/release-evidence/v0.13.147`, remains on manifest v2 and must not be
 regenerated or rearranged.
 
-The current candidate uses LiteRT-LM 0.17.0 (v0.13.154 onward). The offline
+The current candidate uses LiteRT-LM 0.17.1 (v0.13.159 onward).
+Historical v0.13.154–158 evidence remains bound to 0.17.0. The offline
 validator keeps historical v0.13.148–153 evidence bound to 0.16.1 and earlier
 evidence to 0.16.0. Do not relabel or regenerate those immutable records for an
 SDK upgrade. A model-lab APK is not a release-certified or phone-upgrade APK.
