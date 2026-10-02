@@ -3471,6 +3471,12 @@ def _validate_historical_e4b_evidence(
         "completion_characters",
         "artifact_summary",
     }
+    if "requested_context_tokens" in details or "engine_context_tokens" in details:
+        expected_detail_keys |= {"requested_context_tokens", "engine_context_tokens"}
+        requested = _integer(details, "requested_context_tokens", f"{context}.details")
+        engine = _integer(details, "engine_context_tokens", f"{context}.details", positive=True)
+        if not 0 <= requested <= 65_536 or not 512 <= engine <= 65_536 or (requested and requested != engine):
+            raise EvidenceError(f"{context}.details context tokens are inconsistent or outside the supported range")
     _exact_keys(details, expected_detail_keys, f"{context}.details")
     exact_details = {
         "health_backend": "litert-lm",

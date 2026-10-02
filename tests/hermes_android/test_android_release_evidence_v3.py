@@ -673,6 +673,8 @@ def _write_v3_fixture(root: Path, module, artifacts) -> None:
                 "litert-lm-gemma-4-E4B-it.litertlm-1780000000000.json"
             ),
             "details": {
+                "requested_context_tokens": 0,
+                "engine_context_tokens": 512,
                 "health_backend": "litert-lm",
                 "runtime_entrypoint": "on-device-backend-manager",
                 "provisioning_method": "content-addressed-preprovisioned-preferred-download-record",
@@ -844,6 +846,12 @@ def test_v148_validates_closed_comprehensive_ui_and_human_review_contract(
     assert validated.comprehensive_ui_capture_count >= 60
     assert validated.launch_theme_capture_count == 4
     assert validated.launch_theme_review_count == 2
+    historical_path = v3_root / Path(evidence_module.HISTORICAL_E4B_EVIDENCE_PATH.as_posix())
+    historical = json.loads(historical_path.read_text(encoding="utf-8"))
+    historical["details"].pop("requested_context_tokens")
+    historical["details"].pop("engine_context_tokens")
+    historical_path.write_text(json.dumps(historical), encoding="utf-8")
+    validated = evidence_module.validate_evidence_directory(v3_root, artifacts, legacy.SOURCE_DIGEST, V3_TAG)
     source = evidence_module.SourceTreeIdentity(
         algorithm=evidence_module.SOURCE_DIGEST_ALGORITHM,
         digest=legacy.SOURCE_DIGEST,
@@ -889,6 +897,8 @@ def test_v148_validates_closed_comprehensive_ui_and_human_review_contract(
         (("health_ok",), False),
         (("completion_nonempty",), False),
         (("elapsed_ms",), 0),
+        (("details", "requested_context_tokens"), 8192),
+        (("details", "engine_context_tokens"), 0),
         (("details", "runtime_entrypoint"), "direct-litert-proxy"),
         (("details", "requested_accelerator"), "auto"),
         (("details", "gpu_attempted"), True),
