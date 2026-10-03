@@ -2,7 +2,9 @@ package com.mobilefork.hermesagent.device
 
 import android.app.ActivityManager
 import android.content.Context
+import android.os.Build
 import android.os.Debug
+import android.os.Process
 import org.json.JSONObject
 import java.io.File
 import java.util.Locale
@@ -28,6 +30,7 @@ object LocalModelRuntimeDiagnostics {
         val memoryClassBytes: Long,
         val largeMemoryClassBytes: Long,
         val nativeHeapAllocatedBytes: Long,
+        val processImportance: Int = 0,
     ) {
         val usableAvailableBytes: Long
             get() = (availableBytes - thresholdBytes).coerceAtLeast(0L)
@@ -41,6 +44,7 @@ object LocalModelRuntimeDiagnostics {
             .put("memory_class_bytes", memoryClassBytes)
             .put("large_memory_class_bytes", largeMemoryClassBytes)
             .put("native_heap_allocated_bytes", nativeHeapAllocatedBytes)
+            .put("process_importance", processImportance)
     }
 
     internal data class PreflightDecision(
@@ -71,6 +75,8 @@ object LocalModelRuntimeDiagnostics {
     internal fun captureMemory(context: Context): MemorySnapshot {
         val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
         val info = ActivityManager.MemoryInfo()
+        val processInfo = ActivityManager.RunningAppProcessInfo()
+        runCatching { ActivityManager.getMyMemoryState(processInfo) }
         if (manager != null) {
             runCatching { manager.getMemoryInfo(info) }
         }
@@ -83,6 +89,7 @@ object LocalModelRuntimeDiagnostics {
             memoryClassBytes = (manager?.memoryClass?.toLong() ?: 0L).coerceAtLeast(0L) * mib,
             largeMemoryClassBytes = (manager?.largeMemoryClass?.toLong() ?: 0L).coerceAtLeast(0L) * mib,
             nativeHeapAllocatedBytes = runCatching { Debug.getNativeHeapAllocatedSize() }.getOrDefault(0L),
+            processImportance = processInfo.importance,
         )
     }
 
@@ -100,6 +107,7 @@ object LocalModelRuntimeDiagnostics {
         requestedContextTokens: Int,
         memory: MemorySnapshot,
         dangerouslySkipRamChecks: Boolean = false,
+        allowExtendedContext: Boolean = false,
     ): PreflightDecision {
         if (modelBytes <= 0L) {
             return PreflightDecision(
@@ -112,7 +120,7 @@ object LocalModelRuntimeDiagnostics {
         }
 
         val normalizedBackend = backend.trim().lowercase(Locale.US)
-        val contextLimit = safeContextLimit(normalizedBackend, modelBytes, memory)
+        val contextLimit = if (allowExtendedContext && !memory.lowMemory) 65_536 else safeContextLimit(normalizedBackend, modelBytes, memory)
         val requested = requestedContextTokens.takeIf { it > 0 } ?: contextLimit
         var effectiveContext = min(requested, contextLimit).coerceAtLeast(MIN_CONTEXT_TOKENS)
         val modelWorkingSet = when {
@@ -134,7 +142,7 @@ object LocalModelRuntimeDiagnostics {
             // Retry only the estimate at a smaller supported context, before allocating.
             // Keep the existing model/reserve coefficients and all low-memory/total-RAM gates.
             // A context change is not RAM-bypass consent and cannot manufacture headroom.
-            for (candidate in listOf(4_096, 2_048, 1_024, MIN_CONTEXT_TOKENS)) {
+            for (candidate in listOf(32_768, 16_384, 8_192, 4_096, 2_048, 1_024, MIN_CONTEXT_TOKENS)) {
                 if (candidate >= effectiveContext) continue
                 val estimate = saturatingAdd(modelWorkingSet, contextReserveBytes(normalizedBackend, candidate))
                 if (estimate <= memory.usableAvailableBytes) {
@@ -185,7 +193,7 @@ object LocalModelRuntimeDiagnostics {
             )
         }
         if (memory.availableBytes > 0L && memory.usableAvailableBytes < estimatedAdditional) {
-            val severe = modelBytes >= LARGE_MODEL_BYTES ||
+            val severe = (normalizedBackend == "litert-lm" && effectiveContext > 32_768) || modelBytes >= LARGE_MODEL_BYTES ||
                 memory.usableAvailableBytes < saturatingMultiply(estimatedAdditional, 65L, 100L)
             if (severe) {
                 return ramAdmissionDecision(
@@ -195,7 +203,7 @@ object LocalModelRuntimeDiagnostics {
                         effectiveContextTokens = effectiveContext,
                         estimatedAdditionalBytes = estimatedAdditional,
                         level = "blocked",
-                        detail = "Only ${formatGb(memory.usableAvailableBytes)} GB usable RAM is available; this $normalizedBackend start is estimated to need ${formatGb(estimatedAdditional)} GB in addition to Android's reserve.$contextNote Close memory-heavy apps or choose a smaller model.",
+                        detail = "Only ${formatGb(memory.usableAvailableBytes)} GB usable RAM is available; this $normalizedBackend start is estimated to need ${formatGb(estimatedAdditional)} GB in addition to Android's reserve.$contextNote Reduce context, close memory-heavy apps, or choose a smaller model.",
                     ),
                 )
             }
@@ -254,6 +262,13 @@ object LocalModelRuntimeDiagnostics {
             ?.takeIf { it.optString("status") == "initializing" }
         val payload = JSONObject()
             .put("attempt_id", attemptId)
+            .put("process_id", Process.myPid())
+            .put("startup_thread_priority", runCatching { Process.getThreadPriority(Process.myTid()) }.getOrDefault(0))
+            .put("background_runtime_enabled", com.mobilefork.hermesagent.data.DeviceCapabilityStore(context).load().backgroundPersistenceEnabled)
+            .put("background_runtime_running", com.mobilefork.hermesagent.backend.HermesRuntimeService.isRunning())
+            .put("app_version", com.mobilefork.hermesagent.BuildConfig.VERSION_NAME)
+            .put("source_digest", com.mobilefork.hermesagent.BuildConfig.HERMES_SOURCE_DIGEST)
+            .put("process_state_summary_recorded", recordProcessExitMarker(context, attemptId))
             .put("status", "initializing")
             .put("stage", "native_runtime_start")
             .put("started_at_ms", System.currentTimeMillis())
@@ -282,7 +297,26 @@ object LocalModelRuntimeDiagnostics {
             payload.put("previous_incomplete_attempt", previous)
         }
         writeSnapshot(context, payload)
+        HermesCrashLogStore.appendDiagnosticEvent(context, "info", "local_model_start_attempt", payload)
         return attemptId
+    }
+
+    /** Android retains this non-secret, 51-byte marker on the calling process's exit record. */
+    internal fun processExitMarker(attemptId: String): ByteArray? {
+        if (!Regex("[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}").matches(attemptId)) return null
+        return "agent-model-v1:$attemptId".toByteArray(Charsets.UTF_8)
+    }
+
+    private fun recordProcessExitMarker(context: Context, attemptId: String): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return false
+        val marker = processExitMarker(attemptId) ?: return false
+        // The platform can throttle this diagnostic API. Its failure is never RAM admission.
+        return runCatching {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+                ?: return@runCatching false
+            manager.setProcessStateSummary(marker)
+            true
+        }.getOrDefault(false)
     }
 
     internal fun finishAttempt(
@@ -308,6 +342,7 @@ object LocalModelRuntimeDiagnostics {
             .put("completion_verified", completionVerified)
             .put("completion_latency_ms", completionLatencyMs.coerceAtLeast(0L))
         writeSnapshot(context, current)
+        HermesCrashLogStore.appendDiagnosticEvent(context, "info", "local_model_start_result", current)
     }
 
     /** Available without starting a model or invoking the chat agent. No provider credentials. */
@@ -386,7 +421,9 @@ object LocalModelRuntimeDiagnostics {
             contextTokens <= 4_096 -> 512_000_000L
             contextTokens <= 8_192 -> 900_000_000L
             contextTokens <= 16_384 -> 1_500_000_000L
-            else -> 2_500_000_000L
+            contextTokens <= 32_768 -> 2_500_000_000L
+            // The 64K LiteRT capacity probe exhausted 12 GB plus swap during native initialization.
+            else -> if (backend == "litert-lm") 16_000_000_000L else 5_000_000_000L
         }
         return if (backend == "litert-lm") base else saturatingMultiply(base, 70L, 100L)
     }

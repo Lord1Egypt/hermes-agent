@@ -241,7 +241,7 @@ object OnDeviceBackendManager {
             cacheTypeV = settings.llamaCppCacheTypeV,
             flashAttention = settings.llamaCppFlashAttention,
             additionalArguments = settings.llamaCppAdditionalArguments,
-        )
+        ).copy(contextTokens = settings.localModelContextTokens, cpuThreads = settings.localModelCpuThreads)
         val status = LlamaCppServerController.ensureRunning(
             context = context,
             modelPath = modelFile.absolutePath,
@@ -441,7 +441,8 @@ object OnDeviceBackendManager {
             maxTokens = AppSettings.normalizeLocalModelMaxTokens(settings.localModelMaxTokens)
                 .takeIf { it > 0 }
                 ?: modelDefaults.maxTokens,
-            maxContextLength = modelDefaults.maxContextLength,
+            maxContextLength = settings.localModelContextTokens.takeIf { it > 0 } ?: modelDefaults.maxContextLength,
+            contextOverrideRequested = settings.localModelContextTokens > 0,
             supportImage = inputSupport.image,
             supportAudio = inputSupport.audio,
             preferredAccelerator = AppSettings.normalizeLocalModelAccelerator(settings.localModelAccelerator),
@@ -646,7 +647,11 @@ object OnDeviceBackendManager {
         val tid = Process.myTid()
         val previousPriority = runCatching { Process.getThreadPriority(tid) }
             .getOrDefault(Process.THREAD_PRIORITY_DEFAULT)
-        runCatching { Process.setThreadPriority(tid, Process.THREAD_PRIORITY_BACKGROUND) }
+        val importance = runCatching {
+            android.app.ActivityManager.RunningAppProcessInfo().also { android.app.ActivityManager.getMyMemoryState(it) }.importance
+        }.getOrDefault(android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED)
+        val priority = if (importance in 1..android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE) Process.THREAD_PRIORITY_DEFAULT else Process.THREAD_PRIORITY_BACKGROUND
+        runCatching { Process.setThreadPriority(tid, priority) }
         return try {
             block()
         } finally {

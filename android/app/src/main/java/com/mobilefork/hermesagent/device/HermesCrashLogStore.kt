@@ -36,9 +36,11 @@ object HermesCrashLogStore {
             Thread.setDefaultUncaughtExceptionHandler(HermesCrashHandler(appContext, current))
             installed = true
         }
+        // Preserve the prior process's breadcrumb before a new model attempt can replace it.
+        val savedRuntimeSnapshot = LocalModelRuntimeDiagnostics.readSnapshot(appContext)
         Thread(
             {
-                captureHistoricalProcessExit(appContext)
+                captureHistoricalProcessExit(appContext, savedRuntimeSnapshot)
                 appendDiagnosticEvent(appContext, "info", "crash_capture_armed")
             },
             "HermesCrashDiagnosticsInit",
@@ -210,7 +212,7 @@ object HermesCrashLogStore {
         return crash
     }
 
-    private fun captureHistoricalProcessExit(context: Context) {
+    private fun captureHistoricalProcessExit(context: Context, savedRuntimeSnapshot: JSONObject?) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
         runCatching {
             val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
@@ -228,7 +230,7 @@ object HermesCrashLogStore {
                 preferences.edit().putLong(KEY_LAST_EXIT_TIMESTAMP, newestTimestamp).apply()
             }
             if (concerning != null) {
-                recordHistoricalProcessExit(context, concerning)
+                recordHistoricalProcessExit(context, concerning, savedRuntimeSnapshot)
             }
         }.onFailure { error ->
             appendDiagnosticEvent(
@@ -239,7 +241,11 @@ object HermesCrashLogStore {
         }
     }
 
-    private fun recordHistoricalProcessExit(context: Context, exit: ApplicationExitInfo) {
+    internal fun recordHistoricalProcessExit(
+        context: Context,
+        exit: ApplicationExitInfo,
+        savedRuntimeSnapshot: JSONObject? = LocalModelRuntimeDiagnostics.readSnapshot(context),
+    ) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
         val existingTimestamp = readLastCrashJson(context)?.optLong("captured_at_ms", 0L) ?: 0L
         if (existingTimestamp > exit.timestamp) return
@@ -251,7 +257,31 @@ object HermesCrashLogStore {
             }.orEmpty()
         }.getOrDefault("")
         val reasonLabel = processExitReasonLabel(exit.reason)
-        val runtimeAttempt = LocalModelRuntimeDiagnostics.readSnapshot(context)
+        val marker = exit.processStateSummary
+        // A restarted process may already have saved a newer attempt. Only the OS-bound
+        // marker may associate an attempt with this exit; PID/timing alone is insufficient.
+        val candidate = listOfNotNull(savedRuntimeSnapshot, savedRuntimeSnapshot?.optJSONObject("previous_incomplete_attempt"))
+            .firstOrNull { attempt ->
+                val expected = LocalModelRuntimeDiagnostics.processExitMarker(attempt.optString("attempt_id"))
+                expected != null && marker != null && expected.contentEquals(marker)
+            }
+        val startedAt = candidate?.optLong("started_at_ms", 0L) ?: 0L
+        val updatedAt = candidate?.optLong("updated_at_ms", startedAt) ?: 0L
+        val matched = candidate != null && startedAt > 0L &&
+            updatedAt >= startedAt && updatedAt <= exit.timestamp
+        val correlationStatus = when {
+            savedRuntimeSnapshot == null -> "unavailable"
+            marker == null -> "unverified_no_process_marker"
+            candidate == null -> "unverified_marker_mismatch"
+            !matched -> "unverified_attempt_timestamps"
+            else -> "matched_process_marker"
+        }
+        val correlationDetail = when {
+            !matched -> "The last saved attempt is historical context only; it is not verified as belonging to this exited process."
+            candidate?.optString("status") == "blocked" ->
+                "The process marker matches an attempt blocked before native allocation; this does not establish a model-induced exit."
+            else -> "The process marker matches this attempt; association alone does not establish the cause of the exit."
+        }
         val payload = JSONObject()
             .put("kind", "android_process_exit")
             .put("captured_at_ms", exit.timestamp)
@@ -262,12 +292,21 @@ object HermesCrashLogStore {
             .put("reason_label", reasonLabel)
             .put("status", exit.status)
             .put("importance", exit.importance)
+            .put("process_priority_explanation", if (exit.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED)
+                "Agent was a cached background process. Android can reclaim it under memory pressure before foreground apps and foreground services."
+                else JSONObject.NULL)
             .put("pss_kb", exit.pss)
             .put("rss_kb", exit.rss)
+            .put("memory_sample_note", "PSS/RSS are Android's last sample, not exact memory at process death; zero can mean no sample.")
+            .put("process_id", exit.pid)
             .put("process_name", redactForDiagnostics(exit.processName.orEmpty()).text)
             .put("description", redactForDiagnostics(exit.description.orEmpty()).text)
             .put("trace", redactForDiagnostics(trace).text)
-            .put("local_model_runtime", runtimeAttempt ?: JSONObject.NULL)
+            .put("local_model_runtime", if (matched) candidate else JSONObject.NULL)
+            .put("last_saved_runtime_attempt",
+                if (matched && candidate === savedRuntimeSnapshot) JSONObject.NULL else savedRuntimeSnapshot ?: JSONObject.NULL)
+            .put("runtime_attempt_correlation", JSONObject()
+                .put("matched", matched).put("status", correlationStatus).put("detail", correlationDetail))
             .put(
                 "android",
                 JSONObject()
@@ -279,8 +318,9 @@ object HermesCrashLogStore {
             )
             .put("pii_filter", redactionPolicyJson())
         diagnosticsDir(context).mkdirs()
-        lastCrashFile(context).writeText(payload.toString(2), Charsets.UTF_8)
-        appendDiagnosticEvent(context, "error", "android_process_exit_$reasonLabel", payload, exit.timestamp)
+        val redactedPayload = redactJsonForDiagnostics(payload)
+        lastCrashFile(context).writeText(redactedPayload.toString(2), Charsets.UTF_8)
+        appendDiagnosticEvent(context, "error", "android_process_exit_$reasonLabel", redactedPayload, exit.timestamp)
     }
 
     internal fun processExitReasonLabel(reason: Int): String = when (reason) {
@@ -326,7 +366,8 @@ object HermesCrashLogStore {
         return if (description.isBlank()) explanation else "$explanation ${description.take(400)}"
     }
 
-    private fun appendDiagnosticEvent(
+    @Synchronized
+    internal fun appendDiagnosticEvent(
         context: Context,
         level: String,
         message: String,

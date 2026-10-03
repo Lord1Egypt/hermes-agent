@@ -39,6 +39,11 @@ class LlamaCppLaunchConfigTest {
                 availableProcessors = 8,
             ),
         )
+        val tuned = LlamaCppServerController.launchArgumentTokensForModel("model.gguf", availableProcessors = 8,
+            contextSizeOverride = 65_536, launchConfig = LlamaCppLaunchConfig(contextTokens = 65_536, cpuThreads = 6))
+        assertEquals("65536", tuned[tuned.indexOf("--ctx-size") + 1])
+        assertEquals("6", tuned[tuned.indexOf("--threads") + 1])
+        assertNotEquals(LlamaCppLaunchConfig().fingerprint(), LlamaCppLaunchConfig(contextTokens = 65_536).fingerprint())
     }
 
     @Test

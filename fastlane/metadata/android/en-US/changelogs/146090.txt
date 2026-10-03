@@ -1,0 +1,1 @@
+Sharper glass borders and smoother page transitions. Faster native startup by avoiding duplicate environment setup. Updated stable and experimental GGUF runtimes. Added context-budget and GGUF CPU-thread controls, plus clearer RAM-override diagnostics. Turbo3 is for experimental GGUF; context capacity depends on the model and available RAM.

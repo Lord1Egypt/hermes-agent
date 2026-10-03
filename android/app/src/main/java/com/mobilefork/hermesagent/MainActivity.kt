@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import com.mobilefork.hermesagent.auth.AuthRuntimeApplier
 import com.mobilefork.hermesagent.auth.OpenRouterOAuthClient
 import com.mobilefork.hermesagent.data.AuthSessionStore
+import com.mobilefork.hermesagent.data.DeviceCapabilityStore
+import com.mobilefork.hermesagent.backend.HermesRuntimeService
 import com.mobilefork.hermesagent.device.DeviceStateWriter
 import com.mobilefork.hermesagent.device.HermesCrashLogStore
 import com.mobilefork.hermesagent.device.HermesLauncherShortcutBridge
@@ -50,6 +52,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             BootScreen(
                 onFirstFrame = {
+                    if (!BuildConfig.HERMES_PLAY_EDITION && DeviceCapabilityStore(this).load().backgroundPersistenceEnabled &&
+                        !HermesRuntimeService.isRunning()) HermesRuntimeService.start(this)
                     (application as HermesApplication)
                         .localRuntimeAutoStarter
                         .requestAfterFirstFrame()

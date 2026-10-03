@@ -25,6 +25,7 @@ import com.mobilefork.hermesagent.data.ProviderPresets
 import com.mobilefork.hermesagent.data.ProviderSetupTarget
 import com.mobilefork.hermesagent.data.SecureSecretsStore
 import com.mobilefork.hermesagent.device.HermesProviderSetupWebActivity
+import com.mobilefork.hermesagent.device.HermesCrashLogStore
 import com.mobilefork.hermesagent.models.LocalModelRuntimeSelectionAuthority
 import com.mobilefork.hermesagent.models.PythonRuntimeWriteAuthority
 import com.mobilefork.hermesagent.models.RuntimeSelectionSupersededException
@@ -58,6 +59,8 @@ data class SettingsUiState(
     val llamaCppCacheTypeV: String = AppSettings.DEFAULT_LLAMA_CPP_CACHE_TYPE,
     val llamaCppFlashAttention: String = AppSettings.DEFAULT_LLAMA_CPP_FLASH_ATTENTION,
     val llamaCppAdditionalArguments: List<String> = emptyList(),
+    val localModelContextTokens: Int = 0,
+    val localModelCpuThreads: Int = 0,
     val localModelMaxTokens: Int = AppSettings.DEFAULT_LOCAL_MODEL_MAX_TOKENS,
     val localModelTopK: Int = AppSettings.DEFAULT_LOCAL_MODEL_TOP_K,
     val localModelTopP: Float = AppSettings.DEFAULT_LOCAL_MODEL_TOP_P,
@@ -249,6 +252,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             llamaCppCacheTypeV = AppSettings.normalizeLlamaCppCacheType(stored.llamaCppCacheTypeV),
             llamaCppFlashAttention = AppSettings.normalizeLlamaCppFlashAttention(stored.llamaCppFlashAttention),
             llamaCppAdditionalArguments = stored.llamaCppAdditionalArguments.toList(),
+            localModelContextTokens = AppSettings.normalizeLocalModelContextTokens(stored.localModelContextTokens),
+            localModelCpuThreads = AppSettings.normalizeLocalModelCpuThreads(stored.localModelCpuThreads),
             localModelMaxTokens = AppSettings.normalizeLocalModelMaxTokens(stored.localModelMaxTokens),
             localModelTopK = AppSettings.normalizeLocalModelTopK(stored.localModelTopK),
             localModelTopP = AppSettings.normalizeLocalModelTopP(stored.localModelTopP),
@@ -511,6 +516,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun updateLocalModelTopP(value: Float) = _uiState.update {
         it.copy(localModelTopP = AppSettings.normalizeLocalModelTopP(value))
     }
+    fun updateLocalModelContextTokens(value: Int) = _uiState.update { it.copy(localModelContextTokens = AppSettings.normalizeLocalModelContextTokens(value)) }
+    fun updateLocalModelCpuThreads(value: Int) = _uiState.update { it.copy(localModelCpuThreads = AppSettings.normalizeLocalModelCpuThreads(value)) }
     fun updateLocalModelTemperature(value: Float) = _uiState.update {
         it.copy(localModelTemperature = AppSettings.normalizeLocalModelTemperature(value))
     }
@@ -568,9 +575,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun saveModelGenerationConfig() {
         val snapshot = _uiState.value
+        val previous = settingsStore.load()
         val normalizedPrompt = AppSettings.normalizeCustomSystemPrompt(snapshot.customSystemPrompt)
         val updated = persistSettingsOrReport { current ->
             current.copy(
+                localModelContextTokens = AppSettings.normalizeLocalModelContextTokens(snapshot.localModelContextTokens),
+                localModelCpuThreads = AppSettings.normalizeLocalModelCpuThreads(snapshot.localModelCpuThreads),
                 localModelMaxTokens = AppSettings.normalizeLocalModelMaxTokens(snapshot.localModelMaxTokens),
                 localModelTopK = AppSettings.normalizeLocalModelTopK(snapshot.localModelTopK),
                 localModelTopP = AppSettings.normalizeLocalModelTopP(snapshot.localModelTopP),
@@ -583,6 +593,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         } ?: return
         _uiState.update {
             it.copy(
+                localModelContextTokens = AppSettings.normalizeLocalModelContextTokens(updated.localModelContextTokens),
+                localModelCpuThreads = AppSettings.normalizeLocalModelCpuThreads(updated.localModelCpuThreads),
                 localModelMaxTokens = updated.localModelMaxTokens,
                 localModelTopK = updated.localModelTopK,
                 localModelTopP = updated.localModelTopP,
@@ -593,6 +605,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 customSystemPrompt = updated.customSystemPrompt,
                 status = currentStrings().modelConfigurationSaved(),
             )
+        }
+        if (previous.localModelContextTokens != updated.localModelContextTokens || previous.localModelCpuThreads != updated.localModelCpuThreads) {
+            when (BackendKind.fromPersistedValue(updated.onDeviceBackend)) {
+                BackendKind.LLAMA_CPP -> startLocalRuntimeForFlavor("GGUF")
+                BackendKind.LITERT_LM -> startLocalRuntimeForFlavor("LiteRT-LM")
+                else -> Unit
+            }
         }
     }
 
@@ -634,6 +653,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
      * a process restart or enter an exported settings bundle.
      */
     fun tryLlamaCppDespiteRamWarning() {
+        HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_confirmed")
         val generation = settingsSaveGeneration.invalidate()
         val expectedDraft = captureLlamaCppAdvancedDraft()
         val snapshot = _uiState.value
@@ -701,7 +721,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 status = llamaCppAdvancedText(language, "danger_starting"),
             )
         }
-        if (!publishedStart) return
+        if (!publishedStart) {
+            HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_superseded_before_start")
+            return
+        }
         val runtimeExpectedDraft = captureLlamaCppAdvancedDraft()
         viewModelScope.launch {
             runCatching {
@@ -720,6 +743,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     }
                 }
             }.onSuccess { (runtimeState, backendStatus, authoritativeSettings) ->
+                HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_result",
+                    JSONObject().put("started", runtimeState.started).put("detail", runtimeState.error ?: backendStatus.statusMessage))
                 val localPublished = runtimeState.started &&
                     backendStatus.started &&
                     backendStatus.backendKind == BackendKind.LLAMA_CPP &&
@@ -744,6 +769,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     )
                 }
             }.onFailure { error ->
+                HermesCrashLogStore.appendDiagnosticEvent(getApplication(), "info", "ram_bypass_failure",
+                    JSONObject().put("detail", error.message.orEmpty()).put("type", error.javaClass.simpleName))
                 if (error is RuntimeSelectionSupersededException) return@onFailure
                 settingsSaveGeneration.runIfCurrent(generation) {
                     _uiState.update {
@@ -1449,6 +1476,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                             llamaCppCacheTypeV = persistedLlamaCppSettings.llamaCppCacheTypeV,
                             llamaCppFlashAttention = persistedLlamaCppSettings.llamaCppFlashAttention,
                             llamaCppAdditionalArguments = persistedLlamaCppSettings.llamaCppAdditionalArguments,
+                            localModelContextTokens = AppSettings.normalizeLocalModelContextTokens(snapshot.localModelContextTokens),
+                            localModelCpuThreads = AppSettings.normalizeLocalModelCpuThreads(snapshot.localModelCpuThreads),
                             localModelMaxTokens = snapshot.localModelMaxTokens,
                             localModelTopK = snapshot.localModelTopK,
                             localModelTopP = snapshot.localModelTopP,

@@ -263,6 +263,8 @@ fun SettingsScreen(
                         ) {
                             ModelGenerationConfigCard(
                                 maxTokens = uiState.localModelMaxTokens,
+                                contextTokens = uiState.localModelContextTokens,
+                                cpuThreads = uiState.localModelCpuThreads,
                                 topK = uiState.localModelTopK,
                                 topP = uiState.localModelTopP,
                                 temperature = uiState.localModelTemperature,
@@ -271,6 +273,8 @@ fun SettingsScreen(
                                 apiGenerationKnobsEnabled = uiState.apiGenerationKnobsEnabled,
                                 customSystemPrompt = uiState.customSystemPrompt,
                                 onMaxTokensChange = viewModel::updateLocalModelMaxTokens,
+                                onContextTokensChange = viewModel::updateLocalModelContextTokens,
+                                onCpuThreadsChange = viewModel::updateLocalModelCpuThreads,
                                 onTopKChange = viewModel::updateLocalModelTopK,
                                 onTopPChange = viewModel::updateLocalModelTopP,
                                 onTemperatureChange = viewModel::updateLocalModelTemperature,
@@ -754,6 +758,8 @@ private enum class ModelConfigTab {
 @Composable
 private fun ModelGenerationConfigCard(
     maxTokens: Int,
+    contextTokens: Int,
+    cpuThreads: Int,
     topK: Int,
     topP: Float,
     temperature: Float,
@@ -762,6 +768,8 @@ private fun ModelGenerationConfigCard(
     apiGenerationKnobsEnabled: Boolean,
     customSystemPrompt: String,
     onMaxTokensChange: (Int) -> Unit,
+    onContextTokensChange: (Int) -> Unit,
+    onCpuThreadsChange: (Int) -> Unit,
     onTopKChange: (Int) -> Unit,
     onTopPChange: (Float) -> Unit,
     onTemperatureChange: (Float) -> Unit,
@@ -808,6 +816,15 @@ private fun ModelGenerationConfigCard(
                         checked = apiGenerationKnobsEnabled,
                         onCheckedChange = onApiGenerationKnobsEnabledChange,
                     )
+                    Text(settingsGenerationText(language, "context_budget"), style = MaterialTheme.typography.titleSmall)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        listOf(0, 2048, 4096, 8192, 16384, 32768, 65536).forEach { budget ->
+                            TextButton(onClick = { onContextTokensChange(budget) }, modifier = Modifier.testTag("LocalModelContext$budget")) {
+                                Text((if (budget == 0) settingsGenerationText(language, "default") else "${budget / 1024}K") + if (budget == contextTokens) " ✓" else "")
+                            }
+                        }
+                    }
+                    GenerationIntegerRow(settingsGenerationText(language, "cpu_threads"), if (cpuThreads == 0) settingsGenerationText(language, "default") else cpuThreads.toString(), cpuThreads, 0, 0, 12, 1, onCpuThreadsChange, "LocalModelCpuThreads")
                     GenerationIntegerRow(
                         title = settingsGenerationText(language, "max_tokens"),
                         valueLabel = maxTokensLabel(maxTokens, language),
@@ -1088,6 +1105,23 @@ private fun toolGuidanceChoices(language: AppLanguage): List<ToolGuidanceChoice>
 
 internal fun settingsGenerationText(language: AppLanguage, key: String): String {
     return when (key) {
+        "context_budget" -> when (language) {
+            AppLanguage.CHINESE -> "上下文预算（模型和 RAM 可能限制；Turbo3 仅用于实验性 GGUF）"
+            AppLanguage.SPANISH -> "Contexto solicitado (limitado por modelo/RAM; Turbo3 solo GGUF experimental)"
+            AppLanguage.GERMAN -> "Kontextbudget (Modell/RAM begrenzen; Turbo3 nur experimentelles GGUF)"
+            AppLanguage.PORTUGUESE -> "Contexto solicitado (modelo/RAM podem limitar; Turbo3 só GGUF experimental)"
+            AppLanguage.FRENCH -> "Budget de contexte (limité par modèle/RAM ; Turbo3 pour GGUF expérimental)"
+            AppLanguage.ENGLISH -> "Context budget (model/RAM may limit it; Turbo3 is experimental GGUF only)"
+        }
+        "cpu_threads" -> when (language) {
+            AppLanguage.CHINESE -> "GGUF CPU 线程"
+            AppLanguage.SPANISH -> "Hilos CPU para GGUF"
+            AppLanguage.GERMAN -> "GGUF-CPU-Threads"
+            AppLanguage.PORTUGUESE -> "Threads CPU para GGUF"
+            AppLanguage.FRENCH -> "Threads CPU GGUF"
+            AppLanguage.ENGLISH -> "GGUF CPU threads"
+        }
+
         "configurations" -> when (language) {
             AppLanguage.CHINESE -> "配置"
             AppLanguage.SPANISH -> "Configuraciones"

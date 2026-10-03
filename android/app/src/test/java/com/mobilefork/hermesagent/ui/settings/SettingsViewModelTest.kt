@@ -707,6 +707,8 @@ class SettingsViewModelTest {
         val viewModel = SettingsViewModel(application)
 
         viewModel.updateLocalModelMaxTokens(3072)
+        viewModel.updateLocalModelContextTokens(65_536)
+        viewModel.updateLocalModelCpuThreads(8)
         viewModel.updateLocalModelTopK(72)
         viewModel.updateLocalModelTopP(0.85f)
         viewModel.updateLocalModelTemperature(0.6f)
@@ -717,6 +719,8 @@ class SettingsViewModelTest {
 
         val reloaded = store.load()
         assertEquals(3072, reloaded.localModelMaxTokens)
+        assertEquals(65_536, reloaded.localModelContextTokens)
+        assertEquals(8, reloaded.localModelCpuThreads)
         assertEquals(72, reloaded.localModelTopK)
         assertEquals(0.85f, reloaded.localModelTopP, 0.0001f)
         assertEquals(0.6f, reloaded.localModelTemperature, 0.0001f)

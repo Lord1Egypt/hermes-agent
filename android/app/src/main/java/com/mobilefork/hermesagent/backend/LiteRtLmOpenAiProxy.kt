@@ -49,6 +49,7 @@ object LiteRtLmOpenAiProxy {
         val temperature: Float = 1.0f,   // Edge Gallery default
         val maxTokens: Int = -1,         // -1 = backend default
         val maxContextLength: Int = -1,  // -1 = backend default
+        val contextOverrideRequested: Boolean = false,
         val supportImage: Boolean = false,
         val supportAudio: Boolean = false,
         val preferredAccelerator: String = "auto",
@@ -907,6 +908,7 @@ object LiteRtLmOpenAiProxy {
             modelBytes = modelFile.length(),
             requestedContextTokens = requestedContext,
             memory = memory,
+            allowExtendedContext = inferenceConfig.contextOverrideRequested,
         )
         val effectiveInferenceConfig = inferenceConfig.copy(
             maxTokens = inferenceConfig.maxTokens
@@ -1108,6 +1110,7 @@ object LiteRtLmOpenAiProxy {
             temperature,
             maxTokens,
             maxContextLength,
+            contextOverrideRequested,
             supportImage,
             supportAudio,
             preferredAccelerator,
@@ -1262,6 +1265,7 @@ object LiteRtLmOpenAiProxy {
             modelPath = modelPath,
             requestedMaxTokens = inferenceConfig.maxTokens,
             requestedMaxContextLength = inferenceConfig.maxContextLength,
+            allowExtendedContext = inferenceConfig.contextOverrideRequested,
         )
 
         private val engineInitResult = initializeEngine(
@@ -1690,8 +1694,14 @@ object LiteRtLmOpenAiProxy {
             modelPath: String,
             requestedMaxTokens: Int,
             requestedMaxContextLength: Int,
+            allowExtendedContext: Boolean,
         ): EngineTokenBudget {
             val memory = LocalModelRuntimeDiagnostics.captureMemory(context)
+            if (allowExtendedContext) {
+                val decision = LocalModelRuntimeDiagnostics.evaluatePreflight("litert-lm", File(modelPath).length(), requestedMaxContextLength, memory, allowExtendedContext = true)
+                require(decision.allowed) { decision.detail }
+                return EngineTokenBudget(decision.effectiveContextTokens, decision.detail)
+            }
             return decideEngineTokenBudget(
                 requestedMaxTokens = requestedMaxTokens,
                 requestedMaxContextLength = requestedMaxContextLength,

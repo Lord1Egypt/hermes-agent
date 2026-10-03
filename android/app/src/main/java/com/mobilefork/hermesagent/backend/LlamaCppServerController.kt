@@ -130,13 +130,14 @@ object LlamaCppServerController {
             )
         }
         val memory = LocalModelRuntimeDiagnostics.captureMemory(context)
-        val requestedContext = contextSizeForModel(modelPath)
+        val requestedContext = launchConfig.contextTokens.takeIf { it > 0 } ?: contextSizeForModel(modelPath)
         val preflight = LocalModelRuntimeDiagnostics.evaluatePreflight(
             backend = launchConfig.lane.diagnosticsBackendLabel(),
             modelBytes = modelFile.length(),
             requestedContextTokens = requestedContext,
             memory = memory,
             dangerouslySkipRamChecks = dangerouslySkipRamChecks,
+            allowExtendedContext = launchConfig.contextTokens > 0,
         )
         val attemptId = LocalModelRuntimeDiagnostics.beginAttempt(
             context = context,
@@ -886,6 +887,7 @@ object LlamaCppServerController {
             modelPath = modelPath,
             availableProcessors = availableProcessors,
             contextSizeOverride = contextSizeOverride,
+            cpuThreads = launchConfig.cpuThreads,
         ) + launchConfig.advancedArgumentTokens()
     }
 
@@ -926,9 +928,10 @@ object LlamaCppServerController {
         modelPath: String,
         availableProcessors: Int,
         contextSizeOverride: Int?,
+        cpuThreads: Int = 0,
     ): List<String> {
         val ctxSize = contextSizeOverride?.takeIf { it > 0 } ?: contextSizeForModel(modelPath)
-        val threads = availableProcessors.coerceIn(1, 4)
+        val threads = if (cpuThreads > 0) cpuThreads.coerceAtMost(availableProcessors.coerceAtLeast(1)) else availableProcessors.coerceIn(1, 4)
         // --jinja is required for GGUF chat-template tool calling (Qwen3.5 / Bonsai Q1_0).
         return listOf(
             "--ctx-size",
@@ -947,7 +950,7 @@ object LlamaCppServerController {
     }
 
     private fun LlamaCppRuntimeLane.displayLabel(): String = if (com.mobilefork.hermesagent.BuildConfig.HERMES_PLAY_EDITION) {
-        "Play-packaged e30664a (${persistedValue} cache profile)"
+        "Play-packaged bcb85fc (${persistedValue} cache profile)"
     } else when (this) {
         LlamaCppRuntimeLane.STABLE -> "stable"
         LlamaCppRuntimeLane.TURBOQUANT -> "experimental TurboQuant"

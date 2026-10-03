@@ -4,6 +4,25 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ModelMemoryAdmissionRegressionTest {
+    @Test fun pixel8ReportBlocksWithoutConsentAndRetainsTheExplicitBypass() {
+        val memory = LocalModelRuntimeDiagnostics.MemorySnapshot(
+            totalBytes = 7_679_975_424L, availableBytes = 1_259_180_032L,
+            thresholdBytes = 226_492_416L, lowMemory = false,
+            memoryClassBytes = 268_435_456L, largeMemoryClassBytes = 536_870_912L,
+            nativeHeapAllocatedBytes = 17_878_144L,
+        )
+        val blocked = LocalModelRuntimeDiagnostics.evaluatePreflight("llama.cpp", 2_372_993_120L, 2048, memory)
+        assertFalse(blocked.allowed)
+        assertEquals(1_032_687_616L, memory.usableAvailableBytes)
+        assertTrue(blocked.estimatedAdditionalBytes > memory.usableAvailableBytes)
+        val confirmed = LocalModelRuntimeDiagnostics.evaluatePreflight(
+            "llama.cpp", 2_372_993_120L, 2048, memory, dangerouslySkipRamChecks = true,
+        )
+        assertTrue(confirmed.allowed)
+        assertEquals("dangerous_bypass", confirmed.level)
+        assertEquals(blocked.estimatedAdditionalBytes, confirmed.estimatedAdditionalBytes)
+    }
+
     private fun snapshot(available: Long, low: Boolean = false) = LocalModelRuntimeDiagnostics.MemorySnapshot(
         totalBytes = 6_000_000_000L,
         availableBytes = available,
@@ -30,6 +49,14 @@ class ModelMemoryAdmissionRegressionTest {
     }
 
     @Test fun lowHeadroomBypassRemainsExplicitAndCannotApproveAnEmptyModel() {
+        for ((total, available) in listOf(12_546_994_176L to 10_208_038_912L, 16_000_000_000L to 14_000_000_000L)) {
+            val memory = snapshot(available).copy(totalBytes = total, thresholdBytes = 226_492_416L)
+            val extended = LocalModelRuntimeDiagnostics.evaluatePreflight(
+                "litert-lm", 890_816_496L, 65_536, memory, allowExtendedContext = true,
+            )
+            assertFalse(extended.detail, extended.allowed)
+            assertTrue(extended.estimatedAdditionalBytes > memory.usableAvailableBytes)
+        }
         for (low in listOf(false, true)) {
             val memory = snapshot(600_000_000L, low)
             assertEquals(300_000_000L, memory.usableAvailableBytes)

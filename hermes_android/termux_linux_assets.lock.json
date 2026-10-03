@@ -131,10 +131,10 @@
             "libc++",
             "libcurl"
           ],
-          "filename": "pool/main/l/llama-cpp/llama-cpp_0.0.0-b9784-0_aarch64.deb",
+          "filename": "pool/main/l/llama-cpp/llama-cpp_0.5.0_aarch64.deb",
           "name": "llama-cpp",
-          "sha256": "dd041c85e1f60dc705c39e973ede2980a6ada248952bc1c0486b738f436db705",
-          "version": "0.0.0-b9784-0"
+          "sha256": "bcfaaa14ad4956be18e31773560882b88c349a18d5aea3dfc7c668fc00d65af5",
+          "version": "0.5.0"
         },
         {
           "depends": [
@@ -353,10 +353,10 @@
         },
         {
           "depends": [],
-          "filename": "pool/main/libc/libc++/libc++_29_aarch64.deb",
+          "filename": "pool/main/libc/libc++/libc++_30_aarch64.deb",
           "name": "libc++",
-          "sha256": "bb9f12113c137aa0e8513bb51cc49fe77a5ce3ca39ab9e92c57d228ecdf00222",
-          "version": "29"
+          "sha256": "53d0b84a7ba7459024257cb94d5b136fe13ef858567f65a8064b35950799f2ca",
+          "version": "30"
         },
         {
           "depends": [],
@@ -817,10 +817,10 @@
             "libc++",
             "libcurl"
           ],
-          "filename": "pool/main/l/llama-cpp/llama-cpp_0.0.0-b9784-0_x86_64.deb",
+          "filename": "pool/main/l/llama-cpp/llama-cpp_0.5.0_x86_64.deb",
           "name": "llama-cpp",
-          "sha256": "34118d79d4d534bbcfbe1051cc7eb04e5204b2637d7f962bccce88fd3cb4e9b1",
-          "version": "0.0.0-b9784-0"
+          "sha256": "3ef405195e5f71d1aebbf006c5d2ec948247015cc01fef9c021d8610df1cace2",
+          "version": "0.5.0"
         },
         {
           "depends": [
@@ -1039,10 +1039,10 @@
         },
         {
           "depends": [],
-          "filename": "pool/main/libc/libc++/libc++_29_x86_64.deb",
+          "filename": "pool/main/libc/libc++/libc++_30_x86_64.deb",
           "name": "libc++",
-          "sha256": "a4325afa2ecde73742499766e2a46202003e5cb3dcd2b7773ae25f386f3fecfa",
-          "version": "29"
+          "sha256": "c9bcd9a8067a19c9c0e4893a72d314a2e37d6b67ce8dd05c67b9bbacad044b4f",
+          "version": "30"
         },
         {
           "depends": [],
@@ -1375,11 +1375,11 @@
   },
   "package_archive": {
     "fallback": {
-      "sha256": "cb61a40fddf294bd2f246b9077e6ffa2fc9cc54febac4f3e936223320e93a681",
-      "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.141/hermes-termux-packages-v1.zip"
+      "sha256": "a0e59dbbeeafb6e74574a8744a4f76f9daee8cad60fe93c1c6529361ef4cedfb",
+      "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.159/agent-termux-packages-v159.zip"
     },
-    "sha256": "a0e59dbbeeafb6e74574a8744a4f76f9daee8cad60fe93c1c6529361ef4cedfb",
-    "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.159/agent-termux-packages-v159.zip"
+    "sha256": "37af60c558f53d59d5ac15113abb615843e581b67b4e6b67bc53dbba7b5acd00",
+    "url": "https://github.com/adybag14-cyber/hermes-agent/releases/download/v0.13.160/agent-termux-packages-v160.zip"
   },
   "root_packages": [
     "bash",

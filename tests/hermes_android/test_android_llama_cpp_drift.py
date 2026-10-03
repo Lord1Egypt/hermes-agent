@@ -59,10 +59,11 @@ def test_llama_cpp_report_keeps_compatibility_authority_separate_from_upstream_d
     assert "does not reclassify compatibility" in report["compatibility_authority"]
 
 
-def test_llama_cpp_report_selects_latest_published_build_per_architecture():
-    index = _index("0.0.0-b9784-0") + "\n" + _index("0.0.0-b10290-0")
+@pytest.mark.parametrize("latest", ["0.0.0-b10290-0", "0.5.0"])
+def test_llama_cpp_report_selects_latest_published_build_per_architecture(latest):
+    index = _index("0.0.0-b9784-0") + "\n" + _index(latest)
 
-    report = build_report(_lock("0.0.0-b10290-0"), index, index_source="fixture-index")
+    report = build_report(_lock(latest), index, index_source="fixture-index")
 
     assert report["status"] == "upstream-current"
     assert report["upstream_drift"] is False

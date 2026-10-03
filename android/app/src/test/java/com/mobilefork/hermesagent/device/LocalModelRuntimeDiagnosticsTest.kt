@@ -4,6 +4,7 @@ import android.content.Context
 import com.mobilefork.hermesagent.backend.LlamaCppLaunchConfig
 import com.mobilefork.hermesagent.backend.LlamaCppRuntimeLane
 import com.mobilefork.hermesagent.backend.LlamaCppServerController
+import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -180,6 +181,7 @@ class LocalModelRuntimeDiagnosticsTest {
             memory = snapshot,
             preflight = preflight,
             runtimeLaunch = runtimeLaunch,
+            ramBypassRequested = true,
         )
 
         val started = LocalModelRuntimeDiagnostics.readSnapshot(context)!!
@@ -194,6 +196,7 @@ class LocalModelRuntimeDiagnosticsTest {
             started.getString("additional_argv_sha256"),
         )
         assertEquals("dangerous_bypass", started.getString("preflight_level"))
+        assertTrue(started.getBoolean("ram_check_bypass_requested"))
         assertTrue(
             started.getString("preflight_detail"),
             started.getString("preflight_detail").contains("DANGEROUS RAM CHECK BYPASS ACTIVE"),
@@ -272,6 +275,10 @@ class LocalModelRuntimeDiagnosticsTest {
         assertFalse(completed.has("runtime_lane"))
         assertFalse(completed.has("launch_fingerprint_sha256"))
         assertFalse(completed.has("additional_argv_sha256"))
+        val events = HermesCrashLogStore.exportLogsText(context).substringAfter("Recent diagnostic events\n")
+            .lineSequence().filter { it.startsWith("{") }.map { JSONObject(it) }
+            .filter { it.optJSONObject("payload")?.optString("attempt_id") == attemptId }.toList()
+        assertEquals(listOf("initializing", "ready"), events.map { it.getJSONObject("payload").getString("status") })
     }
 
     private fun assertRawArgumentsAbsent(serialized: String, rawArguments: List<String>) {

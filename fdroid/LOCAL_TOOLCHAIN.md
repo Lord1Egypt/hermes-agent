@@ -34,10 +34,10 @@ git merge --ff-only FETCH_HEAD
 ```
 
 Run that preview against freshly fetched live `fdroiddata` metadata in the
-retained checkout after the GitHub tag exists. `--auto` must create the local 0.13.159/145990 build recipe
+retained checkout after the GitHub tag exists. `--auto` must create the local build recipe for the version/code in `com.mobilefork.hermesagent.version`
 and resolve its exact tag commit. The autoupdater copies the prior build recipe,
 so its output is not yet eligible for the pinned build. From the same WSL shell,
-render and verify the v0.13.159 source-binding fields from the committed Hermes
+render and verify the current source-binding fields from the committed Agent app
 template into that generated build:
 
 ```sh
@@ -55,7 +55,7 @@ git -C "$FDROIDDATA_ROOT" diff -- \
   metadata/com.mobilefork.hermesagent.yml
 ```
 
-The render transaction requires exactly one 0.13.159/145990 build, preserves
+The render transaction requires exactly one current-version build, preserves
 the autoupdater-resolved full Git commit, every historical `Builds` entry, and
 all unrelated live metadata, and overlays the exact `sudo`, `ndk`, `gradle`,
 `gradleprops`, `scanignore`, and `prebuild` fields. It then verifies that
